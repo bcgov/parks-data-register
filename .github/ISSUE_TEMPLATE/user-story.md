@@ -1,10 +1,16 @@
 ---
 name: User Story
 about: Template for user stories
-title: ''
+title: "[Description of story]"
 labels: ''
 assignees: ''
 
 ---
 
+User Story Syntax:
 
+
+Acceptance Criteria:
+
+
+Notes:

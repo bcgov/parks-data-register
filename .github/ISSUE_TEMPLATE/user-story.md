@@ -7,7 +7,9 @@ assignees: ''
 
 ---
 
-User Story Syntax:
+As a...
+I need...
+So that...
 
 
 Acceptance Criteria:

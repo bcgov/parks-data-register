@@ -27,9 +27,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
-      # - name: Get caller identity
-      #   run: |
-      #     aws sts get-caller-identity
+
       # Build inside Docker containers
       - name: SAM build
         run: |
@@ -37,4 +35,4 @@ jobs:
       # Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         run: |
-          sam deploy --stack-name ${{ env.PDR_API_STACK_NAME}} --no-confirm-changeset --no-fail-on-empty-changeset
+          cd pdr-api/ && sam deploy --stack-name ${{ env.PDR_API_STACK_NAME}} --no-confirm-changeset --no-fail-on-empty-changeset

@@ -1,0 +1,9 @@
+@import "@digitalspace/bcparks-bootstrap-theme/dist/scss/variables";
+
+.card-header {
+  background-color: $primary;
+}
+.card-footer {
+  background-color: white;
+  border-top: 0;
+}

@@ -1,0 +1,39 @@
+<div class="login-container d-md-flex justify-content-center py-md-5">
+  <div class="login-form p-2 p-md-4">
+    <div class="content text-center">
+      <h1>Parks Data Registry</h1>
+      <p>Select the ID you want to use to log into the Day-Use system.</p>
+      <p>
+        <button type="button" (click)="handleLogin(keycloakService.idpHintEnum.BCSC)" class="btn btn-login">
+          Log in with BC Services Card
+        </button>
+        <br />
+        <a
+          href="https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp/setup"
+          class="reg-link"
+          target="_blank"
+        >
+          <i class="bi bi-box-arrow-up-right"></i>Set up the BC Services Card App
+        </a>
+      </p>
+      <p>
+        <button type="button" (click)="handleLogin(keycloakService.idpHintEnum.BCEID)" class="btn btn-login">
+          Log in with BCeID
+        </button>
+        <br />
+        <a
+          href="https://www.bceid.ca/directories/bluepages/details.aspx?serviceId=7852&eServiceType=all"
+          class="reg-link"
+          target="_blank"
+        >
+          <i class="bi bi-box-arrow-up-right"></i>Register for a BCeID
+        </a>
+      </p>
+      <p>
+        <button type="button" (click)="handleLogin(keycloakService.idpHintEnum.IDIR)" class="btn btn-login">
+          Log in with IDIR
+        </button>
+      </p>
+    </div>
+  </div>
+</div>

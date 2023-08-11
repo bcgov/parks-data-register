@@ -1,0 +1,21 @@
+<nav class="h-100" id="sidebar" [ngClass]="hide ? 'hide' : ''">
+  <div class="d-flex flex-column h-100 pb-3">
+    <div class="flex-grow-1">
+      <ul class="list-unstyled components">
+        <li
+          *ngFor="let route of routes"
+          [ngClass]="route.active ? 'active' : ''"
+        >
+          <a (click)="onNavigate(route.path)">
+            <i
+              *ngIf="route.data.icon"
+              class="bi me-2"
+              [ngClass]="route.data.icon"
+            ></i>
+            {{ route.data.label }}</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

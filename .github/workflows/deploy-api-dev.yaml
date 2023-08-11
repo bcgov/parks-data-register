@@ -33,7 +33,7 @@ jobs:
       # Build inside Docker containers
       - name: SAM build
         run: |
-          sam build --use-container
+          cd pdr-api/ && sam build --use-container
       # Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         run: |

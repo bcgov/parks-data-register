@@ -30,6 +30,8 @@ jobs:
         uses: actions/setup-node@v3
         with: 
           node-version: ${{ matrix.node-version }}
+          path: |
+            **/${{ vars.DEPENDENCIES_PATH }}
           cache: "yarn"
       - run: |
           cd ${{ vars.DEPENDENCIES_PATH }} && yarn install --silent --frozen-lockfile

@@ -1,0 +1,276 @@
+{
+  "ModelName": "Name Data Register",
+  "ModelMetadata": {
+    "Author": "Mark Lisé",
+    "DateCreated": "Aug 10, 2023, 08:57 AM",
+    "DateLastModified": "Aug 11, 2023, 10:06 AM",
+    "Description": "Data model for the BC Parks Name Register.",
+    "AWSService": "Amazon DynamoDB",
+    "Version": "3.0"
+  },
+  "DataModel": [
+    {
+      "TableName": "OrcsData",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "orcs",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "sk",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "createDate",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "updateDate",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "legalName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "displayName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "phoneticName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "status",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "audioClip",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "notes",
+          "AttributeType": "S"
+        }
+      ],
+      "TableFacets": [
+        {
+          "FacetName": "NameChange",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "orcs",
+            "SortKeyAlias": "changeDate"
+          },
+          "TableData": [],
+          "NonKeyAttributes": [
+            "legalName",
+            "displayName",
+            "phoneticName",
+            "audioClip",
+            "notes"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "Details",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "orcs",
+            "SortKeyAlias": "details"
+          },
+          "TableData": [],
+          "NonKeyAttributes": [
+            "createDate",
+            "updateDate",
+            "legalName",
+            "displayName",
+            "phoneticName",
+            "status",
+            "audioClip",
+            "notes"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "ByLegalName",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "legalName",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "ByDisplayName",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "displayName",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "ByStatusOfOrcs",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "status",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "orcs",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "orcs": {
+            "S": "0001"
+          },
+          "sk": {
+            "S": "Details"
+          },
+          "createDate": {
+            "S": "2019-08-10T16:15:50.868Z"
+          },
+          "updateDate": {
+            "S": "2023-08-10T16:11:54.513Z"
+          },
+          "legalName": {
+            "S": "Strathcona Park"
+          },
+          "displayName": {
+            "S": "Strathcona Park"
+          },
+          "phoneticName": {
+            "S": "stɹæθˈkoʊnə ˈpɑrk"
+          },
+          "status": {
+            "S": "current"
+          },
+          "notes": {
+            "S": "Name changed because the old one was inaccurate"
+          }
+        },
+        {
+          "orcs": {
+            "S": "0001"
+          },
+          "sk": {
+            "S": "2019-08-10T16:15:50.868Z"
+          },
+          "legalName": {
+            "S": "Strathcona Awesome-o Park"
+          },
+          "displayName": {
+            "S": "Strathcona Awesome-o Park"
+          },
+          "phoneticName": {
+            "S": "strath park"
+          },
+          "status": {
+            "S": "old"
+          },
+          "notes": {
+            "S": "Initial Park created for BC"
+          }
+        },
+        {
+          "orcs": {
+            "S": "0363"
+          },
+          "sk": {
+            "S": "Details"
+          },
+          "createDate": {
+            "S": "2023-08-10T16:11:54.513Z"
+          },
+          "updateDate": {
+            "S": "2023-08-10T16:11:54.513Z"
+          },
+          "legalName": {
+            "S": "Joffre Lakes"
+          },
+          "displayName": {
+            "S": "Joffre Lakes"
+          },
+          "status": {
+            "S": "current"
+          },
+          "notes": {
+            "S": "Initial creation of Joffre"
+          }
+        },
+        {
+          "orcs": {
+            "S": "0001"
+          },
+          "sk": {
+            "S": "2020-08-10T16:15:50.868Z"
+          },
+          "legalName": {
+            "S": "Strath Park"
+          },
+          "displayName": {
+            "S": "Strath Park"
+          },
+          "phoneticName": {
+            "S": "strath park"
+          },
+          "status": {
+            "S": "old"
+          },
+          "notes": {
+            "S": "Updated name"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    }
+  ]
+}

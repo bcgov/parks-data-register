@@ -4,19 +4,12 @@ import { KeycloakService } from './keycloak.service';
 import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
 import { ToastService } from './toast.service';
-import { JwtUtil } from '../shared/utils/jwt-utils';
+import { JwtUtil } from '../utils/jwt-utils';
 
 describe('KeycloakService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        KeycloakService,
-        ConfigService,
-        LoggerService,
-        ToastService,
-        HttpClient,
-        HttpHandler,
-      ],
+      providers: [KeycloakService, ConfigService, LoggerService, ToastService, HttpClient, HttpHandler],
     });
   });
 

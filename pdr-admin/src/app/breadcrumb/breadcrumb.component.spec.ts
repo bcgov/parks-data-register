@@ -2,10 +2,9 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { ConfigService } from '../../../services/config.service';
-import { KeycloakService } from '../../../services/keycloak.service';
-
 import { BreadcrumbComponent } from './breadcrumb.component';
+import { ConfigService } from '../services/config.service';
+import { KeycloakService } from '../services/keycloak.service';
 
 describe('BreadcrumbComponent', () => {
   let component: BreadcrumbComponent;
@@ -17,20 +16,13 @@ describe('BreadcrumbComponent', () => {
     },
   };
 
-  let mockRoutes = [
-    { path: 'enter-data', component: BreadcrumbComponent, data: { icon: 'bi-circle' } }
-  ];
+  let mockRoutes = [{ path: 'enter-data', component: BreadcrumbComponent, data: { icon: 'bi-circle' } }];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes(mockRoutes)],
       declarations: [BreadcrumbComponent],
-      providers: [
-        { provide: ConfigService, useValue: fakeConfigService },
-        KeycloakService,
-        HttpClient,
-        HttpHandler,
-      ],
+      providers: [{ provide: ConfigService, useValue: fakeConfigService }, KeycloakService, HttpClient, HttpHandler],
     }).compileComponents();
   });
 

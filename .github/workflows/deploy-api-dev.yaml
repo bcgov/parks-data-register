@@ -25,6 +25,15 @@ jobs:
         uses:
           actions/checkout@v3
 
+      ### Install if no cache exists
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with: 
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - run: |
+          cd ${{ vars.DEPENDENCIES_PATH }} && yarn install --silent --frozen-lockfile
+
       ### Setup AWS SAM
       - name: Setup AWS SAM
         uses: aws-actions/setup-sam@v2

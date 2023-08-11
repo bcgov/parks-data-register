@@ -1,4 +1,4 @@
-name: Deploy Dev
+name: Deploy PDR-API Dev
 
 on:
   push:
@@ -20,6 +20,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
       - name: Get caller identity
         run: |

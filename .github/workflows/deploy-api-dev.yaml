@@ -37,4 +37,4 @@ jobs:
       # Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         run: |
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+          sam deploy --stack-name ${{ env.PDR_API_STACK_NAME}} --no-confirm-changeset --no-fail-on-empty-changeset

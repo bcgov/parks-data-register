@@ -38,6 +38,7 @@ jobs:
             pdr-api/dependencies/nodejs/yarn.lock
           cache: "yarn"
       - run: |
+          cd dependencies/nodejs
           yarn install --silent --frozen-lockfile
 
       ### Setup AWS SAM

@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  deploy-api:
     runs-on: ubuntu-latest
     environment: dev
     steps:
@@ -27,10 +27,14 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
-      - name: Get caller identity
-        run: |
-          aws sts get-caller-identity
+      # - name: Get caller identity
+      #   run: |
+      #     aws sts get-caller-identity
       # Build inside Docker containers
-      # - run: sam build --use-container
+      - name: SAM build
+        run: |
+          sam build --use-container
       # Prevent prompts and failure when the stack is unchanged
-      # - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+      - name: SAM deploy
+        run: |
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset

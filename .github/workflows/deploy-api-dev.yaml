@@ -18,6 +18,8 @@ permissions:
 jobs:
   deploy-api:
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./pdr-api
     environment: dev
     steps:
       ### Checkout GitHub Repo
@@ -30,11 +32,11 @@ jobs:
         uses: actions/setup-node@v3
         with: 
           node-version: ${{ matrix.node-version }}
-          path: |
+          cache-dependency-path: |
             **/${{ vars.DEPENDENCIES_PATH }}
           cache: "yarn"
       - run: |
-          cd ${{ vars.DEPENDENCIES_PATH }} && yarn install --silent --frozen-lockfile
+          yarn install --silent --frozen-lockfile
 
       ### Setup AWS SAM
       - name: Setup AWS SAM
@@ -53,10 +55,10 @@ jobs:
       ### Build inside Docker containers
       - name: SAM build
         run: |
-          cd pdr-api/ && sam build --use-container
+          sam build --use-container
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:
           STACK_NAME: ${{ vars.PDR_API_STACK_NAME }}
         run: |
-          cd pdr-api/ && sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset

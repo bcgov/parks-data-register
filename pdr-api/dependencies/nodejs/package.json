@@ -1,13 +1,11 @@
 {
-  "name": "hello_world",
-  "version": "1.0.0",
-  "description": "hello world sample for NodeJS",
-  "main": "app.js",
-  "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
-  "author": "SAM CLI",
+  "name": "pdr-api",
+  "version": "0.0.1",
+  "author": "Team Osprey",
   "license": "MIT",
   "dependencies": {
-    "axios": ">=0.21.1"
+    "axios": ">=0.21.1",
+    "winston": "^3.10.0"
   },
   "scripts": {
     "test": "mocha tests/unit/"

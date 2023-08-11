@@ -15,11 +15,13 @@ permissions:
   id-token: write
   contents: read
 
+defaults:
+  run:
+    working-directory: ./pdr-api
+
 jobs:
   deploy-api:
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./pdr-api
     environment: dev
     steps:
       ### Checkout GitHub Repo

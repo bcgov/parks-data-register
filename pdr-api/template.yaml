@@ -2,8 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   pdr-api
-
-  Sample SAM Template for pdr-api
+  SAM deployment for Parks Data Register API
   
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -11,31 +10,162 @@ Globals:
     Timeout: 3
 
 Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+
+### LAMBDA LAYERS ###
+  CommonDependencyLayer:
+    Type: AWS::Serverless::LayerVersion
     Properties:
-      CodeUri: hello-world/
-      Handler: app.lambdaHandler
+      LayerName: pdr-common-dependency-layer
+      Description: Parks Data Register Common Dependency Layer
+      ContentUri: dependencies/
+      CompatibleRuntimes:
+        - nodejs14.x
+        - nodejs16.x
+        - nodejs18.x
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
+
+### LAMBDA FUNCTIONS ###
+
+  # Hello World
+  HelloWorldGetLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/helloworld/GET/index.handler
+      Layers:
+        - !Ref CommonDependencyLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Hello World GET example lambda function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ParksDataRegisterMainTable
       Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        HelloWorldGet:
+          Type: Api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /helloWorld
+            Method: GET          
 
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  HelloWorldPostLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/helloworld/POST/index.handler
+      Layers:
+        - !Ref CommonDependencyLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Hello World POST example lambda function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ParksDataRegisterMainTable
+      Events:
+        HelloWorldPost:
+          Type: Api
+          Properties:
+            Path: /helloWorld
+            Method: POST          
+
+  HelloWorldPutLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/helloworld/PUT/index.handler
+      Layers:
+        - !Ref CommonDependencyLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Hello World PUT example lambda function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ParksDataRegisterMainTable
+      Events:
+        HelloWorldPut:
+          Type: Api
+          Properties:
+            Path: /helloWorld
+            Method: PUT          
+
+  HelloWorldDeleteLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers/helloworld/DELETE/index.handler
+      Layers:
+        - !Ref CommonDependencyLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Hello World DELETE example lambda function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ParksDataRegisterMainTable
+      Events:
+        HelloWorldDelete:
+          Type: Api
+          Properties:
+            Path: /helloWorld
+            Method: DELETE          
+
+### DYNAMODB TABLES ###
+  ParksDataRegisterMainTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: pdr-main
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+
+  # ParksDataRegisterMetaTable:
+  #   Type: AWS::DynamoDB::Table
+  #   DeletionPolicy: Retain
+  #   Properties:
+  #     TableName: pdr-meta
+  #     AttributeDefinitions:
+  #       - AttributeName: pk
+  #         AttributeType: S
+  #       - AttributeName: sk
+  #         AttributeType: S
+  #     KeySchema:
+  #       - AttributeName: pk
+  #         KeyType: HASH
+  #       - AttributeName: sk
+  #         KeyType: RANGE
+  #     BillingMode: PAY_PER_REQUEST
+  #     ProvisionedThroughput:
+  #       ReadCapacityUnits: 0
+  #       WriteCapacityUnitys: 0
+
+# Outputs:
+#   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+#   # Find out more about other implicit resources you can reference within SAM
+#   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+#   HelloWorldApi:
+#     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+#   HelloWorldFunction:
+#     Description: "Hello World Lambda Function ARN"
+#     Value: !GetAtt HelloWorldFunction.Arn
+#   HelloWorldFunctionIamRole:
+#     Description: "Implicit IAM Role created for Hello World function"
+#     Value: !GetAtt HelloWorldFunctionRole.Arn

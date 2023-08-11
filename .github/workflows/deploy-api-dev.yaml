@@ -35,7 +35,7 @@ jobs:
         with: 
           node-version: ${{ matrix.node-version }}
           cache-dependency-path: |
-            **/${{ vars.DEPENDENCIES_PATH }}
+            **/${{ vars.DEPENDENCIES_PATH }}/yarn.lock
           cache: "yarn"
       - run: |
           yarn install --silent --frozen-lockfile

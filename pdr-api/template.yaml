@@ -147,8 +147,8 @@ Resources:
   ### API ###
   ApiDeployment:
     Type: AWS::Serverless::Api
-      Properties:
-        StageName: !Ref Stage
+    Properties:
+      StageName: !Ref Stage
 
   # ParksDataRegisterMetaTable:
   #   Type: AWS::DynamoDB::Table

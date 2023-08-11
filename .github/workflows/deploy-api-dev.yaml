@@ -17,8 +17,6 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     environment: dev
-    env:
-      STACK_NAME: ${{ env.PDR_API_STACK_NAME }}
     steps:
       - uses: actions/checkout@v3
       - uses: aws-actions/setup-sam@v2
@@ -36,5 +34,7 @@ jobs:
           cd pdr-api/ && sam build --use-container
       # Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
+        env:
+          STACK_NAME: ${{ vars.PDR_API_STACK_NAME }}
         run: |
           cd pdr-api/ && sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset

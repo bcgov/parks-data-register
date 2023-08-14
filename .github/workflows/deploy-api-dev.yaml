@@ -10,7 +10,6 @@ on:
 
 env:
   AWS_REGION: "${{ vars.PDR_API_AWS_REGION }}"
-  DIRECTORY: "${{ vars.PDR_API_DIRECTORY }}"
 
 permissions:
   id-token: write
@@ -18,7 +17,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: "./${{ env.DIRECTORY }}"
+    working-directory: "./pdr-api"
 
 jobs:
   deploy-api:

@@ -43,7 +43,7 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
 
-      ### Build inside Docker containers
+      ### SAM Build
       - name: SAM build
         run: |
           sam build

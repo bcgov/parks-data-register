@@ -6,13 +6,18 @@ on:
   push:
     tags:
       - "*"
+  workflow_dispatch:
+    inputs:
+      releaseTag:
+        description: "Tag of version to be promoted to test"
+        required: true
 
 env:
-  AWS_REGION: "ca-central-1"
+  AWS_REGION: "{{ vars.PDR_API_AWS_REGION }}"
 
 defaults:
   run:
-    working-directory: ./pdr-api
+    working-directory: "./pdr-api"
 
 permissions:
   id-token: write
@@ -37,18 +42,6 @@ jobs:
           echo "::error::Git Tag not found, please double check input"
           exit 1
 
-      ### Install if no cache exists
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with: 
-          node-version: ${{ matrix.node-version }}
-          cache-dependency-path: |
-            pdr-api/dependencies/nodejs/yarn.lock
-          cache: "yarn"
-      - run: |
-          cd dependencies/nodejs
-          yarn install --silent --frozen-lockfile
-
       ### Setup AWS SAM
       - name: Setup AWS SAM
         uses: aws-actions/setup-sam@v2
@@ -63,10 +56,10 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
 
-      ### Build inside Docker containers
+      ### SAM Build
       - name: SAM build
         run: |
-          sam build --use-container
+          sam build 
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:

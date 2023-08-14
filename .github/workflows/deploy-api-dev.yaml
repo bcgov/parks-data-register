@@ -17,7 +17,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: ./${{ vars.PDR_API_DIRECTORY }}
+    working-directory: "./${{ vars.PDR_API_DIRECTORY }}"
 
 jobs:
   deploy-api:

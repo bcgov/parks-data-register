@@ -18,7 +18,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: "./$DIRECTORY"
+    working-directory: "./${{ env.DIRECTORY }}"
 
 jobs:
   deploy-api:

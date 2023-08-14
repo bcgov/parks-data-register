@@ -1,5 +1,5 @@
 const { sendResponse } = require('/opt/responseUtils');
-const { logger } = require('/opt/loggerUtils')
+const { logger } = require('/opt/loggerUtils');
 
 exports.handler = async function () {
   logger.info('Hello World POST');

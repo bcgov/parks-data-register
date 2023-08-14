@@ -22,7 +22,22 @@ Resources:
     Properties:
       LayerName: pdr-common-dependency-layer
       Description: Parks Data Register Common Dependency Layer
-      ContentUri: dependencies/
+      ContentUri: layers/common/
+      CompatibleRuntimes:
+        - nodejs14.x
+        - nodejs16.x
+        - nodejs18.x
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: makefile
+
+  DynamoDBLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: pdr-dynamodb-layer
+      Description: Parks Data Register DynamoDB Utilities Layer
+      ContentUri: layers/dynamodb/
       CompatibleRuntimes:
         - nodejs14.x
         - nodejs16.x
@@ -42,6 +57,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref CommonDependencyLayer
+        - !Ref DynamoDBLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64

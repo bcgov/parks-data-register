@@ -1,0 +1,9 @@
+{
+  "name": "pdr-api-dynamodb-layer",
+  "version": "0.0.1",
+  "author": "Team Osprey",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1436.0"
+  }
+}

@@ -29,18 +29,6 @@ jobs:
         uses:
           actions/checkout@v3
 
-      ### Install if no cache exists
-      # - name: Setup node
-      #   uses: actions/setup-node@v3
-      #   with: 
-      #     node-version: ${{ matrix.node-version }}
-      #     cache-dependency-path: |
-      #      ${{ vars.PDR_API_DIRECTORY }}/${{ vars.PDR_API_DEPENDENCIES_PATH }}/yarn.lock
-      #     cache: "yarn"
-      # - run: |
-      #     cd ${{ vars.PDR_API_DEPENDENCIES_PATH }}
-      #     yarn install --silent --frozen-lockfile
-
       ### Setup AWS SAM
       - name: Setup AWS SAM
         uses: aws-actions/setup-sam@v2
@@ -58,7 +46,7 @@ jobs:
       ### Build inside Docker containers
       - name: SAM build
         run: |
-          sam build --use-container
+          sam build
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:

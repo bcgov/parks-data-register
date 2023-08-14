@@ -30,16 +30,16 @@ jobs:
           actions/checkout@v3
 
       ### Install if no cache exists
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with: 
-          node-version: ${{ matrix.node-version }}
-          cache-dependency-path: |
-           ${{ vars.PDR_API_DIRECTORY }}/${{ vars.PDR_API_DEPENDENCIES_PATH }}/yarn.lock
-          cache: "yarn"
-      - run: |
-          cd ${{ vars.PDR_API_DEPENDENCIES_PATH }}
-          yarn install --silent --frozen-lockfile
+      # - name: Setup node
+      #   uses: actions/setup-node@v3
+      #   with: 
+      #     node-version: ${{ matrix.node-version }}
+      #     cache-dependency-path: |
+      #      ${{ vars.PDR_API_DIRECTORY }}/${{ vars.PDR_API_DEPENDENCIES_PATH }}/yarn.lock
+      #     cache: "yarn"
+      # - run: |
+      #     cd ${{ vars.PDR_API_DEPENDENCIES_PATH }}
+      #     yarn install --silent --frozen-lockfile
 
       ### Setup AWS SAM
       - name: Setup AWS SAM

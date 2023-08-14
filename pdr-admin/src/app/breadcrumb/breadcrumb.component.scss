@@ -1,0 +1,32 @@
+@import "@digitalspace/bcparks-bootstrap-theme/dist/scss/variables";
+
+.toggle-button-offset {
+  padding-left: 1rem;
+}
+
+@media (min-width: 992px) {
+  .toggle-button-offset {
+    padding-left: 3rem;
+  }
+}
+
+nav {
+  padding-top: 1.25rem;
+  padding-bottom: 0.2rem;
+  background: $light;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.breadcrumb .breadcrumb-items::before {
+  content: "/";
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
+
+.breadcrumb .breadcrumb-items:nth-child(1)::before {
+  content: "";
+  padding-left: 0rem;
+}

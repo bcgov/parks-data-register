@@ -1,0 +1,47 @@
+<header id="header">
+  <nav class="navbar navbar-expand-lg navbar-dark p-0">
+    <div class="container-fluid">
+      <a class="navbar-brand d-none d-md-inline" title="BC Parks - Camping Reservations" [routerLink]="['']">
+        <img src="assets/images/bcparks_primary_reversed.svg" height="100" alt="BC Government Logo" />
+      </a>
+      <a class="navbar-brand d-inline d-md-none" title="BC Parks - Camping Reservations" [routerLink]="['']">
+        <img src="assets/images/bcparks_wordmark_white.svg" height="60" alt="BC Parks Logo" />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        *ngIf="showSideBar"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseExample"
+        aria-expanded="false"
+        aria-controls="collapseExample"
+      >
+        &#9776;
+      </button>
+      <div class="d-none d-lg-inline">
+        <div class="me-auto"></div>
+        <div *ngIf="isAuthorized" class="navbar-text me-3">
+          {{ welcomeMsg }}
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="collapse navbar-collapse text-white" id="collapseExample">
+    <div id="dropdown" class="d-lg-none">
+      <ul class="navbar-nav">
+        <li class="nav-item" [ngClass]="route.active ? 'active' : ''" *ngFor="let route of routes">
+          <a [routerLink]="[route.path]">
+            <i *ngIf="route.data.icon" class="bi me-2" [ngClass]="route.data.icon"></i>{{ route.data.label }}</a
+          >
+        </li>
+        <div *ngIf="isAuthorized" class="navbar-text welcome-text p-2">
+          {{ welcomeMsg }}
+        </div>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="showBanner" class="env-banner text-center bg-danger text-white py-2">
+    This is the <strong>{{ envName }}</strong> environment. The content you are viewing is not final and subject to
+    change.
+  </div>
+</header>

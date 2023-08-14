@@ -17,22 +17,28 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "paths": {
-      "pdr-admin-library": [
-        "dist/pdr-admin-library"
-      ]
+      "pdr-admin-library": ["dist/pdr-admin-library"]
     },
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "lib": ["ES2022", "dom"],
+
+    // Overrides
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "strictNullChecks": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "strictPropertyInitialization": false,
+    "extendedDiagnostics": {
+      "checks": {
+        "optionalChainNotNullable": "suppress"
+      }
+    }
   }
 }

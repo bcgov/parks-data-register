@@ -1,0 +1,30 @@
+@import "@digitalspace/bcparks-bootstrap-theme/dist/scss/variables";
+
+.home-title-container {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    line-height: 3rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .home-title-container {
+    margin-bottom: 4rem;
+
+    h1 {
+      font-size: 2.8rem;
+      line-height: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      line-height: 1.8rem;
+    }
+  }
+}

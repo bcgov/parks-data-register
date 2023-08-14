@@ -1,8 +1,10 @@
 const { sendResponse } = require('/opt/responseUtils');
 const { logger } = require('/opt/loggerUtils')
+const { DateTime } = require('luxon')
 
-exports.handler = async function () {
+exports.handler = async function (event, context) {
   logger.info('Hello World GET');
+  console.log('DateTime.now().toISO():', DateTime.now().toISO());
   try {
     // function here
     return sendResponse(200, {

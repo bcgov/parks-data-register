@@ -29,6 +29,8 @@ Resources:
         - nodejs18.x
       LicenseInfo: 'MIT'
       RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: makefile
 
 ### LAMBDA FUNCTIONS ###
 
@@ -36,7 +38,8 @@ Resources:
   HelloWorldGetLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/helloworld/GET/index.handler
+      CodeUri: handlers/helloworld/GET/
+      Handler: index.handler
       Layers:
         - !Ref CommonDependencyLayer
       Runtime: nodejs18.x
@@ -59,7 +62,8 @@ Resources:
   HelloWorldPostLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/helloworld/POST/index.handler
+      CodeUri: handlers/helloworld/POST/
+      Handler: index.handler
       Layers:
         - !Ref CommonDependencyLayer
       Runtime: nodejs18.x
@@ -82,7 +86,8 @@ Resources:
   HelloWorldPutLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/helloworld/PUT/index.handler
+      CodeUri: handlers/helloworld/PUT/
+      Handler: index.handler
       Layers:
         - !Ref CommonDependencyLayer
       Runtime: nodejs18.x
@@ -105,7 +110,8 @@ Resources:
   HelloWorldDeleteLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers/helloworld/DELETE/index.handler
+      CodeUri: handlers/helloworld/DELETE/
+      Handler: index.handler
       Layers:
         - !Ref CommonDependencyLayer
       Runtime: nodejs18.x

@@ -14,7 +14,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: "./pdr-admin"
+    working-directory: ./pdr-admin
 
 jobs:
   deploy-admin:

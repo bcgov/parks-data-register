@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
-          cache-dependency-path: "prd-admin/yarn.lock"
+          cache-dependency-path: "pdr-admin/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
 
       ### Build if no cache exists ###
@@ -40,7 +40,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            **prd-admin/dist
+            **pdr-admin/dist
           key: ${{ github.sha }}-dist
       - name: Run Build
         if: steps.cache-build.outputs.cache-hit != 'true'

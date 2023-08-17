@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'pdr-admin
+
+  SAM Template for Angular Admin Frontend
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+Parameters:
+  OriginPath:
+    Type: String
+    Default: local
+    Description: Cloudfront distribution origin path.
+  OriginId:
+    Type: String
+    Default: s3-pdr-admin
+    Description: Cloudfront distribution origin ID.
+  DistBucketName:
+    Type: String
+    Default: pdr-admin
+    Description: S3 bucket that stores Angular Distributions.
+  ProductName:
+    Type: String
+    Default: PDR Admin
+    Description: Human readable name of the project
+Resources:
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: CloudFront access identity
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+        - ErrorCode: 404
+          ResponseCode: 200
+          ResponsePagePath: /index.html
+        Comment:
+          Fn::Sub: Cloudfront distribution for ${ProductName}
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        Origins:
+        - Id:
+            Ref: OriginId
+          DomainName:
+            Fn::GetAtt:
+            - S3Bucket
+            - DomainName
+          S3OriginConfig:
+            OriginAccessIdentity:
+              Fn::Sub: origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+          OriginPath:
+            Fn::Sub: /${OriginPath}
+        DefaultCacheBehavior:
+          Compress: 'true'
+          AllowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          ForwardedValues:
+            QueryString: false
+          TargetOriginId:
+            Ref: OriginId
+          ViewerProtocolPolicy: redirect-to-https
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Ref: DistBucketName
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: S3Bucket
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS:
+              Fn::Sub: arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity
+                ${CloudFrontOriginAccessIdentity}
+          Action: s3:GetObject
+          Resource:
+            Fn::Sub: arn:aws:s3:::${S3Bucket}/*
+Outputs:
+  Website:
+    Value:
+      Fn::GetAtt:
+      - CloudFrontDistribution
+      - DomainName

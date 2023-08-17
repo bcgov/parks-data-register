@@ -13,7 +13,8 @@ permissions:
   contents: read
 
 defaults:
-  working-directory: ./pdr-admin
+  run:
+    working-directory: "./pdr-admin"
 
 jobs:
   deploy-admin:
@@ -30,6 +31,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
+          cache-dependency-path: "prd-admin/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
 
       ### Build if no cache exists ###
@@ -38,7 +40,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            **/dist
+            **prd-admin/dist
           key: ${{ github.sha }}-dist
       - name: Run Build
         if: steps.cache-build.outputs.cache-hit != 'true'

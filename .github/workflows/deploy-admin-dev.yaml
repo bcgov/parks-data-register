@@ -66,7 +66,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       ### SAM Build
       - name: SAM build
@@ -76,17 +76,17 @@ jobs:
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:
-          S3_BUCKET: ${{ env.PDR_ADMIN_S3_BUCKET }}
-          PRODUCT_NAME: ${{ env.PDR_ADMIN_PRODUCT_NAME }}
+          S3_BUCKET: ${{ vars.PDR_ADMIN_S3_BUCKET }}
+          PRODUCT_NAME: ${{ vars.PDR_ADMIN_PRODUCT_NAME }}
           ORIGIN_PATH: ${{ github.sha }}
-          ORIGIN_ID: ${{ env.PDR_ADMIN_ORIGIN_ID }}
+          ORIGIN_ID: ${{ vars.PDR_ADMIN_ORIGIN_ID }}
         run: |
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides OriginPath=$ORIGIN_PATH,OriginId=$,DistBucketName=$S3_BUCKET,ProductName="$PRODUCT_NAME"
 
       ### Upload dist to S3 ###
       - name: Deploy to Dev S3
         env:
-          S3_BUCKET: ${{ env.PDR_ADMIN_S3_BUCKET }}
+          S3_BUCKET: ${{ vars.PDR_ADMIN_S3_BUCKET }}
           DIR_NAME: ${{ github.sha }}
         run: |
           aws s3 sync dist/pdr-admin s3://$S3_BUCKET/$DIR_NAME

@@ -12,12 +12,12 @@ permissions:
   id-token: write
   contents: read
 
+defaults:
+  working-directory: ./pdr-admin
+
 jobs:
   deploy-admin:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./pdr-admin
     environment: dev
     steps:
       ### Checkout GitHub Repo

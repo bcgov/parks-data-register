@@ -3,17 +3,17 @@
   "ModelMetadata": {
     "Author": "Mark Lisé",
     "DateCreated": "Aug 10, 2023, 08:57 AM",
-    "DateLastModified": "Aug 11, 2023, 10:06 AM",
+    "DateLastModified": "Aug 17, 2023, 03:45 PM",
     "Description": "Data model for the BC Parks Name Register.",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
   },
   "DataModel": [
     {
-      "TableName": "OrcsData",
+      "TableName": "NameRegister",
       "KeyAttributes": {
         "PartitionKey": {
-          "AttributeName": "orcs",
+          "AttributeName": "pk",
           "AttributeType": "S"
         },
         "SortKey": {
@@ -52,6 +52,10 @@
         },
         {
           "AttributeName": "notes",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "effectiveDate",
           "AttributeType": "S"
         }
       ],
@@ -129,7 +133,7 @@
               "AttributeType": "S"
             },
             "SortKey": {
-              "AttributeName": "orcs",
+              "AttributeName": "pk",
               "AttributeType": "S"
             }
           },
@@ -140,7 +144,7 @@
       ],
       "TableData": [
         {
-          "orcs": {
+          "pk": {
             "S": "0001"
           },
           "sk": {
@@ -165,11 +169,11 @@
             "S": "current"
           },
           "notes": {
-            "S": "Name changed because the old one was inaccurate"
+            "S": "Name changed because the old one was terrible"
           }
         },
         {
-          "orcs": {
+          "pk": {
             "S": "0001"
           },
           "sk": {
@@ -192,7 +196,7 @@
           }
         },
         {
-          "orcs": {
+          "pk": {
             "S": "0363"
           },
           "sk": {
@@ -218,7 +222,7 @@
           }
         },
         {
-          "orcs": {
+          "pk": {
             "S": "0001"
           },
           "sk": {
@@ -238,6 +242,160 @@
           },
           "notes": {
             "S": "Updated name"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    },
+    {
+      "TableName": "Audit",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "pk",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "sk",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "operation",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "gsipk",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "gsisk",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "oldItem",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "newItem",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "gsi1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "gsipk",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "pk",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "pk": {
+            "S": "JWADE"
+          },
+          "sk": {
+            "S": "2023-08-17T20:26:17.321Z"
+          },
+          "operation": {
+            "S": "putItem"
+          },
+          "gsipk": {
+            "S": "0001"
+          },
+          "gsisk": {
+            "S": "Details"
+          },
+          "oldItem": {
+            "S": "{   \"pk\": 0001,   \"sk\": Details,   \"field1\": \"a\",   \"field2\": \"b\",   \"field3\": \"y\"   }"
+          },
+          "newItem": {
+            "S": "{   \"pk\": 0001,   \"sk\": Details,   \"field1\": \"a\",   \"field2\": \"b\",   \"field3\": \"z\"   }"
+          }
+        },
+        {
+          "pk": {
+            "S": "JWADE"
+          },
+          "sk": {
+            "S": "2023-08-15T20:26:17.321Z"
+          },
+          "operation": {
+            "S": "putItem"
+          },
+          "gsipk": {
+            "S": "0001"
+          },
+          "gsisk": {
+            "S": "Details"
+          },
+          "oldItem": {
+            "S": "{   \"pk\": 0001,   \"sk\": Details,   \"field1\": \"a\",   \"field2\": \"b\",   \"field3\": \"c\"   }"
+          },
+          "newItem": {
+            "S": "{   \"pk\": 0001,   \"sk\": Details,   \"field1\": \"a\",   \"field2\": \"b\",   \"field3\": \"x\"   }"
+          }
+        },
+        {
+          "pk": {
+            "S": "JWADE"
+          },
+          "sk": {
+            "S": "2021-08-16T20:26:17.321Z"
+          },
+          "operation": {
+            "S": "putItem"
+          },
+          "gsipk": {
+            "S": "0001"
+          },
+          "gsisk": {
+            "S": "Details"
+          },
+          "oldItem": {
+            "S": "{   \"pk\": 0001,   \"sk\": Details,   \"field1\": \"a\",   \"field2\": \"b\",   \"field3\": \"x\"   }"
+          },
+          "newItem": {
+            "S": "{   \"pk\": 0001,   \"sk\": Details,   \"field1\": \"a\",   \"field2\": \"b\",   \"field3\": \"y\"   }"
           }
         }
       ],

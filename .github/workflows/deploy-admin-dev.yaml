@@ -1,0 +1,91 @@
+name: Deploy PDR-Admin Dev
+
+run-name: Deploying ${{ github.ref_name }} (Admin) to dev
+
+on:
+  push:
+    branches: [main]
+    paths: "pdr-admin/**"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    working-directory: "./pdr-admin"
+
+jobs:
+  deploy-admin:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      ### Checkout GitHub Repo
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      ### Setup AWS SAM
+      - name: Setup AWS SAM
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      ### Install if no cache exists ###
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - run: yarn install --silent --frozen-lockfile
+
+      ### Build if no cache exists ###
+      - name: Cache Build
+        id: cache-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/dist
+          key: ${{ github.sha }}-dist
+      - name: Run Build
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: |
+          sed 's@localConfigEndpoint@'true'@g' src/env.js.template > src/env.js
+          yarn build
+
+      ### Setup AWS SAM
+      - name: Setup AWS SAM
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      ### Assume AWS IAM Role
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+
+      ### SAM Build
+      - name: SAM build
+        run: |
+          sam build
+
+      ### Prevent prompts and failure when the stack is unchanged
+      - name: SAM deploy
+        env:
+          S3_BUCKET: ${{ env.PDR_ADMIN_S3_BUCKET }}
+          PRODUCT_NAME: ${{ env.PDR_ADMIN_PRODUCT_NAME }}
+          ORIGIN_PATH: ${{ github.sha }}
+          ORIGIN_ID: ${{ env.PDR_ADMIN_ORIGIN_ID }}
+        run: |
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides OriginPath=$ORIGIN_PATH,OriginId=$,DistBucketName=$S3_BUCKET,ProductName="$PRODUCT_NAME"
+
+      ### Upload dist to S3 ###
+      - name: Deploy to Dev S3
+        env:
+          S3_BUCKET: ${{ env.PDR_ADMIN_S3_BUCKET }}
+          DIR_NAME: ${{ github.sha }}
+        run: |
+          aws s3 sync dist/pdr-admin s3://$S3_BUCKET/$DIR_NAME

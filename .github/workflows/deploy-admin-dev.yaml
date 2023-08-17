@@ -25,12 +25,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      ### Setup AWS SAM
-      - name: Setup AWS SAM
-        uses: aws-actions/setup-sam@v2
-        with:
-          use-installer: true
-
       ### Install if no cache exists ###
       - name: Setup node
         uses: actions/setup-node@v3
@@ -52,6 +46,12 @@ jobs:
         run: |
           sed 's@localConfigEndpoint@'true'@g' src/env.js.template > src/env.js
           yarn build
+
+      ### Setup AWS SAM
+      - name: Setup AWS SAM
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
 
       ### Setup AWS SAM
       - name: Setup AWS SAM

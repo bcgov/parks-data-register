@@ -66,10 +66,12 @@ jobs:
       - name: Cache SAM Build
         id: cache-sam-build
         uses: actions/cache@v3
+        env:
+          WORKING_DIRECTORY: ${{ vars.PDR_ADMIN_DIRECTORY }}
         with:
           path: |
-            **pdr-admin/.aws-sam
-          key: ${{ github.sha }}-sam-cache
+            **$WORKING_DIRECTORY/.aws-sam
+          key: ${{ github.sha }}-sam-cache-$WORKING_DIRECTORY
       - name: Run sam build
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
@@ -94,4 +96,3 @@ jobs:
           aws s3 sync dist/pdr-admin s3://$S3_BUCKET/$DIR_NAME
           aws s3 rm s3://$S3_BUCKET/ --recursive --exclude "*" --include "latest/*"
           aws s3 sync dist/pdr-admin s3://$S3_BUCKET/latest
-

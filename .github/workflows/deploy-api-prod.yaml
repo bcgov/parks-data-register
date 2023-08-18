@@ -9,9 +9,6 @@ on:
         description: "Tag of version to be promoted to prod"
         required: true
 
-env:
-  AWS_REGION: "${{ vars.PDR_API_AWS_REGION }}"
-
 defaults:
   run:
     working-directory: "./pdr-api"
@@ -28,7 +25,7 @@ jobs:
       ### Checkout GitHub Repo
       - name: Checkout repo
         uses: actions/checkout@v3
-        with: 
+        with:
           ref: ${{ github.events.inputs.releaseTag }}
 
       ### Tag not found
@@ -50,12 +47,23 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       ### SAM Build
-      - name: SAM build
+      - name: Cache SAM Build
+        id: cache-sam-build
+        uses: actions/cache@v3
+        env:
+          WORKING_DIRECTORY: ${{ vars.PDR_API_DIRECTORY }}
+        with:
+          path: |
+            **$WORKING_DIRECTORY/.aws-sam
+          key: ${{ github.sha }}-sam-cache-$WORKING_DIRECTORY
+      - name: Run sam build
+        if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
-          sam build
+          sam build --cached
+
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:

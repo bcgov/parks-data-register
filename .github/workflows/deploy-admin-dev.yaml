@@ -35,15 +35,15 @@ jobs:
       - run: yarn install --silent --frozen-lockfile
 
       ### Build if no cache exists ###
-      - name: Cache Build
-        id: cache-build
+      - name: Cache Admin Build
+        id: cache-admin-build
         uses: actions/cache@v3
         with:
           path: |
             **pdr-admin/dist
-          key: ${{ github.sha }}-dist
+          key: ${{ github.sha }}-admin-dist
       - name: Run Build
-        if: steps.cache-build.outputs.cache-hit != 'true'
+        if: steps.cache-admin-build.outputs.cache-hit != 'true'
         run: |
           sed 's@localConfigEndpoint@'true'@g' src/env.js.template > src/env.js
           yarn build
@@ -69,9 +69,18 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       ### SAM Build
+      - name: Cache SAM Build
+        id: cache-sam-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            **pdr-admin/build/cache
+          key: ${{ github.sha }}-sam-cache
+      - name: Run SAM Build
+        if: steps.cache-sam-build.outputs.cache-hit != 'true'
       - name: SAM build
         run: |
-          sam build
+          sam build --cached
 
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy

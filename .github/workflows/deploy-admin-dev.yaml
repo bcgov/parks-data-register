@@ -42,7 +42,7 @@ jobs:
           path: |
             **pdr-admin/dist
           key: ${{ github.sha }}-admin-dist
-      - name: Run Build
+      - name: Run yarn build
         if: steps.cache-admin-build.outputs.cache-hit != 'true'
         run: |
           sed 's@localConfigEndpoint@'true'@g' src/env.js.template > src/env.js
@@ -76,9 +76,8 @@ jobs:
           path: |
             **pdr-admin/build/cache
           key: ${{ github.sha }}-sam-cache
-      - name: Run SAM Build
+      - name: Run sam build
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
-      - name: SAM build
         run: |
           sam build --cached
 

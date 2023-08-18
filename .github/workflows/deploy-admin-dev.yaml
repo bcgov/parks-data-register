@@ -12,14 +12,13 @@ permissions:
   id-token: write
   contents: read
 
-defaults:
-  run:
-    working-directory: "./pdr-admin"
-
 jobs:
   deploy-admin:
     runs-on: ubuntu-latest
     environment: dev
+    defaults:
+      run:
+        working-directory: "./${{ PDR_ADMIN_DIRECTORY }}"
     steps:
       ### Checkout GitHub Repo
       - name: Checkout repo
@@ -78,7 +77,7 @@ jobs:
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:
-          STACK_NAME: ${{ vars.PDR_API_STACK_NAME }}
+          STACK_NAME: ${{ vars.PDR_ADMIN_STACK_NAME }}
           S3_BUCKET: ${{ vars.PDR_ADMIN_S3_BUCKET }}
           PRODUCT_NAME: ${{ vars.PDR_ADMIN_PRODUCT_NAME }}
           ORIGIN_PATH: "latest"

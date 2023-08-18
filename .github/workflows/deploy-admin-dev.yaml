@@ -92,3 +92,6 @@ jobs:
           DIR_NAME: ${{ github.sha }}
         run: |
           aws s3 sync dist/pdr-admin s3://$S3_BUCKET/$DIR_NAME
+          aws s3 rm s3://$S3_BUCKET/ --recursive --exclude "*" --include "latest/*"
+          aws s3 sync dist/pdr-admin s3://$S3_BUCKET/latest
+

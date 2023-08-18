@@ -18,7 +18,7 @@ jobs:
     environment: dev
     defaults:
       run:
-        working-directory: "./${{ PDR_ADMIN_DIRECTORY }}"
+        working-directory: "./${{ vars.PDR_ADMIN_DIRECTORY }}"
     steps:
       ### Checkout GitHub Repo
       - name: Checkout repo

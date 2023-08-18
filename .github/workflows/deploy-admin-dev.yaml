@@ -68,7 +68,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            **pdr-admin/build/cache
+            **pdr-admin/.aws-sam
           key: ${{ github.sha }}-sam-cache
       - name: Run sam build
         if: steps.cache-sam-build.outputs.cache-hit != 'true'

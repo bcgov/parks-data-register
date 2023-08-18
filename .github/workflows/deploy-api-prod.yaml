@@ -9,10 +9,6 @@ on:
         description: "Tag of version to be promoted to prod"
         required: true
 
-defaults:
-  run:
-    working-directory: "./pdr-api"
-
 permissions:
   id-token: write
   contents: read
@@ -21,6 +17,9 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     environment: prod
+    defaults:
+      run:
+        working-directory: "./${{ vars.PDR_API_DIRECTORY }}"
     steps:
       ### Checkout GitHub Repo
       - name: Checkout repo

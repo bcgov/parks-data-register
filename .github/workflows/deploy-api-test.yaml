@@ -12,10 +12,6 @@ on:
         description: "Tag of version to be promoted to test"
         required: true
 
-defaults:
-  run:
-    working-directory: "./pdr-api"
-
 permissions:
   id-token: write
   contents: read
@@ -24,6 +20,9 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     environment: test
+    defaults:
+      run:
+        working-directory: "./${{ vars.PDR_API_DIRECTORY }}"
     steps:
       ### Checkout GitHub Repo
       - name: Checkout repo
@@ -64,7 +63,6 @@ jobs:
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
           sam build --cached
-
 
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy

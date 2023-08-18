@@ -41,7 +41,7 @@ jobs:
         with:
           path: |
             **${{ vars.PDR_ADMIN_DIRECTORY }}/dist
-          key: ${{ github.sha }}-dist-${{ vars.PDR_ADMIN_DIRECTORY }}
+          key: ${{ github.sha }}-${{ vars.PDR_ADMIN_DIRECTORY }}-dist
       - name: Run yarn build
         if: steps.cache-admin-build.outputs.cache-hit != 'true'
         run: |
@@ -69,7 +69,7 @@ jobs:
         with:
           path: |
             **${{ vars.PDR_ADMIN_DIRECTORY }}/.aws-sam
-          key: ${{ github.sha }}-sam-cache-${{ vars.PDR_ADMIN_DIRECTORY }}
+          key: ${{ github.sha }}-${{ vars.PDR_ADMIN_DIRECTORY }}-sam-cache
       - name: Run sam build
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
@@ -78,12 +78,13 @@ jobs:
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:
+          STACK_NAME: ${{ vars.PDR_API_STACK_NAME }}
           S3_BUCKET: ${{ vars.PDR_ADMIN_S3_BUCKET }}
           PRODUCT_NAME: ${{ vars.PDR_ADMIN_PRODUCT_NAME }}
           ORIGIN_PATH: "latest"
           ORIGIN_ID: ${{ vars.PDR_ADMIN_ORIGIN_ID }}
         run: |
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME'"
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME'"
 
       ### Upload dist to S3 ###
       - name: Deploy to Dev S3

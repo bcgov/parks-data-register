@@ -56,16 +56,15 @@ jobs:
       - name: Cache SAM Build
         id: cache-sam-build
         uses: actions/cache@v3
-        env:
-          WORKING_DIRECTORY: ${{ vars.PDR_API_DIRECTORY }}
         with:
           path: |
-            **$WORKING_DIRECTORY/.aws-sam
-          key: ${{ github.sha }}-sam-cache-$WORKING_DIRECTORY
+            **${{ vars.PDR_API_DIRECTORY }}/.aws-sam
+          key: ${{ github.sha }}-${{ vars.PDR_API_DIRECTORY }}-sam-cache
       - name: Run sam build
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
           sam build --cached
+
 
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy

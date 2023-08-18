@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
-          cache-dependency-path: "pdr-admin/yarn.lock"
+          cache-dependency-path: "${{ vars.PDR_ADMIN_DIRECTORY }}/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
 
       ### Build if no cache exists ###
@@ -40,8 +40,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            **pdr-admin/dist
-          key: ${{ github.sha }}-admin-dist
+            **${{ vars.PDR_ADMIN_DIRECTORY }}/dist
+          key: ${{ github.sha }}-dist-${{ vars.PDR_ADMIN_DIRECTORY }}
       - name: Run yarn build
         if: steps.cache-admin-build.outputs.cache-hit != 'true'
         run: |
@@ -66,12 +66,10 @@ jobs:
       - name: Cache SAM Build
         id: cache-sam-build
         uses: actions/cache@v3
-        env:
-          WORKING_DIRECTORY: ${{ vars.PDR_ADMIN_DIRECTORY }}
         with:
           path: |
-            **$WORKING_DIRECTORY/.aws-sam
-          key: ${{ github.sha }}-sam-cache-$WORKING_DIRECTORY
+            **${{ vars.PDR_ADMIN_DIRECTORY }}/.aws-sam
+          key: ${{ github.sha }}-sam-cache-${{ vars.PDR_ADMIN_DIRECTORY }}
       - name: Run sam build
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
@@ -92,7 +90,8 @@ jobs:
         env:
           S3_BUCKET: ${{ vars.PDR_ADMIN_S3_BUCKET }}
           DIR_NAME: ${{ github.sha }}
+          WORKING_DIRECTORY: ${{ vars.PDR_ADMIN_DIRECTORY }}
         run: |
-          aws s3 sync dist/pdr-admin s3://$S3_BUCKET/$DIR_NAME
+          aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/$DIR_NAME
           aws s3 rm s3://$S3_BUCKET/ --recursive --exclude "*" --include "latest/*"
-          aws s3 sync dist/pdr-admin s3://$S3_BUCKET/latest
+          aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/latest

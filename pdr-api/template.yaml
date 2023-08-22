@@ -1,9 +1,9 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   pdr-api
   SAM deployment for Parks Data Register API
-  
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -15,19 +15,18 @@ Parameters:
     Default: v1
 
 Resources:
-
-### LAMBDA LAYERS ###
-  CommonDependencyLayer:
+  ### LAMBDA LAYERS ###
+  BaseLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: pdr-common-dependency-layer
-      Description: Parks Data Register Common Dependency Layer
-      ContentUri: layers/common/
+      LayerName: base
+      Description: Parks Data Register Base Layer
+      ContentUri: layers/base/
       CompatibleRuntimes:
         - nodejs14.x
         - nodejs16.x
         - nodejs18.x
-      LicenseInfo: 'MIT'
+      LicenseInfo: "MIT"
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
@@ -35,59 +34,78 @@ Resources:
   DynamoDBLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: pdr-dynamodb-layer
+      LayerName: dynamodb
       Description: Parks Data Register DynamoDB Utilities Layer
       ContentUri: layers/dynamodb/
       CompatibleRuntimes:
         - nodejs14.x
         - nodejs16.x
         - nodejs18.x
-      LicenseInfo: 'MIT'
+      LicenseInfo: "MIT"
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
 
-### LAMBDA FUNCTIONS ###
+  PermissionsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: permissions
+      Description: Parks Data Register Permissions Utilities Layer
+      ContentUri: layers/permissions/
+      CompatibleRuntimes:
+        - nodejs14.x
+        - nodejs16.x
+        - nodejs18.x
+      LicenseInfo: "MIT"
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: makefile
 
-  # Hello World
-  HelloWorldGetLambda:
+  ### LAMBDA FUNCTIONS ###
+
+  # Config
+  ConfigGetLambda:
+    FunctionName: ConfigGet
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: handlers/helloworld/GET/
+      CodeUri: handlers/config/GET/
       Handler: index.handler
       Layers:
-        - !Ref CommonDependencyLayer
+        - !Ref BaseLayer
         - !Ref DynamoDBLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: Hello World GET example lambda function
+      Description: Config GET lambda function
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ParksDataRegisterMainTable
       Events:
-        HelloWorldGet:
+        ConfigGet:
           Type: Api
           Properties:
-            Path: /helloWorld
+            Path: /config
             Method: GET
-            RestApiId: !Ref ApiDeployment       
+            RestApiId: !Ref ApiDeployment
 
-  HelloWorldPostLambda:
+  ConfigPostLambda:
+    FunctionName: ConfigPost
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: handlers/helloworld/POST/
+      CodeUri: handlers/config/POST/
       Handler: index.handler
       Layers:
-        - !Ref CommonDependencyLayer
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+        - !Ref PermissionsLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: Hello World POST example lambda function
+      Description: Config POST lambda function
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ParksDataRegisterMainTable
@@ -95,59 +113,11 @@ Resources:
         HelloWorldPost:
           Type: Api
           Properties:
-            Path: /helloWorld
-            Method: POST  
-            RestApiId: !Ref ApiDeployment           
+            Path: /config
+            Method: POST
+            RestApiId: !Ref ApiDeployment
 
-  HelloWorldPutLambda:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: handlers/helloworld/PUT/
-      Handler: index.handler
-      Layers:
-        - !Ref CommonDependencyLayer
-      Runtime: nodejs18.x
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: Hello World PUT example lambda function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ParksDataRegisterMainTable
-      Events:
-        HelloWorldPut:
-          Type: Api
-          Properties:
-            Path: /helloWorld
-            Method: PUT       
-            RestApiId: !Ref ApiDeployment      
-
-  HelloWorldDeleteLambda:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: handlers/helloworld/DELETE/
-      Handler: index.handler
-      Layers:
-        - !Ref CommonDependencyLayer
-      Runtime: nodejs18.x
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: Hello World DELETE example lambda function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ParksDataRegisterMainTable
-      Events:
-        HelloWorldDelete:
-          Type: Api
-          Properties:
-            Path: /helloWorld
-            Method: DELETE    
-            RestApiId: !Ref ApiDeployment         
-
-### DYNAMODB TABLES ###
+  ### DYNAMODB TABLES ###
   ParksDataRegisterMainTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Retain
@@ -193,18 +163,9 @@ Resources:
   #       WriteCapacityUnitys: 0
 
 Outputs:
+  #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  #   # Find out more about other implicit resources you can reference within SAM
+  #   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   ApiDeployment:
-    Description: "API Gateway endpoint URL for Stage for Hello World function"
-    Value: !Sub "https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/helloWorld/"
-#   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-#   # Find out more about other implicit resources you can reference within SAM
-#   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-#   HelloWorldApi:
-#     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-#   HelloWorldFunction:
-#     Description: "Hello World Lambda Function ARN"
-#     Value: !GetAtt HelloWorldFunction.Arn
-#   HelloWorldFunctionIamRole:
-#     Description: "Implicit IAM Role created for Hello World function"
-#     Value: !GetAtt HelloWorldFunctionRole.Arn
+    Description: "API Gateway endpoint URL for Stage for Config function"
+    Value: !Sub "https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/config/"

@@ -1,4 +1,4 @@
-build-CommonDependencyLayer:
+build-BaseLayer:
 	# copy dependency directory into artifacts directory
 	cp -r * "$(ARTIFACTS_DIR)" 
 	# remove makefile in artifacts directory

@@ -4,8 +4,6 @@
   "author": "Team Osprey",
   "license": "MIT",
   "dependencies": {
-    "axios": ">=0.21.1",
-    "luxon": "^3.4.0",
     "winston": "^3.10.0"
   },
   "scripts": {

@@ -1,9 +1,6 @@
 {
-  "name": "hello-world-get",
+  "name": "config-get",
   "version": "1.0.0",
   "author": "Digitalspace <contact@digitalspace.ca>",
-  "dependencies": {
-    "luxon": "^3.4.0"
-  }
+  "dependencies": {}
 }
-

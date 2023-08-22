@@ -4,6 +4,7 @@
   "author": "Team Osprey",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.1441.0"
+    "jsonwebtoken": "^9.0.0",
+    "jwks-rsa": "^3.0.0"
   }
 }

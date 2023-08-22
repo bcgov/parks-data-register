@@ -81,7 +81,7 @@ Resources:
       Description: Config GET lambda function
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref ParksDataRegisterMainTable
+            TableName: !Ref NameRegister
       Events:
         ConfigGet:
           Type: Api
@@ -108,7 +108,7 @@ Resources:
       Description: Config POST lambda function
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref ParksDataRegisterMainTable
+            TableName: !Ref NameRegister
       Events:
         HelloWorldPost:
           Type: Api
@@ -117,50 +117,107 @@ Resources:
             Method: POST
             RestApiId: !Ref ApiDeployment
 
-  ### DYNAMODB TABLES ###
-  ParksDataRegisterMainTable:
-    Type: AWS::DynamoDB::Table
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-    Properties:
-      TableName: pdr-main
-      AttributeDefinitions:
-        - AttributeName: pk
-          AttributeType: S
-        - AttributeName: sk
-          AttributeType: S
-      KeySchema:
-        - AttributeName: pk
-          KeyType: HASH
-        - AttributeName: sk
-          KeyType: RANGE
-      BillingMode: PAY_PER_REQUEST
-
   ### API ###
   ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
 
-  # ParksDataRegisterMetaTable:
-  #   Type: AWS::DynamoDB::Table
-  #   DeletionPolicy: Retain
-  #   Properties:
-  #     TableName: pdr-meta
-  #     AttributeDefinitions:
-  #       - AttributeName: pk
-  #         AttributeType: S
-  #       - AttributeName: sk
-  #         AttributeType: S
-  #     KeySchema:
-  #       - AttributeName: pk
-  #         KeyType: HASH
-  #       - AttributeName: sk
-  #         KeyType: RANGE
-  #     BillingMode: PAY_PER_REQUEST
-  #     ProvisionedThroughput:
-  #       ReadCapacityUnits: 0
-  #       WriteCapacityUnitys: 0
+### DYNAMODB TABLES ###
+  ProcessDynamoDBStream:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/dynamoStream/
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NameRegister
+      Environment:
+        Variables:
+          LOG_LEVEL: info
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt NameRegister.StreamArn
+            BatchSize: 100
+            StartingPosition: TRIM_HORIZON
+
+  NameRegister:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+      - AttributeName: legalName
+        AttributeType: S
+      - AttributeName: displayName
+        AttributeType: S
+      - AttributeName: status
+        AttributeType: S
+      GlobalSecondaryIndexes:
+      - IndexName: ByLegalName
+        KeySchema:
+        - AttributeName: legalName
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: ByDisplayName
+        KeySchema:
+        - AttributeName: displayName
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: ByStatusOfOrcs
+        KeySchema:
+        - AttributeName: status
+          KeyType: HASH
+        - AttributeName: pk
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      TableName: NameRegister
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+  Audit:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+      - AttributeName: gsipk
+        AttributeType: S
+      GlobalSecondaryIndexes:
+      - IndexName: gsi1
+        KeySchema:
+        - AttributeName: gsipk
+          KeyType: HASH
+        - AttributeName: pk
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      TableName: Audit
+    DependsOn: NameRegister
 
 Outputs:
   #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

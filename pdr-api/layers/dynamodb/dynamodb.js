@@ -127,6 +127,10 @@ const expressionBuilder = function (
   }
 };
 
+const putItem = async function (obj) {
+  // TODO
+}
+
 module.exports = {
   TABLE_NAME,
   dynamodb,
@@ -135,4 +139,5 @@ module.exports = {
   getOne,
   getConfig,
   expressionBuilder,
+  putItem
 };

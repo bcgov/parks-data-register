@@ -7,7 +7,7 @@ version = 0.1
 stack_name = "pdr-api"
 
 [default.build.parameters]
-cached = true
+cached = false
 parallel = true
 
 [default.validate.parameters]

@@ -86,7 +86,7 @@ jobs:
           PDR_API_ID: ${{ vars.PDR_API_ID }}
           PDR_API_STAGE: ${{ vars.PDR_API_STAGE }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME' AWSRegion=$AWS_REGION RestApiId=$PDR_API_ID RestApiId=$PDR_API_STAGE"
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME' AWSRegion=$AWS_REGION RestApiId=$PDR_API_ID ApiStage=$PDR_API_STAGE"
 
       ### Upload dist to S3 ###
       - name: Deploy to S3

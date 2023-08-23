@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: Swagger Parks Data Register - OpenAPI 3.0
+  description: |-
+    Parks Data Register API Specification
+  termsOfService: http: //swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http: //www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+tags:
+  - name: config
+    description: Everything about front-end configuration
+paths:
+  /config:
+    get:
+      tags:
+        - config
+      summary: Get front-end configuration data
+      description: Get the configuration object for the front-end.
+      operationId: config
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'          
+        '400':
+          description: Bad Request
+        '404':
+          description: Config not found
+components:
+  schemas:
+    Config:
+      type: object
+      properties:
+        pk:
+          type: string
+          example: config
+        sk:
+          type: string
+          example: config

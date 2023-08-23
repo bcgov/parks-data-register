@@ -11,7 +11,7 @@ exports.handler = async function (event, context) {
     const creationTime = new Date(record.dynamodb.ApproximateCreationDateTime).toISOString();
     const gsipk = record.dynamodb.Keys.pk.S;
     const gsisk = record.dynamodb.Keys.sk.S;
-    const user = newImage?.lastModifiedBy.S;
+    const user = newImage?.lastModifiedBy?.S;
 
     const auditImage = {
       pk: user,

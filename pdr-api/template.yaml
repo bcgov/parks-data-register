@@ -64,7 +64,7 @@ Resources:
   ### LAMBDA FUNCTIONS ###
 
   # Config
-  ConfigGetLambda:
+  ConfigGet:
     FunctionName: ConfigGet
     Type: AWS::Serverless::Function
     Properties:
@@ -88,33 +88,6 @@ Resources:
           Properties:
             Path: /config
             Method: GET
-            RestApiId: !Ref ApiDeployment
-
-  ConfigPostLambda:
-    FunctionName: ConfigPost
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: handlers/config/POST/
-      Handler: index.handler
-      Layers:
-        - !Ref BaseLayer
-        - !Ref DynamoDBLayer
-        - !Ref PermissionsLayer
-      Runtime: nodejs18.x
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: Config POST lambda function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref NameRegister
-      Events:
-        HelloWorldPost:
-          Type: Api
-          Properties:
-            Path: /config
-            Method: POST
             RestApiId: !Ref ApiDeployment
 
   ### API ###

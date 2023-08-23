@@ -1,14 +1,14 @@
 {
-  "body": "{\"message\": \"hello world\"}",
+  "body": "{\"message\": \"test\"}",
   "resource": "/{proxy+}",
-  "path": "/path/to/resource",
-  "httpMethod": "POST",
+  "path": "/api/v1/config",
+  "httpMethod": "GET",
   "isBase64Encoded": false,
   "queryStringParameters": {
     "foo": "bar"
   },
   "pathParameters": {
-    "proxy": "/path/to/resource"
+    "proxy": "/api/v1/config"
   },
   "stageVariables": {
     "baz": "qux"

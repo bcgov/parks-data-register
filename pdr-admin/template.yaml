@@ -27,7 +27,17 @@ Parameters:
   ProductName:
     Type: String
     Default: PDR Admin
-    Description: Human readable name of the project
+    Description: Human readable name of the project.
+  AWSRegion:
+    Type: String
+    Default: ca-central-1
+    Description: AWS Region.
+  ApiStage:
+    Type: String
+    Description: API stage.
+  RestApiId:
+    Type: String
+    Description: ID for rest API.
 
 Resources:
   CloudFrontOriginAccessIdentity:
@@ -60,6 +70,14 @@ Resources:
               # Restricting Bucket access through an origin access identity
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
             OriginPath: !Sub /${OriginPath}
+          - Id: api
+            DomainName: !Sub "${RestApiId}.execute-api.${AWSRegion}.amazonaws.com"
+            OriginPath: !Sub /${ApiStage}
+            CustomOriginConfig:
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols:
+                - TLSv1.2
         # To connect the CDN to the origins you need to specify behaviours
         DefaultCacheBehavior:
           # Compress resources automatically ( gzip )

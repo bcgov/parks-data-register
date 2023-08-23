@@ -43,8 +43,11 @@ jobs:
           key: ${{ github.sha }}-${{ vars.PDR_ADMIN_DIRECTORY }}-dist
       - name: Run yarn build
         if: steps.cache-admin-build.outputs.cache-hit != 'true'
+        env:
+          GH_HASH: ${{ github.sha }}
         run: |
           sed 's@localConfigEndpoint@'true'@g' src/env.js.template > src/env.js
+          sed 's@localGHHash@'"$GH_HASH"'@g' src/env.js > src/env.js
           yarn build
 
       ### Setup AWS SAM
@@ -84,9 +87,8 @@ jobs:
           ORIGIN_ID: ${{ vars.PDR_ADMIN_ORIGIN_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
           PDR_API_ID: ${{ vars.PDR_API_ID }}
-          PDR_API_STAGE: ${{ vars.PDR_API_STAGE }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME' AWSRegion=$AWS_REGION RestApiId=$PDR_API_ID ApiStage=$PDR_API_STAGE"
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME' AWSRegion=$AWS_REGION RestApiId=$PDR_API_ID"
 
       ### Upload dist to S3 ###
       - name: Deploy to S3

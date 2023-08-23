@@ -10,6 +10,7 @@ import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class ConfigService {
   private configuration: any = {};
+  private build: any = '';
 
   constructor(private httpClient: HttpClient) {}
   /**
@@ -20,14 +21,13 @@ export class ConfigService {
     // Initially set the configuration and see if we should be contacting our hostname endpoint for
     // any configuration data.
     this.configuration = window['__env'];
+    this.build = this.configuration['BUILD'];
 
     if (this.configuration['configEndpoint'] === true) {
       try {
         // Attempt to get application via this.httpClient. This uses the url of the application that you are running it from
         // This will not work for local because it will try and get localhost:4200/api instead of 3000/api...
-        this.configuration = await firstValueFrom(
-          this.httpClient.get(`/api/config`)
-        );
+        this.configuration = await firstValueFrom(this.httpClient.get(`/api/config`));
       } catch (e) {
         // If all else fails, we'll just use the variables found in env.js
         console.error('Error getting local configuration:', e);

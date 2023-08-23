@@ -26,7 +26,7 @@ Resources:
         - nodejs14.x
         - nodejs16.x
         - nodejs18.x
-      LicenseInfo: "MIT"
+      LicenseInfo: "Apache-2.0"
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
@@ -41,7 +41,7 @@ Resources:
         - nodejs14.x
         - nodejs16.x
         - nodejs18.x
-      LicenseInfo: "MIT"
+      LicenseInfo: "Apache-2.0"
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
@@ -56,7 +56,7 @@ Resources:
         - nodejs14.x
         - nodejs16.x
         - nodejs18.x
-      LicenseInfo: "MIT"
+      LicenseInfo: "Apache-2.0"
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile

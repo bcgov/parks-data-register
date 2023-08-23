@@ -11,6 +11,7 @@
 
   window.__env.API_LOCATION = "http://localhost:3000";
   window.__env.API_PATH = "/api";
+  window.__env.GH_HASH = "local-build";
   window.__env.KEYCLOAK_CLIENT_ID = "data-register";
   window.__env.KEYCLOAK_URL = "https://dev.loginproxy.gov.bc.ca/auth";
   window.__env.KEYCLOAK_REALM = "bcparks-service-transformation";

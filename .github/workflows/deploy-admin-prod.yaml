@@ -86,8 +86,11 @@ jobs:
           PRODUCT_NAME: ${{ vars.PDR_ADMIN_PRODUCT_NAME }}
           ORIGIN_PATH: "latest"
           ORIGIN_ID: ${{ vars.PDR_ADMIN_ORIGIN_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          PDR_API_ID: ${{ vars.PDR_API_ID }}
+          STAGE: ${{ vars.PDR_API_STAGE }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME' AWSRegion=$AWS_REGION RestApiId=$PDR_API_ID"
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME' AWSRegion=$AWS_REGION RestApiId=$PDR_API_ID ApiStage=$STAGE"
 
       ### Upload dist to S3 ###
       - name: Deploy to S3

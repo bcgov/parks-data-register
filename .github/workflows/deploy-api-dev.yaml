@@ -55,5 +55,6 @@ jobs:
       - name: SAM deploy
         env:
           STACK_NAME: ${{ vars.PDR_API_STACK_NAME }}
+          STAGE: ${{ vars.PDR_API_STAGE }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE"

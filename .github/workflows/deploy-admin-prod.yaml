@@ -25,12 +25,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      ### Create env.js
-      - name: Create env.js
-        env:
-          GH_HASH: ${{ github.sha }}
-        run: sed 's@localConfigEndpoint@'true'@g' src/env.js.template | sed 's@localGHHash@'"$GH_HASH"'@g' > src/env.js
-
       ### Install if no cache exists ###
       - name: Setup node
         uses: actions/setup-node@v3
@@ -52,7 +46,9 @@ jobs:
         if: steps.cache-admin-build.outputs.cache-hit != 'true'
         env:
           GH_HASH: ${{ github.sha }}
-        run: yarn build
+        run: |
+          sed 's@localConfigEndpoint@'true'@g' src/env.js.template | sed 's@localGHHash@'"$GH_HASH"'@g' > src/env.js
+          yarn build
 
       ### Setup AWS SAM
       - name: Setup AWS SAM

@@ -79,6 +79,9 @@ Resources:
       MemorySize: 128
       Timeout: 100
       Description: Config GET lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref NameRegister
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NameRegister

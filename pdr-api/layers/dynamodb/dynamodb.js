@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
 const { logger } = require("/opt/base");
 
-const TABLE_NAME = process.env.TABLE_NAME || "pdr-main";
+const TABLE_NAME = process.env.TABLE_NAME || "NameRegister";
 
 const options = {
   region: "ca-central-1",

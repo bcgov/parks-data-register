@@ -46,6 +46,7 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: CloudFront access identity
+  
   CloudFrontDistribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
@@ -71,9 +72,8 @@ Resources:
               # Restricting Bucket access through an origin access identity
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
             OriginPath: !Sub /${OriginPath}
-          - Id: api
+          - Id: apigw
             DomainName: !Sub "${RestApiId}.execute-api.${AWSRegion}.amazonaws.com"
-            OriginPath: !Sub /${ApiStage}
             CustomOriginConfig:
               HTTPSPort: 443
               OriginProtocolPolicy: https-only
@@ -91,10 +91,28 @@ Resources:
             QueryString: false
           TargetOriginId: !Ref OriginId
           ViewerProtocolPolicy: redirect-to-https
-        # ViewerCertificate:
-        #   AcmCertificateArn: !Ref CertificateManagerCertificate
-        #   MinimumProtocolVersion: TLSv1.1_2016
-        #   SslSupportMethod: sni-only
+        CacheBehaviors:
+          - PathPattern: !Sub /${ApiStage}/*
+            TargetOriginId: apigw
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - POST
+              - PATCH
+              - DELETE
+            ForwardedValues:
+              Cookies:
+                Forward: all
+              QueryString: true
+            ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
+
+  # ViewerCertificate:
+  #   AcmCertificateArn: !Ref CertificateManagerCertificate
+  #   MinimumProtocolVersion: TLSv1.1_2016
+  #   SslSupportMethod: sni-only
 
   S3Bucket:
     Type: AWS::S3::Bucket

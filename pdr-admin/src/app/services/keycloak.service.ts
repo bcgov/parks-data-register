@@ -11,6 +11,7 @@ declare let Keycloak: any;
 @Injectable()
 export class KeycloakService {
   public LAST_IDP_AUTHENTICATED = 'kc-last-idp-authenticated';
+  public readonly REDIRECT_KEY = 'redirectToOnLogin';
   private keycloakAuth: any;
   private keycloakEnabled: boolean;
   private keycloakUrl: string;
@@ -229,7 +230,7 @@ export class KeycloakService {
    * @memberof KeycloakService
    */
   login(idpHint: string) {
-    let redirectUri = localStorage.getItem(this.configService.config.REDIRECT_KEY) || window.location.href;
+    let redirectUri = localStorage.getItem(this.REDIRECT_KEY) || window.location.href;
     // by default keycloak login will want to redirect back to the login page
     // redirect to '/dayuse' instead
     if (redirectUri.endsWith('/login')) {

@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
 import { UrlTree, Router, RouterStateSnapshot } from '@angular/router';
-import { ConfigService } from '../services/config.service';
 import { KeycloakService } from '../services/keycloak.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard {
-  constructor(
-    private readonly keycloakService: KeycloakService,
-    private readonly router: Router,
-    private readonly configService: ConfigService
-  ) {}
+  constructor(private readonly keycloakService: KeycloakService, private readonly router: Router) {}
 
   canActivate(state: RouterStateSnapshot): boolean | UrlTree {
     // When a successful login occurs, we store the identity provider used in localStorage.
@@ -22,7 +17,7 @@ export class AuthGuard {
       // remove the localStorage value first, so if this authentication attempt
       // fails then the user will get the login page next time.
       localStorage.removeItem(this.keycloakService.LAST_IDP_AUTHENTICATED);
-      localStorage.setItem(this.configService.config.REDIRECT_KEY, window.location.href);
+      localStorage.setItem(this.keycloakService.REDIRECT_KEY, window.location.href);
 
       if (lastIdp === null) {
         // If an identity provider hasn't been selected then show the login page.
@@ -33,7 +28,7 @@ export class AuthGuard {
       this.keycloakService.login(lastIdp);
       return false;
     } else {
-      localStorage.removeItem(this.configService.config.REDIRECT_KEY);
+      localStorage.removeItem(this.keycloakService.REDIRECT_KEY);
     }
 
     // Not authorized / feature flagged

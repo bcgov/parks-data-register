@@ -6,6 +6,7 @@ on:
 
 jobs:
   test:
+    name: "Run Admin Test-ci on PR"
     runs-on: ubuntu-latest
     strategy:
       matrix:

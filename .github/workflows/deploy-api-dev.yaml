@@ -16,6 +16,9 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     environment: dev
+    strategy:
+      matrix:
+        node-version: [16.x]
     defaults:
       run:
         working-directory: "./${{ vars.PDR_API_DIRECTORY }}"

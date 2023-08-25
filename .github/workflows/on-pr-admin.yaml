@@ -1,4 +1,5 @@
 name: PR Checks
+run-name: Run test-ci on PR ${{ github.ref }} (Admin)
 
 on:
   pull_request:

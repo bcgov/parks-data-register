@@ -23,5 +23,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
+          cache-dependency-path: "${{ vars.PDR_ADMIN_DIRECTORY }}/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
       - run: yarn test-ci

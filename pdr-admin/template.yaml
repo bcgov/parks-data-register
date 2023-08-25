@@ -46,7 +46,7 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: CloudFront access identity
-  
+
   CloudFrontDistribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
@@ -87,8 +87,8 @@ Resources:
             - GET
             - HEAD
             - OPTIONS
-          ForwardedValues:
-            QueryString: false
+          # CachingOptimized
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
           TargetOriginId: !Ref OriginId
           ViewerProtocolPolicy: redirect-to-https
         CacheBehaviors:
@@ -103,11 +103,8 @@ Resources:
               - POST
               - PATCH
               - DELETE
-            ForwardedValues:
-              Cookies:
-                Forward: all
-              QueryString: true
-            ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
+            # CachingDisabled
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
 
   # ViewerCertificate:
   #   AcmCertificateArn: !Ref CertificateManagerCertificate

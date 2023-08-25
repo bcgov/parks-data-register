@@ -1,5 +1,5 @@
 name: PR Checks
-run-name: Run test-ci on PR ${{ github.ref }} (Admin)
+run-name: Run test-ci on PR ${{ github.event.number }} (Admin)
 
 on:
   pull_request:
@@ -7,8 +7,8 @@ on:
 
 jobs:
   test:
-    name: "Run Admin Test-ci on PR"
     runs-on: ubuntu-latest
+    environment: dev
     strategy:
       matrix:
         node-version: [16.x]

@@ -91,6 +91,8 @@ Resources:
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
           TargetOriginId: !Ref OriginId
           ViewerProtocolPolicy: redirect-to-https
+          # Simple CORS
+          ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
         CacheBehaviors:
           - PathPattern: !Sub /${ApiStage}/*
             TargetOriginId: apigw

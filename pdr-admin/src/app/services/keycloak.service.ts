@@ -126,7 +126,7 @@ export class KeycloakService {
    * @memberof KeycloakService
    */
   isAuthorized(specificRoles = []): boolean {
-    const client = 'parking-pass';
+    const client = this.configService.config['KEYCLOAK_CLIENT_ID'];
     const token = this.getToken();
 
     if (!token) {
@@ -153,15 +153,15 @@ export class KeycloakService {
    * @memberof KeycloakService
    */
   isAllowed(service): boolean {
-    if (
-      service !== 'export-reports' &&
-      service !== 'lock-records' &&
-      service !== 'add-facility' &&
-      service !== 'metrics' &&
-      service !== 'cancel-passes'
-    ) {
-      return true;
-    }
+    // if (
+    //   service !== 'export-reports' &&
+    //   service !== 'lock-records' &&
+    //   service !== 'add-facility' &&
+    //   service !== 'metrics' &&
+    //   service !== 'cancel-passes'
+    // ) {
+    //   return true;
+    // }
     const token = this.getToken();
 
     if (!token) {
@@ -169,7 +169,7 @@ export class KeycloakService {
     }
 
     const jwt = JwtUtil.decodeToken(token);
-    return jwt?.resource_access?.['parking-pass']?.roles.includes('sysadmin');
+    return jwt?.resource_access?.[this.configService.config['KEYCLOAK_CLIENT_ID']]?.roles.includes('sysadmin');
   }
 
   /**

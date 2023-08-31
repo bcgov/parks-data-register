@@ -12,33 +12,27 @@ Globals:
     MemorySize: 128
 
 Parameters:
-  OriginPath:
+  ProjectName:
     Type: String
-    Default: local
-    Description: Cloudfront distribution origin path.
-  OriginId:
+    Description: Name of the project.
+  Env:
     Type: String
-    Default: s3-pdr-admin
-    Description: Cloudfront distribution origin ID.
-  DistBucketName:
-    Type: String
-    Default: pdr-admin
-    Description: S3 bucket that stores Angular Distributions.
-  ProductName:
-    Type: String
-    Default: PDR Admin
-    Description: Human readable name of the project.
+    Description: Staging environment.
   AWSRegion:
     Type: String
     Default: ca-central-1
     Description: AWS Region.
+  DistOriginPath:
+    Type: String
+    Default: latest
+    Description: Cloudfront distribution origin path.
+  ApiGatewayId:
+    Type: String
+    Description: ID for rest API.
   ApiStage:
     Type: String
     Default: api
     Description: API stage.
-  RestApiId:
-    Type: String
-    Description: ID for rest API.
 
 Resources:
   CloudFrontOriginAccessIdentity:
@@ -60,20 +54,20 @@ Resources:
             ResponsePagePath: "/index.html"
         # Aliases:
         #   - !Ref DomainName
-        Comment: !Sub Cloudfront distribution for ${ProductName}
+        Comment: !Sub "Cloudfront distribution for ${ProjectName}"
         DefaultRootObject: "index.html"
         Enabled: true
         HttpVersion: http2
         # List of origins that Cloudfront will connect to
         Origins:
-          - Id: !Ref OriginId
-            DomainName: !GetAtt S3Bucket.DomainName
+          - Id: !Ref DistS3Bucket
+            DomainName: !GetAtt DistS3Bucket.DomainName
             S3OriginConfig:
               # Restricting Bucket access through an origin access identity
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
-            OriginPath: !Sub /${OriginPath}
-          - Id: apigw
-            DomainName: !Sub "${RestApiId}.execute-api.${AWSRegion}.amazonaws.com"
+            OriginPath: !Sub /${DistOriginPath}
+          - Id: !Sub ${ApiGatewayId}
+            DomainName: !Sub "${ApiGatewayId}.execute-api.${AWSRegion}.amazonaws.com"
             CustomOriginConfig:
               HTTPSPort: 443
               OriginProtocolPolicy: https-only
@@ -89,13 +83,13 @@ Resources:
             - OPTIONS
           # CachingOptimized
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
-          TargetOriginId: !Ref OriginId
+          TargetOriginId: !Ref DistS3Bucket
           ViewerProtocolPolicy: redirect-to-https
           # Simple CORS
           ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
         CacheBehaviors:
           - PathPattern: !Sub /${ApiStage}/*
-            TargetOriginId: apigw
+            TargetOriginId: !Sub ${ApiGatewayId}
             ViewerProtocolPolicy: redirect-to-https
             AllowedMethods:
               - GET
@@ -107,28 +101,48 @@ Resources:
               - DELETE
             # CachingDisabled
             CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+        Logging:
+            Bucket: !GetAtt LogsS3Bucket.DomainName
+            IncludeCookies: false
+            Prefix: !Sub ${ProjectName}-${Env}-logs
 
-  # ViewerCertificate:
-  #   AcmCertificateArn: !Ref CertificateManagerCertificate
-  #   MinimumProtocolVersion: TLSv1.1_2016
-  #   SslSupportMethod: sni-only
-
-  S3Bucket:
+  DistS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref DistBucketName
+      BucketName: !Sub ${ProjectName}-${Env}
 
-  S3BucketPolicy:
+  DistS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref S3Bucket
+      Bucket: !Ref DistS3Bucket
       PolicyDocument:
         Statement:
           - Effect: Allow
             Principal:
               AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
             Action: "s3:GetObject"
-            Resource: !Sub "arn:aws:s3:::${S3Bucket}/*"
+            Resource: !Sub "arn:aws:s3:::${DistS3Bucket}/*"
+
+  LogsS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${ProjectName}-${Env}-logs
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+      
+
+  LogsS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref LogsS3Bucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
+            Action: "s3:GetObject"
+            Resource: !Sub "arn:aws:s3:::${LogsS3Bucket}/*"
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

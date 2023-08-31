@@ -254,22 +254,9 @@ export class KeycloakService {
 
     if (!token) {
       return '';
-    }
-
-    const jwt = JwtUtil.decodeToken(token);
-
-    // idir users have an idir_userid property
-    if (jwt.idir_user_guid !== undefined) {
+    } else {
+      // DR only has IDIR as a log in Option
       return this.idpHintEnum.IDIR;
     }
-
-    // bceid users will have a bceid_userid property
-    if (jwt.bceid_userid !== undefined || jwt.bceid_username !== undefined) {
-      return this.idpHintEnum.BCEID;
-    }
-
-    // BCSC users have no distinguishing traits, but BCSC is asssumed
-    // if it's not BCeID or IDIR
-    return this.idpHintEnum.BCSC;
   }
 }

@@ -19,7 +19,7 @@ jobs:
     environment: prod
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     defaults:
       run:
         working-directory: "./${{ vars.PDR_API_DIRECTORY }}"

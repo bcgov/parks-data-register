@@ -13,14 +13,6 @@ parallel = true
 [default.validate.parameters]
 lint = true
 
-[default.deploy.parameters]
-capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
-resolve_s3 = true
-s3_prefix = "pdr-admin"
-region = "ca-central-1"
-image_repositories = []
-
 [default.package.parameters]
 resolve_s3 = true
 
@@ -32,3 +24,137 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+[default.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-admin"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides=[
+  "ProjectName=pdr-admin",
+  "DistOriginPath=latest",
+  "ApiGatewayId=zloys5cfvf",
+  "Env=dev",
+  "AWSRegion=ca-central-1",
+  "ApiStage=api"
+]
+
+[dev]
+[dev.global.parameters]
+stack_name = "pdr-admin"
+
+[dev.build.parameters]
+cached = true
+parallel = true
+
+[dev.validate.parameters]
+lint = true
+
+[dev.package.parameters]
+resolve_s3 = true
+
+[dev.sync.parameters]
+watch = true
+
+[dev.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[dev.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[dev.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-admin"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides=[
+  "ProjectName=pdr-admin",
+  "DistOriginPath=latest",
+  "ApiGatewayId=zloys5cfvf",
+  "Env=dev",
+  "AWSRegion=ca-central-1",
+  "ApiStage=api"
+]
+
+[test]
+[test.global.parameters]
+stack_name = "pdr-admin"
+
+[test.build.parameters]
+cached = true
+parallel = true
+
+[test.validate.parameters]
+lint = true
+
+[test.package.parameters]
+resolve_s3 = true
+
+[test.sync.parameters]
+watch = true
+
+[test.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[test.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[test.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-admin"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides=[
+  "ProjectName=pdr-admin",
+  "DistOriginPath=latest",
+  "ApiGatewayId=18dgy3grjj",
+  "Env=test",
+  "AWSRegion=ca-central-1",
+  "ApiStage=api"
+]
+
+[prod]
+[prod.global.parameters]
+stack_name = "pdr-admin"
+
+[prod.build.parameters]
+cached = true
+parallel = true
+
+[prod.validate.parameters]
+lint = true
+
+[prod.package.parameters]
+resolve_s3 = true
+
+[prod.sync.parameters]
+watch = true
+
+[prod.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[prod.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[prod.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-admin"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides=[
+  "ProjectName=pdr-admin",
+  "DistOriginPath=latest",
+  "ApiGatewayId=9g4piu88n8",
+  "Env=prod",
+  "AWSRegion=ca-central-1",
+  "ApiStage=api"
+]
+

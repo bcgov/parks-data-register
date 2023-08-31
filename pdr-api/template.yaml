@@ -23,8 +23,6 @@ Resources:
       Description: Parks Data Register Base Layer
       ContentUri: layers/base/
       CompatibleRuntimes:
-        - nodejs14.x
-        - nodejs16.x
         - nodejs18.x
       LicenseInfo: "Apache-2.0"
       RetentionPolicy: Retain
@@ -38,8 +36,6 @@ Resources:
       Description: Parks Data Register DynamoDB Utilities Layer
       ContentUri: layers/dynamodb/
       CompatibleRuntimes:
-        - nodejs14.x
-        - nodejs16.x
         - nodejs18.x
       LicenseInfo: "Apache-2.0"
       RetentionPolicy: Retain
@@ -53,8 +49,6 @@ Resources:
       Description: Parks Data Register Permissions Utilities Layer
       ContentUri: layers/permissions/
       CompatibleRuntimes:
-        - nodejs14.x
-        - nodejs16.x
         - nodejs18.x
       LicenseInfo: "Apache-2.0"
       RetentionPolicy: Retain

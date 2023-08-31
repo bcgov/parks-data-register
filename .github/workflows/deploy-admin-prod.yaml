@@ -19,7 +19,7 @@ jobs:
     environment: prod
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     defaults:
       run:
         working-directory: "./${{ vars.PDR_ADMIN_DIRECTORY }}"
@@ -84,20 +84,25 @@ jobs:
       - name: SAM deploy
         env:
           STACK_NAME: ${{ vars.PDR_ADMIN_STACK_NAME }}
-          S3_BUCKET: ${{ vars.PDR_ADMIN_S3_BUCKET }}
-          PRODUCT_NAME: ${{ vars.PDR_ADMIN_PRODUCT_NAME }}
-          ORIGIN_PATH: "latest"
-          ORIGIN_ID: ${{ vars.PDR_ADMIN_ORIGIN_ID }}
+          PROJECT_NAME: ${{ vars.PDR_ADMIN_PROJECT_NAME }}
+          DIST_ORIGIN_PATH: "latest"
+          API_GATEWAY_ID: ${{ vars.PDR_API_ID }}
+          ENV: ${{ vars.ENVIRONMENT_STAGE }}
           AWS_REGION: ${{ vars.AWS_REGION }}
-          PDR_API_ID: ${{ vars.PDR_API_ID }}
-          STAGE: ${{ vars.PDR_API_STAGE }}
+          API_STAGE: ${{ vars.PDR_API_STAGE }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "OriginPath=$ORIGIN_PATH OriginId=$ORIGIN_ID DistBucketName=$S3_BUCKET ProductName='$PRODUCT_NAME' AWSRegion=$AWS_REGION RestApiId=$PDR_API_ID ApiStage=$STAGE"
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides \
+          "ProjectName=$PROJECT_NAME \
+          DistOriginPath=$DIST_ORIGIN_PATH \
+          ApiGatewayId=$API_GATEWAY_ID \
+          Env=$ENV \
+          AWSRegion=$AWS_REGION \
+          ApiStage=$API_STAGE"
 
       ### Upload dist to S3 ###
       - name: Deploy to S3
         env:
-          S3_BUCKET: ${{ vars.PDR_ADMIN_S3_BUCKET }}
+          S3_BUCKET: ${{ vars.PDR_ADMIN_PROJECT_NAME }}-${{ ENVIRONMENT_STAGE }}
           DIR_NAME: ${{ github.sha }}
           WORKING_DIRECTORY: ${{ vars.PDR_ADMIN_DIRECTORY }}
         run: |

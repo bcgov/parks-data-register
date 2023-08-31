@@ -105,7 +105,7 @@ jobs:
       ### Upload dist to S3 ###
       - name: Deploy to S3
         env:
-          S3_BUCKET: ${{ vars.PDR_ADMIN_PROJECT_NAME }}-${{ ENVIRONMENT_STAGE }}
+          S3_BUCKET: ${{ vars.PDR_ADMIN_PROJECT_NAME }}-${{ vars.ENVIRONMENT_STAGE }}
           DIR_NAME: ${{ github.sha }}
           WORKING_DIRECTORY: ${{ vars.PDR_ADMIN_DIRECTORY }}
         run: |

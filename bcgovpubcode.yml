@@ -1,0 +1,41 @@
+---
+data_management_roles:
+  data_custodian: Glenna Erlandson
+  product_owner: Jessica Wade
+product_external_dependencies:
+  identity_authorization:
+    - Azure-AD-IDIR
+    - Custom-Keycloak
+  notification_standard: []
+product_information:
+  api_specifications: []
+  ministry:
+    - Environment and Climate Change Strategy
+  product_acronym: BCPDR
+  product_description: >-
+    The Parks Data Register provides consistent and accurate name data of BC
+    parks to the public.
+  product_name: BC Parks Data Register
+  product_status: maturing
+  product_urls: []
+  program_area: Conservation and Recreation Division
+product_technology_information:
+  backend_frameworks:
+    - name: Node.js
+      version: 18.x
+  backend_languages_version:
+    - name: JavaScript
+      version: 18.x
+  ci_cd_tools:
+    - GitHub-Actions
+  data_storage_platforms:
+    - Dynamodb
+  frontend_frameworks:
+    - name: Angular
+      version: 16.x
+  frontend_languages:
+    - name: TypeScript
+      version: 5.x
+  hosting_platforms:
+    - Amazon-Web-Services
+version: 1

@@ -2,7 +2,15 @@
 
 # Introduction
 
-This folder consists of the back end code for the Parks Data Register API. It contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. The AWS resources for this project are defined in the `template.yaml` file.
+This folder consists of the back end code for the Parks Data Register API. It contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. 
+
+The AWS resources for this project are defined in the `template.yaml` file.
+Data models can be found in [/docs](https://github.com/bcgov/parks-data-register/tree/main/pdr-api/docs)
+
+## Park Name Status States
+
+![State chart](./docs/park-name-status.svg)
+<img src="./docs/park-name-status.svg">
 
 # Local Development
 

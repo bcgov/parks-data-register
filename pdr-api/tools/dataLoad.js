@@ -31,7 +31,7 @@ async function run() {
   for (let record of bcParksNames) {
     // establishedDate:
     const res = getEstablishedDate(record, parParks);
-    record = res[0];
+    const establishedDate = res[0];
     parParks = res[1];
 
     // createDate:
@@ -49,7 +49,7 @@ async function run() {
       ExpressionAttributeValues: {
         ':createDate': { S: createDate },
         ':updateDate': { S: currentTimeISO },
-        ':effectiveDate': { S: record.establishedDate },
+        ':effectiveDate': { S: establishedDate },
         ':legalName': { S: record.legalName },
         ':displayName': { S: record.displayName },
         ':phoneticName': { S: record.phoneticName },
@@ -74,16 +74,16 @@ async function run() {
 
 function getEstablishedDate(record, parParks) {
   // Get established date for effective date field.
-  record.establishedDate = '';
+  let establishedDate = '';
   let i = parParks.length;
   while (i--) {
     if (record.orcs === parParks[i].ORCS) {
-      record.establishedDate = parParks[i]['Established Date'] ? parParks[i]['Established Date'] : '';
+      establishedDate = parParks[i]['Established Date'] ? parParks[i]['Established Date'] : '';
       parParks.splice(i, 1);
       i = 0;
     }
   }
-  return [record, parParks];
+  return [establishedDate, parParks];
 }
 
 async function getOne(pk, sk) {

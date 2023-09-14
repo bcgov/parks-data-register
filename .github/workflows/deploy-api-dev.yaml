@@ -21,6 +21,7 @@ jobs:
         node-version: [18.x]
     defaults:
       run:
+        shell: bash
         working-directory: ./${{ vars.PDR_API_DIRECTORY }}
     steps:
       - shell: bash

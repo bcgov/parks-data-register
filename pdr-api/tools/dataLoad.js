@@ -20,7 +20,7 @@ const dynamodb = new AWS.DynamoDB(options);
 
 async function run() {
   const bcParksNames = await csv().fromFile(bcParkNamesPath);
-  const parParks = await csv().fromFile(parParksPath);
+  let parParks = await csv().fromFile(parParksPath);
 
   console.log('Data Load');
   console.log(`Loading ${bcParksNames.length} items.`);
@@ -28,28 +28,17 @@ async function run() {
   const currentPSTDateTime = DateTime.now().setZone(TIMEZONE);
   const currentTimeISO = currentPSTDateTime.toUTC().toISO();
 
-  // establishedDate:
-  // Get established date for effective date field.
   for (let record of bcParksNames) {
-    record.establishedDate = '';
-    let i = parParks.length;
-    while (i--) {
-      if (record.orcs === parParks[i].ORCS) {
-        record.establishedDate = parParks[i]['Established Date'] ? parParks[i]['Established Date'] : '';
-        parParks.splice(i, 1);
-        i = 0;
-      }
-    }
+    // establishedDate:
+    const res = getEstablishedDate(record, parParks);
+    record = res[0];
+    parParks = res[1];
 
     // createDate:
     // Check if record already exists
     const existingRecord = AWS.DynamoDB.Converter.unmarshall(await getOne(record.orcs, 'Details'));
     // Get createDate if it does
-    const createDate = existingRecord
-      ? existingRecord.createDate
-        ? existingRecord.createDate
-        : currentTimeISO
-      : currentTimeISO;
+    const createDate = existingRecord ? existingRecord.createDate : currentTimeISO;
 
     let updateParams = {
       TableName: TABLE_NAME,
@@ -81,6 +70,20 @@ async function run() {
     }
   }
   console.log('Data load complete.');
+}
+
+function getEstablishedDate(record, parParks) {
+  // Get established date for effective date field.
+  record.establishedDate = '';
+  let i = parParks.length;
+  while (i--) {
+    if (record.orcs === parParks[i].ORCS) {
+      record.establishedDate = parParks[i]['Established Date'] ? parParks[i]['Established Date'] : '';
+      parParks.splice(i, 1);
+      i = 0;
+    }
+  }
+  return [record, parParks];
 }
 
 async function getOne(pk, sk) {

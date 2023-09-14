@@ -1,4 +1,4 @@
-[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<Redirect-URL>)
+[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<Redirect-URL>) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bcgov_parks-data-register&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=bcgov_parks-data-register)
 # Parks Data Register 
 
 The Parks Data Register provides consistent and accurate name data of BC parks to the public.

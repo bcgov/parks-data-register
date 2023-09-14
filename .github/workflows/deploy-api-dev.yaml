@@ -23,6 +23,9 @@ jobs:
       run:
         working-directory: "./${{ vars.PDR_API_DIRECTORY }}"
     steps:
+      - name: Notify Channel
+        run: |
+          curl -X POST -H 'Content-Type: application/json' ${{ secrets.rocketchatURL }} --data '{"text":"Data Register","emoji": ":interrobang:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Dev", "value": "started", "short": true}]}]}'
       ### Checkout GitHub Repo
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -61,3 +64,8 @@ jobs:
           STAGE: ${{ vars.PDR_API_STAGE }}
         run: |
           sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE"
+
+      - name: Notify Channel
+        run: |
+          curl -X POST -H 'Content-Type: application/json' ${{ secrets.rocketchatURL }} --data '{"text":"Data Register","emoji": ":interrobang:", "attachments":[{"title": "Github Action", "color": "#49be25", "fields": [{"title": "Deploy Dev", "value": "complete", "short": true}]}]}'
+      

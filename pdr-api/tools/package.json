@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.1457.0",
+    "csvtojson": "^2.0.10",
+    "luxon": "^3.4.3"
+  }
+}

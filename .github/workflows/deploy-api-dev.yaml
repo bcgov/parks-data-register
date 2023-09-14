@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Notify Channel
         run: |
-          curl -X POST -H 'Content-Type: application/json' ${{ secrets.rocketchatURL }} --data '{"text":"Data Register","emoji": ":interrobang:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Dev", "value": "started", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $rocketchatURL --data '{"text":"Data Register","emoji": ":interrobang:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Dev", "value": "started", "short": true}]}]}'
       ### Checkout GitHub Repo
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -67,5 +67,5 @@ jobs:
 
       - name: Notify Channel
         run: |
-          curl -X POST -H 'Content-Type: application/json' ${{ secrets.rocketchatURL }} --data '{"text":"Data Register","emoji": ":interrobang:", "attachments":[{"title": "Github Action", "color": "#49be25", "fields": [{"title": "Deploy Dev", "value": "complete", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $rocketchatURL --data '{"text":"Data Register","emoji": ":interrobang:", "attachments":[{"title": "Github Action", "color": "#49be25", "fields": [{"title": "Deploy Dev", "value": "complete", "short": true}]}]}'
       

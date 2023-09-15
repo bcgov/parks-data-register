@@ -38,7 +38,7 @@ async function run() {
     // Check if record already exists
     const existingRecord = AWS.DynamoDB.Converter.unmarshall(await getOne(record.orcs, 'Details'));
     // Get createDate if it does
-    const createDate = existingRecord ? existingRecord.createDate : currentTimeISO;
+    const createDate = existingRecord && existingRecord.createDate ? existingRecord.createDate : currentTimeISO;
 
     let updateParams = {
       TableName: TABLE_NAME,
@@ -53,12 +53,13 @@ async function run() {
         ':legalName': { S: record.legalName },
         ':displayName': { S: record.displayName },
         ':phoneticName': { S: record.phoneticName },
-        ':status': { S: '' },
+        // TODO: set status when mapping is known. 
+        // ':status': { S: '' },
         ':notes': { S: record['validation note'] }
       },
-      ExpressionAttributeNames: { '#status': 'status' },
+      // ExpressionAttributeNames: { '#status': 'status' },
       UpdateExpression:
-        'SET createDate = :createDate, updateDate = :updateDate, effectiveDate = :effectiveDate, legalName = :legalName, displayName = :displayName, phoneticName = :phoneticName, #status = :status, notes = :notes',
+        'SET createDate = :createDate, updateDate = :updateDate, effectiveDate = :effectiveDate, legalName = :legalName, displayName = :displayName, phoneticName = :phoneticName, notes = :notes',
       ReturnValues: 'ALL_NEW'
     };
 

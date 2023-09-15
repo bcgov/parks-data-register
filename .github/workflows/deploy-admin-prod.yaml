@@ -28,6 +28,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - shell: bash
+        env:
+          SECRET_URL: ${{ secrets.rocketchatURL }}
+        run: |
+          curl -X POST -H 'Content-Type: application/json' $SECRET_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Admin Prod", "value": "started", "short": true}]}]}'
+
       ### Install if no cache exists ###
       - name: Setup node
         uses: actions/setup-node@v3
@@ -109,3 +115,9 @@ jobs:
           aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/$DIR_NAME
           aws s3 rm s3://$S3_BUCKET/ --recursive --exclude "*" --include "latest/*"
           aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/latest
+
+      - shell: bash
+        env:
+          SECRET_URL: ${{ secrets.rocketchatURL }}
+        run: |
+          curl -X POST -H 'Content-Type: application/json' $SECRET_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Admin Prod", "value": "complete", "short": true}]}]}'

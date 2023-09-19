@@ -53,13 +53,12 @@ async function run() {
         ':legalName': { S: record.legalName },
         ':displayName': { S: record.displayName },
         ':phoneticName': { S: record.phoneticName },
-        // TODO: set status when mapping is known. 
-        // ':status': { S: '' },
+        ':status': { S: 'current' },
         ':notes': { S: record['validation note'] }
       },
-      // ExpressionAttributeNames: { '#status': 'status' },
+      ExpressionAttributeNames: { '#status': 'status' },
       UpdateExpression:
-        'SET createDate = :createDate, updateDate = :updateDate, effectiveDate = :effectiveDate, legalName = :legalName, displayName = :displayName, phoneticName = :phoneticName, notes = :notes',
+        'SET createDate = :createDate, updateDate = :updateDate, effectiveDate = :effectiveDate, legalName = :legalName, displayName = :displayName, phoneticName = :phoneticName, #status = :status, notes = :notes',
       ReturnValues: 'ALL_NEW'
     };
 

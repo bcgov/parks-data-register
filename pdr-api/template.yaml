@@ -62,7 +62,7 @@ Resources:
     FunctionName: ConfigGet
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: handlers/config/GET/
+      CodeUri: handlers/config/GET
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
@@ -84,6 +84,36 @@ Resources:
           Type: Api
           Properties:
             Path: /config
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+
+  # Config
+  DetailsGet:
+    FunctionName: DetailsGet
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/details/GET
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Details GET lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref NameRegister
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NameRegister
+      Events:
+        DetailsGet:
+          Type: Api
+          Properties:
+            Path: /details
             Method: GET
             RestApiId: !Ref ApiDeployment
 

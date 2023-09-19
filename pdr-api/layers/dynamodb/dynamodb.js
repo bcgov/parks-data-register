@@ -2,6 +2,8 @@ const AWS = require("aws-sdk");
 const { logger } = require("/opt/base");
 
 const TABLE_NAME = process.env.TABLE_NAME || "NameRegister";
+const STATUS_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByStatusOfOrcs";
+const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByLegalName";
 
 const options = {
   region: "ca-central-1",
@@ -26,19 +28,25 @@ async function getOne(pk, sk) {
   return item?.Item || {};
 }
 
-// TODO: set paginated to TRUE by default. Query results will then be at most 1 page
-// (1MB) unless they are explicitly specified to retrieve more.
-// TODO: Ensure the returned object has the same structure whether results are paginated or not.
-async function runQuery(query, paginated = false) {
+async function runQuery(query, limit = null, lastEvaluatedKey = null, paginated = true) {
   logger.info("query:", query);
   let data = [];
   let pageData = [];
   let page = 0;
 
+  // If last evaluated key provided, start at the key.
+  if (lastEvaluatedKey) {
+    pageData['LastEvaluatedKey'] = lastEvaluatedKey;
+  }
+
   do {
     page++;
     if (pageData?.LastEvaluatedKey) {
       query.ExclusiveStartKey = pageData.LastEvaluatedKey;
+    }
+    // If limit provided, add it to the query params.
+    if (limit && paginated) {
+      query.Limit = limit;
     }
     pageData = await dynamodb.query(query).promise();
     data = data.concat(
@@ -60,27 +68,35 @@ async function runQuery(query, paginated = false) {
   );
   if (paginated) {
     return {
-      LastEvaluatedKey: pageData.LastEvaluatedKey,
-      data: data,
+      lastEvaluatedKey: pageData.LastEvaluatedKey,
+      items: data
     };
   } else {
-    return data;
+    return {
+      items: data
+    }
   }
 }
 
-// TODO: set paginated to TRUE by default. Scan results will then be at most 1 page
-// (1MB) unless they are explicitly specified to retrieve more.
-// TODO: Ensure the returned object has the same structure whether results are paginated or not.
-async function runScan(query, paginated = false) {
+async function runScan(query, limit = null, lastEvaluatedKey = null, paginated = true) {
   logger.info("query:", query);
   let data = [];
   let pageData = [];
   let page = 0;
 
+  // If last evaluated key provided, start at the key.
+  if (lastEvaluatedKey) {
+    pageData['LastEvaluatedKey'] = lastEvaluatedKey;
+  }
+
   do {
     page++;
     if (pageData?.LastEvaluatedKey) {
       query.ExclusiveStartKey = pageData.LastEvaluatedKey;
+    }
+    // If limit provided, add it to the query params.
+    if (limit && paginated) {
+      query.Limit = limit;
     }
     pageData = await dynamodb.scan(query).promise();
     data = data.concat(
@@ -102,42 +118,29 @@ async function runScan(query, paginated = false) {
   );
   if (paginated) {
     return {
-      LastEvaluatedKey: pageData.LastEvaluatedKey,
-      data: data,
+      lastEvaluatedKey: pageData.LastEvaluatedKey,
+      items: data
     };
   } else {
-    return data;
+    return {
+      items: data
+    }
   }
 }
 
+// TODO: Remove this, it is unused.
 async function getConfig() {
   const config = await getOne("config", "config");
   return AWS.DynamoDB.Converter.unmarshall(config);
 }
 
-const expressionBuilder = function (
-  operator,
-  existingExpression,
-  newFilterExpression
-) {
-  if (existingExpression) {
-    return ` ${operator} ${newFilterExpression}`;
-  } else {
-    return newFilterExpression;
-  }
-};
-
-const putItem = async function (obj) {
-  // TODO
-}
-
 module.exports = {
   TABLE_NAME,
+  STATUS_INDEX_NAME,
+  LEGALNAME_INDEX_NAME,
   dynamodb,
   runQuery,
   runScan,
   getOne,
   getConfig,
-  expressionBuilder,
-  putItem
 };

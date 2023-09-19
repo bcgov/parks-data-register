@@ -13,15 +13,29 @@ exports.logger = createLogger({
       if (symbols.length == 2) {
         meta = JSON.stringify(info[symbols[1]]);
       }
-      return `${info.timestamp} ${[info.level.toUpperCase()]}: ${
-        info.message
-      } ${meta}`;
+      return `${info.timestamp} ${[info.level.toUpperCase()]}: ${info.message
+        } ${meta}`;
     })
   ),
   transports: [new transports.Console()],
 });
 
-exports.sendResponse = function (code, data, context) {
+exports.sendResponse = function (code, data, message, error, context, other = null) {
+  // All responses must include the following fields as a minimum.
+  let body = {
+    code: code,
+    data: data,
+    msg: message,
+    error: error,
+  }
+  // If context present, attach it to body
+  if (context) {
+    body['context'] = context;
+  }
+  // If other fields are present, attach them to the body.
+  if (other) {
+    body = Object.assign(body, object);
+  }
   const response = {
     statusCode: code,
     headers: {
@@ -31,7 +45,7 @@ exports.sendResponse = function (code, data, context) {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "OPTIONS,GET,POST",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(body),
   };
   return response;
 };

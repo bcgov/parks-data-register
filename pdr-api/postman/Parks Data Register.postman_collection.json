@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "f8292b65-bc66-46d1-81d8-4327cee1959b",
+		"name": "Parks Data Register",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14509064",
+		"_collection_link": "https://bcparks-dup.postman.co/workspace/BCParks-Day-Use-Pass~c6a232b9-cbde-4bc3-aa2c-906ab8c015e7/collection/14509064-f8292b65-bc66-46d1-81d8-4327cee1959b?action=share&source=collection_link&creator=14509064"
+	},
+	"item": [
+		{
+			"name": "Config",
+			"item": []
+		},
+		{
+			"name": "Parks",
+			"item": [
+				{
+					"name": "Names",
+					"item": [
+						{
+							"name": "Get All Parks Names",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/parks/names?status=current",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"parks",
+										"names"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "current"
+										},
+										{
+											"key": "legalName",
+											"value": "Strathcona Park",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Specific Park",
+					"item": [
+						{
+							"name": "Name",
+							"item": [
+								{
+									"name": "Get Specific Park Name",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/parks/:identifier/name?status=current",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"parks",
+												":identifier",
+												"name"
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "current"
+												}
+											],
+											"variable": [
+												{
+													"key": "identifier",
+													"value": ""
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "clientId",
+				"value": "{{client_id}}",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "{{access_token_url}}",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "{{auth_url}}",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "{{callback_url}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "{{token_name}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

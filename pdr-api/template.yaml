@@ -62,7 +62,7 @@ Resources:
     FunctionName: ConfigGet
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: handlers/config/GET/
+      CodeUri: handlers/config/GET
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
@@ -84,6 +84,66 @@ Resources:
           Type: Api
           Properties:
             Path: /config
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+
+  # ParksAllNamesGet
+  ParksAllNamesGet:
+    FunctionName: ParksAllNamesGet
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/parks/names/GET
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: All Park Names GET lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref NameRegister
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NameRegister
+      Events:
+        ParksAllNamesGet:
+          Type: Api
+          Properties:
+            Path: /parks/names
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+
+  # ParkNameGet
+  ParkNameGet:
+    FunctionName: ParkNameGet
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/parks/$identifier/name/GET
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Park Name GET lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref NameRegister
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NameRegister
+      Events:
+        ParkNameGet:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/name
             Method: GET
             RestApiId: !Ref ApiDeployment
 

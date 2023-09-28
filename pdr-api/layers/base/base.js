@@ -30,7 +30,7 @@ exports.sendResponse = function (code, data, message, error, context, other = nu
   }
   // If other fields are present, attach them to the body.
   if (other) {
-    body = Object.assign(body, object);
+    body = Object.assign(body, other);
   }
   const response = {
     statusCode: code,

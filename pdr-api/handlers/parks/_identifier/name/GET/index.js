@@ -51,7 +51,7 @@ exports.handler = async (event, context) => {
 function validateRequest(queryParams, isAdmin) {
   if (!isAdmin && queryParams?.status === 'pending') {
     // Public users are not allowed to see pending park names
-    throw 'Not authorized';
+    throw new Error('Not authorized');
   }
 }
 

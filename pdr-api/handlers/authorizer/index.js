@@ -19,7 +19,7 @@ exports.handler = async function (event, context, callback) {
     return generatePolicy('public', 'Allow', event.methodArn, publicPermissionObject);
   }
 
-  var token = await decodeJWT(event);
+  let token = await decodeJWT(event);
   logger.debug('token', JSON.stringify(token));
 
   if (!token.decoded) {
@@ -40,16 +40,16 @@ exports.handler = async function (event, context, callback) {
 };
 
 // Help function to generate an IAM policy
-var generatePolicy = function (principalId, effect, methodArn, permissionObject) {
+let generatePolicy = function (principalId, effect, methodArn, permissionObject) {
   logger.debug('principalId', principalId);
-  var authResponse = {};
+  let authResponse = {};
 
   authResponse.principalId = principalId;
   if (effect && methodArn) {
-    var policyDocument = {};
+    let policyDocument = {};
     policyDocument.Version = '2012-10-17';
     policyDocument.Statement = [];
-    var statementOne = {};
+    let statementOne = {};
     statementOne.Action = 'execute-api:Invoke';
     statementOne.Effect = effect;
     statementOne.Resource = methodArn;

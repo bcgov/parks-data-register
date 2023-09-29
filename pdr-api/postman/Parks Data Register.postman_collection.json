@@ -1,15 +1,27 @@
 {
 	"info": {
-		"_postman_id": "f8292b65-bc66-46d1-81d8-4327cee1959b",
+		"_postman_id": "a2e251b4-244d-4a97-95c1-7b957fc54cd2",
 		"name": "Parks Data Register",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14509064",
-		"_collection_link": "https://bcparks-dup.postman.co/workspace/BCParks-Day-Use-Pass~c6a232b9-cbde-4bc3-aa2c-906ab8c015e7/collection/14509064-f8292b65-bc66-46d1-81d8-4327cee1959b?action=share&source=collection_link&creator=14509064"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "21509305"
 	},
 	"item": [
 		{
 			"name": "Config",
-			"item": []
+			"item": [
+				{
+					"name": "Get Config",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/config"
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Parks",
@@ -21,9 +33,15 @@
 							"name": "Get All Parks Names",
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "None",
+										"type": "text"
+									}
+								],
 								"url": {
-									"raw": "{{base_url}}/parks/names?status=current",
+									"raw": "{{base_url}}/parks/names?legalName=Strathcona Park",
 									"host": [
 										"{{base_url}}"
 									],
@@ -34,12 +52,12 @@
 									"query": [
 										{
 											"key": "status",
-											"value": "current"
+											"value": "current",
+											"disabled": true
 										},
 										{
 											"key": "legalName",
-											"value": "Strathcona Park",
-											"disabled": true
+											"value": "Strathcona Park"
 										}
 									]
 								}
@@ -58,7 +76,13 @@
 									"name": "Get Specific Park Name",
 									"request": {
 										"method": "GET",
-										"header": [],
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "None",
+												"type": "text"
+											}
+										],
 										"url": {
 											"raw": "{{base_url}}/parks/:identifier/name?status=current",
 											"host": [
@@ -94,38 +118,14 @@
 	],
 	"auth": {
 		"type": "oauth2",
-		"oauth2": [
-			{
-				"key": "clientId",
-				"value": "{{client_id}}",
-				"type": "string"
-			},
-			{
-				"key": "accessTokenUrl",
-				"value": "{{access_token_url}}",
-				"type": "string"
-			},
-			{
-				"key": "authUrl",
-				"value": "{{auth_url}}",
-				"type": "string"
-			},
-			{
-				"key": "redirect_uri",
-				"value": "{{callback_url}}",
-				"type": "string"
-			},
-			{
-				"key": "tokenName",
-				"value": "{{token_name}}",
-				"type": "string"
-			},
-			{
-				"key": "addTokenTo",
-				"value": "header",
-				"type": "string"
-			}
-		]
+		"oauth2": {
+			"clientId": "{{client_id}}",
+			"accessTokenUrl": "{{access_token_url}}",
+			"authUrl": "{{auth_url}}",
+			"redirect_uri": "{{callback_url}}",
+			"tokenName": "{{token_name}}",
+			"addTokenTo": "header"
+		}
 	},
 	"event": [
 		{

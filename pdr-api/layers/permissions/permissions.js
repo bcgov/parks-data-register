@@ -116,7 +116,7 @@ function verifySecret(tokenString, secret, callback, sendError) {
 }
 
 async function roleFilter(records, roles) {
-  return new Promise(async resolve => {
+  return new Promise(resolve => {
     const data = records.filter(record => {
       logger.debug('record:', record.roles);
       // Sanity check if `roles` isn't defined on reacord. Default to readable.

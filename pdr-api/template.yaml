@@ -1,8 +1,8 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  pdr-api
-  SAM deployment for Parks Data Register API
+  pdr-api SAM deployment for Parks Data Register API
+
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -24,7 +24,7 @@ Resources:
       ContentUri: layers/base/
       CompatibleRuntimes:
         - nodejs18.x
-      LicenseInfo: "Apache-2.0"
+      LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
@@ -37,7 +37,7 @@ Resources:
       ContentUri: layers/dynamodb/
       CompatibleRuntimes:
         - nodejs18.x
-      LicenseInfo: "Apache-2.0"
+      LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
@@ -50,7 +50,7 @@ Resources:
       ContentUri: layers/permissions/
       CompatibleRuntimes:
         - nodejs18.x
-      LicenseInfo: "Apache-2.0"
+      LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
@@ -76,6 +76,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref NameRegister
+          LOG_LEVEL: info
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NameRegister
@@ -86,6 +87,8 @@ Resources:
             Path: /config
             Method: GET
             RestApiId: !Ref ApiDeployment
+            Auth:
+              Authorizer: NONE
 
   # ParksAllNamesGet
   ParksAllNamesGet:
@@ -106,6 +109,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref NameRegister
+          LOG_LEVEL: info
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NameRegister
@@ -136,6 +140,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref NameRegister
+          LOG_LEVEL: info
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NameRegister
@@ -152,6 +157,15 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      Auth:
+        DefaultAuthorizer: KCAuthorizer
+        Authorizers:
+          KCAuthorizer:
+            FunctionPayloadType: REQUEST
+            FunctionArn: !GetAtt Authorizer.Arn
+            Identity:
+              Headers:
+                - Authorization
 
   ### DYNAMODB TABLES ###
   ProcessDynamoDBStream:
@@ -163,19 +177,24 @@ Resources:
         - !Ref BaseLayer
         - !Ref DynamoDBLayer
       Runtime: nodejs18.x
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref NameRegister
       Environment:
         Variables:
           LOG_LEVEL: info
-      Events:
-        Stream:
-          Type: DynamoDB
-          Properties:
-            Stream: !GetAtt NameRegister.StreamArn
-            BatchSize: 100
-            StartingPosition: TRIM_HORIZON
+
+  ### AUTHORIZER ###
+  Authorizer:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/authorizer/
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref PermissionsLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Environment:
+        Variables:
+          LOG_LEVEL: info
 
   NameRegister:
     Type: AWS::DynamoDB::Table
@@ -254,5 +273,5 @@ Outputs:
   #   # Find out more about other implicit resources you can reference within SAM
   #   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   ApiDeployment:
-    Description: "API Gateway endpoint URL for Stage for Config function"
-    Value: !Sub "https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/config/"
+    Description: 'API Gateway endpoint URL for Stage for Config function'
+    Value: !Sub 'https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/config/'

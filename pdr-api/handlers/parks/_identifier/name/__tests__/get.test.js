@@ -4,7 +4,7 @@ const { MockData } = require('../../../../../__tests__/mock_data');
 const data = new MockData;
 let dbClient;
 
-describe('Specific Park Names GET', () => {
+fdescribe('Specific Park Names GET', () => {
   const OLD_ENV = process.env;
   beforeEach(async () => {
     jest.resetModules();
@@ -19,11 +19,17 @@ describe('Specific Park Names GET', () => {
   test('No query params provided', async () => {
     const lambda = require('../GET/index');
     const event = {
-      httpMethod: 'GET'
+      httpMethod: 'GET',
+      requestContext: {
+        authorizer: {
+          isAdmin: true
+        }
+      }
     }
     const res = await lambda.handler(event, null);
     expect(res.statusCode).toBe(400);
   });
+
 
   test('Get all name information for park identifier', async () => {
     const lambda = require('../GET/index');
@@ -31,6 +37,11 @@ describe('Specific Park Names GET', () => {
       httpMethod: 'GET',
       pathParameters: {
         identifier: '1'
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true
+        }
       }
     }
     const res = await lambda.handler(event, null);
@@ -48,6 +59,11 @@ describe('Specific Park Names GET', () => {
       },
       pathParameters: {
         identifier: '1'
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true
+        }
       }
     }
     const res = await lambda.handler(event, null);
@@ -57,4 +73,26 @@ describe('Specific Park Names GET', () => {
     expect(body.data.items[0].status).toEqual('current');
   });
 
+  test('Public user', async () => {
+    const lambda = require('../GET/index');
+    const event = {
+      httpMethod: 'GET',
+      pathParameters: {
+        identifier: '1'
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: false
+        }
+      }
+    }
+    const res = await lambda.handler(event, null);
+    expect(res.statusCode).toBe(200);
+    event.queryStringParameters = {
+      status: 'pending'
+    };
+    // public not allowed to see status = pending
+    const res2 = await lambda.handler(event.null);
+    expect(res2.statusCode).toBe(400);
+  });
 });

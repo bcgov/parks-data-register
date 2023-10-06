@@ -38,7 +38,7 @@ exports.handler = async (event, context) => {
     return sendResponse(200, res, 'Success', null, context);
   } catch (err) {
     logger.error(err);
-    return sendResponse(err.code || 400, [], err?.msg || 'Error', err?.error || err, context);
+    return sendResponse(err?.code || 400, [], err?.msg || 'Error', err?.error || err, context);
   }
 };
 

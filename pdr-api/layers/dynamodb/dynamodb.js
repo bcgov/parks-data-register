@@ -26,7 +26,7 @@ async function getOne(pk, sk) {
     Key: AWS.DynamoDB.Converter.marshall({ pk, sk })
   };
   let item = await dynamodb.getItem(params).promise();
-  return item?.Item || {};
+  return AWS.DynamoDB.Converter.unmarshall(item?.Item) || {};
 }
 
 async function runQuery(query, limit = null, lastEvaluatedKey = null, paginated = true) {

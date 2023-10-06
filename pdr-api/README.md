@@ -14,6 +14,8 @@ Data models can be found in [/docs](https://github.com/bcgov/parks-data-register
 
 # Local Development
 
+
+
 ## Prerequisites
 
 To use the SAM CLI, you need the following tools.
@@ -60,6 +62,8 @@ pdr-api$ sam local start-api
 pdr-api$ curl http://localhost:3000/
 ```
 
+You can also use `yarn build` & `yarn start` to build and start the API locally. 
+
 ### Testing
 
 Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
@@ -80,6 +84,39 @@ The SAM CLI reads the application template to determine the API's routes and the
             Path: /hello
             Method: get
 ```
+
+Run the suite of unit tests with `yarn test`:
+
+```bash
+pdr-api$ yarn test
+```
+
+With SAM, lambda and layer dependencies are stored their respective `nodejs` folder upon running `sam build`, not the common `node_modules` folder. Since Jest looks for dependencies in the `node_modules` folder, a symlink is created in the build step so Jest can find layer dependencies outside of a SAM docker container environment. 
+
+Because of this, dependency mapping does not exist prior to `sam build` and therefore `sam build` is included in the `yarn test` script.
+
+Additionally, lambdas with layer dependencies import the layer using `require`:
+
+```
+const { layerFn } = require(/opt/layer);
+```
+
+The `/opt` directory is only available at runtime within the SAM docker container after running `sam build && sam local start-api`. Jest cannot be mapped to the `opt` directory. To work around this, Jest is configured to look for the respective layer resources using `moduleNameMapper`.
+
+```package.json
+"jest": {
+  ...
+  "moduleNameMapper": [
+    "^/opt/dynamodb": "<rootDir>/.aws-sam/build/DynamoDBLayer/dynamodb",
+    "^/opt/base": "<rootDir>/.aws-sam/build/BaseLayer/base",
+    ...,
+    "^/opt/layer": "<rootDir>/.aws-sam/build/LayerName/layerFile"
+  ]
+}
+```
+
+The configuration above tells Jest to look for layer resources in the build folder. We tell Jest to look here instead of the `/layer` folder because all the layer's dependencies are available within the build folder via symlink after running `sam build`. 
+
 
 # Deployment Pipeline
 

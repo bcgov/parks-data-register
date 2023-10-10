@@ -36,7 +36,7 @@ exports.handler = async function (event, context, callback) {
 
   // Sysadmin
   logger.debug('User authenticated.');
-  return generatePolicy(token.sid, 'Allow', event.methodArn, permissionObject);
+  return generatePolicy(token.data.sid, 'Allow', event.methodArn, permissionObject);
 };
 
 // Help function to generate an IAM policy

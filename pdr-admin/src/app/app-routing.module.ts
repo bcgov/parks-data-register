@@ -4,6 +4,10 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { LoginComponent } from './login/login.component';
+import { NameSearchComponent } from './name-search/name-search.component';
+import { IdGeneratorComponent } from './id-generator/id-generator.component';
+import { DataExportComponent } from './data-export/data-export.component';
+import { ChangeLogComponent } from './change-log/change-log.component';
 
 const routes: Routes = [
   {
@@ -33,6 +37,46 @@ const routes: Routes = [
     data: {
       showSideBar: false,
       showBreadCrumb: false,
+    },
+  },
+  {
+    path: 'name-search',
+    pathMatch: 'full',
+    component: NameSearchComponent,
+    data: {
+      label: 'Name search',
+      breadcrumb: 'Name search',
+      icon: 'bi-search',
+    },
+  },
+  {
+    path: 'id-generator',
+    pathMatch: 'full',
+    component: IdGeneratorComponent,
+    data: {
+      label: 'ID generator',
+      breadcrumb: 'ID generator',
+      icon: 'bi-fingerprint',
+    },
+  },
+  {
+    path: 'data-export',
+    pathMatch: 'full',
+    component: DataExportComponent,
+    data: {
+      label: 'Data export',
+      breadcrumb: 'Data export',
+      icon: 'bi-file-earmark-spreadsheet',
+    },
+  },
+  {
+    path: 'change-log',
+    pathMatch: 'full',
+    component: ChangeLogComponent,
+    data: {
+      label: 'Change log',
+      breadcrumb: 'Change log',
+      icon: 'bi-clock-history',
     },
   },
   {

@@ -23,6 +23,11 @@ import { EventService } from './services/event.service';
 import { ToggleButtonModule } from './toggle-button/toggle-button.module';
 import { BreadcrumbModule } from './breadcrumb/breadcrumb.module';
 import { HomeModule } from './home/home.module';
+import { NameSearchComponent } from './name-search/name-search.component';
+import { NgdsFormsModule } from '@digitalspace/ngds-forms';
+import { IdGeneratorComponent } from './id-generator/id-generator.component';
+import { DataExportComponent } from './data-export/data-export.component';
+import { ChangeLogComponent } from './change-log/change-log.component';
 
 export function initConfig(
   configService: ConfigService,
@@ -41,7 +46,7 @@ export function initConfig(
 }
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent],
+  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent, NameSearchComponent, IdGeneratorComponent, DataExportComponent, ChangeLogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -52,6 +57,7 @@ export function initConfig(
     ToggleButtonModule,
     BreadcrumbModule,
     HomeModule,
+    NgdsFormsModule,
   ],
   providers: [
     {

@@ -1,0 +1,83 @@
+<div class="container-fluid bg-info p-4">
+  <section class="pb-3">
+    <h3>Search by name or ID</h3>
+    <div class="row">
+      <div class="col-12 col-lg-6">
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <ngds-typeahead-input
+              [control]="form?.controls?.['name']"
+              [selectionListItems]="parkNames"
+              [label]="'Name'"
+              [disabled]="nameControlDisabled"
+              [resetButton]="true"
+            >
+            </ngds-typeahead-input>
+          </div>
+          <div class="col-12 col-md-2 text-center mt-auto">
+            <h3 class="mb-3 pt-md-0 pt-5">or</h3>
+          </div>
+          <div class="col-12 col-md-4">
+            <ngds-text-input
+              class="form-id"
+              [control]="form?.controls?.['pk']"
+              [label]="'ID'"
+              [disabled]="pkControlDisabled"
+              [resetButton]="true"
+            ></ngds-text-input>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="white-divider" />
+
+  <section class="pb-3">
+    <h3>Filter</h3>
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <ngds-picklist-input
+          [control]="form?.controls?.['status']"
+          [selectionListItems]="statusPicklistItems"
+          [label]="'Status'"
+          [placeholder]="'Any'"
+        >
+        </ngds-picklist-input>
+      </div>
+      <div class="col-12 pt-2 pt-md-0 col-md-4">
+        <ngds-picklist-input
+          [control]="form?.controls?.['audioClip']"
+          [selectionListItems]="audioPicklistItems"
+          [label]="'Audio'"
+          [placeholder]="'Any'"
+        >
+        </ngds-picklist-input>
+      </div>
+      <div class="col-12 pt-5 pt-md-0 col-md-4 mt-auto">
+        <div class="d-grid">
+          <button type="button" class="btn btn-primary" (click)="submit()">Search</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="container-fluid p-4">
+  <h3>Search results</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">LEGAL NAME</th>
+        <th scope="col">TYPE</th>
+        <th scope="col">STATUS</th>
+        <th scope="col">AUDIO</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div *ngIf="data.length === 0">
+    No results. Try a new search.
+    <hr />
+  </div>
+</div>

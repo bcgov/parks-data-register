@@ -11,27 +11,38 @@ export class HomeComponent {
   // This can be pulled in via the config.
   public cardConfig = [
     {
-      cardHeader: 'Card 1',
-      cardTitle: 'Card 1',
-      cardText: 'Description goes here.',
-      navigation: '/',
+      cardHeader: 'Name Search',
+      cardTitle: 'Search data records',
+      cardText: 'View, add, or change name records',
+      navigation: 'name-search',
+    },
+    {
+      cardHeader: 'ID Generator',
+      cardTitle: 'Create new legal name or IDs',
+      cardText: 'Create, view, or cancel pending IDs.',
+      navigation: 'id-generator',
+    },
+    {
+      cardHeader: 'Data Export',
+      cardTitle: 'Export complete dataset',
+      cardText: 'Download all data in the register to CSV.',
+      navigation: 'data-export',
+    },
+    {
+      cardHeader: 'Change Log',
+      cardTitle: 'See changes',
+      cardText: 'View changes by date, type, and actor.',
+      navigation: 'change-log',
     },
   ];
   constructor(protected keyCloakService: KeycloakService, protected configService: ConfigService) {
-    this.cardConfig.push({
-      cardHeader: 'Card 2',
-      cardTitle: 'Card 2',
-      cardText: 'Description goes here.',
-      navigation: '/',
-    });
-
-    if (keyCloakService.isAllowed('metrics')) {
-      this.cardConfig.push({
-        cardHeader: 'Card 3',
-        cardTitle: 'Card 3',
-        cardText: 'Description goes here.',
-        navigation: '/',
-      });
-    }
+    // if (keyCloakService.isAllowed('metrics')) {
+    //   this.cardConfig.push({
+    //     cardHeader: 'Card 3',
+    //     cardTitle: 'Card 3',
+    //     cardText: 'Description goes here.',
+    //     navigation: '/',
+    //   });
+    // }
   }
 }

@@ -1239,14 +1239,21 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@digitalspace/bcparks-bootstrap-theme@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@digitalspace/bcparks-bootstrap-theme/-/bcparks-bootstrap-theme-1.3.1.tgz#2ecffe5444dae5c71d08f0bb4a69c17be1245849"
-  integrity sha512-dAkcHB88ITDoNOHXfUueFFbYg6ip9AxC8H5+jWaorMoVmZT1XwTDZypzqzH+8NyKwUFR4y5FhIpVK2IVqIvxXA==
+"@digitalspace/bcparks-bootstrap-theme@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@digitalspace/bcparks-bootstrap-theme/-/bcparks-bootstrap-theme-1.3.2.tgz#14fa0bd8b4a4dd90c2d3f1bca5256ad5db6fdd16"
+  integrity sha512-xZ8SnHmn+M/tgljPj6k/o9D8f4FHfSjfiehdzkCXT0Av5k1IhufPCKZu+gw0J5kmg3sPynaqF2NTxI0n1LzyHA==
   dependencies:
     "@popperjs/core" "^2.11.8"
     bootstrap "^5.3.1"
     jquery "^3.6.0"
+
+"@digitalspace/ngds-forms@^0.0.77":
+  version "0.0.77"
+  resolved "https://registry.yarnpkg.com/@digitalspace/ngds-forms/-/ngds-forms-0.0.77.tgz#67a98394674c63c530f0b033b02125bf9f5a6d95"
+  integrity sha512-vRp06imotFJFbRIPrvFgdAwlBImlDZPpXLG++5b+sFccIJ1nS8fLFAEyFgmf65Xt6EiYmzpyC/5/cG7u74YDwg==
+  dependencies:
+    tslib "^2.3.0"
 
 "@discoveryjs/json-ext@0.5.7":
   version "0.5.7"
@@ -2530,6 +2537,11 @@ bootstrap@^5.3.1:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.1.tgz#8ca07040ad15d7f75891d1504cf14c5dedfb1cfe"
   integrity sha512-jzwza3Yagduci2x0rr9MeFSORjcHpt0lRZukZPZQJT1Dth5qzV7XcgGqYzi39KGAVYR8QEDVoO0ubFKOxzMG+g==
+
+bootstrap@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.2.tgz#97226583f27aae93b2b28ab23f4c114757ff16ae"
+  integrity sha512-D32nmNWiQHo94BKHLmOrdjlL05q1c8oxbtBphQFb9Z5to6eGRDCm0QgeaZ4zFBHzfg2++rqa2JkqCcxDy0sH0g==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -5060,6 +5072,13 @@ ng-packagr@^16.2.0:
     sass "^1.55.0"
   optionalDependencies:
     esbuild "^0.19.0"
+
+ngx-bootstrap@^11.0.2:
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-11.0.2.tgz#ed1d0e254ef16ba8245cd9a3450404dc81aabef6"
+  integrity sha512-McvQ72XB6692Jus47jahWWwjpSCa6EtHMIqoyMewKCEHMv0ybDgVnOAdEsWKvwfulowHn7Y/jDjeiURwYJG9cQ==
+  dependencies:
+    tslib "^2.3.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"

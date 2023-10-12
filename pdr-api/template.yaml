@@ -28,7 +28,13 @@ Parameters:
     Default: 't3.small.search'
   OpenSearchMainIndex:
     Type: String
-    Default: "main-index"
+    Default: 'main-index'
+  SecurityGroupId:
+    Type: String
+    Default: 'sg-0fc22027b778c9405'
+  SubnetId:
+    Type: String
+    Default: 'subnet-0896ff158c3ecdc53'
 
 Resources:
 
@@ -88,9 +94,9 @@ Resources:
       DomainName: !Ref DomainName
       VPCOptions:
         SecurityGroupIds:
-          - sg-0fc22027b778c9405
+          - !Ref SecurityGroupId
         SubnetIds:
-          - subnet-0896ff158c3ecdc53
+          - !Ref SubnetId
       ClusterConfig:
         DedicatedMasterEnabled: false
         InstanceCount: !Ref InstanceCount
@@ -174,9 +180,9 @@ Resources:
     Properties:
       VpcConfig:
         SecurityGroupIds:
-          - sg-0fc22027b778c9405
+          - !Ref SecurityGroupId
         SubnetIds:
-          - subnet-0896ff158c3ecdc53
+          - !Ref SubnetId
       CodeUri: handlers/search
       Handler: index.handler
       Role: !GetAtt StreamRole.Arn
@@ -322,9 +328,9 @@ Resources:
       Runtime: nodejs18.x
       VpcConfig:
         SecurityGroupIds:
-          - sg-0fc22027b778c9405
+          - !Ref SecurityGroupId
         SubnetIds:
-          - subnet-0896ff158c3ecdc53
+          - !Ref SubnetId
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NameRegister

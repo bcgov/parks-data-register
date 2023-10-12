@@ -8,7 +8,7 @@
     "aws-sdk": "^2.1467.0"
   },
   "scripts": {
-    "start": "sam local start-api --skip-pull-image 2>&1 | tr '\r' '\n'",
+    "start": "sam local start-api --env-vars env.json --skip-pull-image 2>&1 | tr '\r' '\n'",
     "start-full": "yarn build && yarn start",
     "build": "sam build --parallel",
     "test": "export=IS_OFFLINE=1 && export TABLE_NAME=NameRegistry-tests && yarn build && jest --coverage"

@@ -210,3 +210,6 @@ $RECYCLE.BIN/
 
 tools/BC Parks Names.csv
 tools/PAR - Parks.csv
+
+# AWS SAM Template env.json for Environment variables
+env.json

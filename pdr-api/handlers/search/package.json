@@ -1,0 +1,8 @@
+{
+  "name": "config-post",
+  "version": "1.0.0",
+  "author": "Digitalspace <contact@digitalspace.ca>",
+  "dependencies": {
+    "@opensearch-project/opensearch": "^2.4.0"
+  }
+}

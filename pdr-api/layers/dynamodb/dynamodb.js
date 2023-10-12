@@ -3,8 +3,9 @@ const { logger } = require('/opt/base');
 
 const TABLE_NAME = process.env.TABLE_NAME || 'NameRegister';
 const AWS_REGION = process.env.AWS_REGION || 'ca-central-1';
-const STATUS_INDEX_NAME = process.env.STATUS_INDEX_NAME || 'ByStatusOfOrcs';
-const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || 'ByLegalName';
+const AUDIT_TABLE_NAME = process.env.TABLE_NAME || "Audit";
+const STATUS_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByStatusOfOrcs";
+const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByLegalName";
 
 const options = {
   region: AWS_REGION
@@ -127,14 +128,76 @@ async function getConfig() {
   return AWS.DynamoDB.Converter.unmarshall(config);
 }
 
+async function putItem(obj, tableName = TABLE_NAME) {
+  let putObj = {
+    TableName: tableName,
+    Item: obj,
+    ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
+  };
+
+  await dynamodb.putItem(putObj).promise();
+}
+
+async function batchWriteData(dataToInsert, chunkSize, tableName) {
+  // Assume dataToInsert is already in Dynamo Json format
+
+  // Function to chunk the data into smaller arrays
+  function chunkArray(array, chunkSize) {
+    const result = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
+  }
+
+  console.log("dataToInsert");
+  console.log(JSON.stringify(dataToInsert));
+
+  const dataChunks = chunkArray(dataToInsert, chunkSize);
+
+  console.log("datachunks")
+  console.log(JSON.stringify(dataChunks));
+
+
+  for (let index = 0; index < dataChunks.length; index++) {
+    const chunk = dataChunks[index];
+
+    const writeRequests = chunk.map(item => ({
+      PutRequest: {
+        Item: item
+      }
+    }));
+
+    console.log(JSON.stringify(writeRequests))
+
+    const params = {
+      RequestItems: {
+        [tableName]: writeRequests
+      }
+    };
+
+    try {
+      console.log(JSON.stringify(params));
+      const data = await dynamodb.batchWriteItem(params).promise();
+      logger.info(`BatchWriteItem response for chunk ${index}:`, data);
+    } catch (err) {
+      logger.error(`Error batch writing items in chunk ${index}:`, err);
+    }
+  }
+}
+
+
 module.exports = {
   TABLE_NAME,
   AWS_REGION,
+  AUDIT_TABLE_NAME,
   STATUS_INDEX_NAME,
   LEGALNAME_INDEX_NAME,
+  batchWriteData,
   dynamodb,
   runQuery,
   runScan,
   getOne,
-  getConfig
+  getConfig,
+  putItem
 };

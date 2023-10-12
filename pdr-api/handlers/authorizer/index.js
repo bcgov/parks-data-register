@@ -1,6 +1,9 @@
 const { decodeJWT, resolvePermissions } = require('/opt/permissions');
 const { logger } = require('/opt/base');
 
+const SSO_ISSUER = process.env.SSO_ISSUER || 'https://dev.loginproxy.gov.bc.ca/auth/realms/bcparks-service-transformation'
+const SSO_JWKSURI = process.env.SSO_JWKSURI || 'https://dev.loginproxy.gov.bc.ca/auth/realms/bcparks-service-transformation/protocol/openid-connect/certs'
+
 const publicPermissionObject = {
   isAdmin: false,
   role: ['public']
@@ -19,7 +22,7 @@ exports.handler = async function (event, context, callback) {
     return generatePolicy('public', 'Allow', event.methodArn, publicPermissionObject);
   }
 
-  let token = await decodeJWT(event);
+  let token = await decodeJWT(event, SSO_ISSUER, SSO_JWKSURI);
   logger.debug('token', JSON.stringify(token));
 
   if (!token.decoded) {

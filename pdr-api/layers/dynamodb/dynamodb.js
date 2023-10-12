@@ -10,14 +10,11 @@ const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByLegalName";
 const options = {
   region: AWS_REGION
 };
-
 if (process.env.IS_OFFLINE) {
-  options.endpoint = 'http://localhost:8000';
+  options.endpoint = process.env.AWS_ENDPOINT_URL || 'http://localhost:8000';
 }
 
 const dynamodb = new AWS.DynamoDB(options);
-
-exports.dynamodb = new AWS.DynamoDB();
 
 // simple way to return a single Item by primary key.
 async function getOne(pk, sk) {
@@ -188,6 +185,7 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
 
 
 module.exports = {
+  dynamodb,
   TABLE_NAME,
   AWS_REGION,
   AUDIT_TABLE_NAME,

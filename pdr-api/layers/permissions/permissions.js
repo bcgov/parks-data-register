@@ -1,17 +1,12 @@
 const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
-const SSO_ISSUER =
-  process.env.SSO_ISSUER || 'https://dev.loginproxy.gov.bc.ca/auth/realms/bcparks-service-transformation';
-const SSO_JWKSURI =
-  process.env.SSO_JWKSURI ||
-  'https://dev.loginproxy.gov.bc.ca/auth/realms/bcparks-service-transformation/protocol/openid-connect/certs';
 const INVALID_TOKEN = {
   decoded: false,
   data: null
 };
 const { logger } = require('/opt/base');
 
-exports.decodeJWT = async function (event) {
+exports.decodeJWT = async function (event, issuer, jwksUri) {
   const token = event.headers.Authorization;
 
   let decoded = null;
@@ -19,6 +14,8 @@ exports.decodeJWT = async function (event) {
     decoded = await new Promise(function (resolve) {
       verifyToken(
         token,
+        issuer,
+        jwksUri,
         function (data) {
           logger.debug('Data:', data);
           resolve(data);
@@ -49,7 +46,7 @@ exports.decodeJWT = async function (event) {
   }
 };
 
-const verifyToken = function (token, callback, sendError) {
+const verifyToken = function (token, issuer, jwksUri, callback, sendError) {
   logger.debug('verifying token');
   logger.debug('token:', token);
 
@@ -62,7 +59,7 @@ const verifyToken = function (token, callback, sendError) {
     // Get the SSO_JWKSURI and process accordingly.
     const client = jwksClient({
       strictSsl: true, // Default value
-      jwksUri: SSO_JWKSURI
+      jwksUri: jwksUri
     });
 
     const kid = jwt.decode(tokenString, { complete: true }).header.kid;
@@ -73,7 +70,7 @@ const verifyToken = function (token, callback, sendError) {
         callback(sendError());
       } else {
         const signingKey = key.publicKey || key.rsaPublicKey;
-        verifySecret(tokenString, signingKey, callback, sendError);
+        verifySecret(tokenString, issuer, signingKey, callback, sendError);
       }
     });
   } else {
@@ -82,7 +79,7 @@ const verifyToken = function (token, callback, sendError) {
   }
 };
 
-function verifySecret(tokenString, secret, callback, sendError) {
+function verifySecret(tokenString, issuer, secret, callback, sendError) {
   jwt.verify(tokenString, secret, function (verificationError, decodedToken) {
     // check if the JWT was verified correctly
     if (verificationError == null && decodedToken && decodedToken.resource_access['data-register'].roles) {
@@ -93,10 +90,10 @@ function verifySecret(tokenString, secret, callback, sendError) {
       logger.debug('decodedToken.iss', decodedToken.iss);
       logger.debug('decodedToken roles', decodedToken.resource_access['data-register'].roles);
 
-      logger.debug('SSO_ISSUER', SSO_ISSUER);
+      logger.debug('SSO_ISSUER', issuer);
 
       // check if the dissuer matches
-      let issuerMatch = decodedToken.iss == SSO_ISSUER;
+      let issuerMatch = decodedToken.iss == issuer;
 
       logger.debug('issuerMatch', issuerMatch);
 

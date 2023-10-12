@@ -6,7 +6,6 @@ import { NotAuthorizedComponent } from './not-authorized/not-authorized.componen
 import { LoginComponent } from './login/login.component';
 import { NameSearchComponent } from './name-search/name-search.component';
 import { IdGeneratorComponent } from './id-generator/id-generator.component';
-import { DataExportComponent } from './data-export/data-export.component';
 import { ChangeLogComponent } from './change-log/change-log.component';
 
 const routes: Routes = [
@@ -57,16 +56,6 @@ const routes: Routes = [
       label: 'ID generator',
       breadcrumb: 'ID generator',
       icon: 'bi-fingerprint',
-    },
-  },
-  {
-    path: 'data-export',
-    pathMatch: 'full',
-    component: DataExportComponent,
-    data: {
-      label: 'Data export',
-      breadcrumb: 'Data export',
-      icon: 'bi-file-earmark-spreadsheet',
     },
   },
   {

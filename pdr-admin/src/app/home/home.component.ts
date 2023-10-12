@@ -23,12 +23,6 @@ export class HomeComponent {
       navigation: 'id-generator',
     },
     {
-      cardHeader: 'Data Export',
-      cardTitle: 'Export complete dataset',
-      cardText: 'Download all data in the register to CSV.',
-      navigation: 'data-export',
-    },
-    {
       cardHeader: 'Change Log',
       cardTitle: 'See changes',
       cardText: 'View changes by date, type, and actor.',

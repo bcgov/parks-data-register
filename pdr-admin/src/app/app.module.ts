@@ -26,7 +26,6 @@ import { HomeModule } from './home/home.module';
 import { NameSearchComponent } from './name-search/name-search.component';
 import { NgdsFormsModule } from '@digitalspace/ngds-forms';
 import { IdGeneratorComponent } from './id-generator/id-generator.component';
-import { DataExportComponent } from './data-export/data-export.component';
 import { ChangeLogComponent } from './change-log/change-log.component';
 
 export function initConfig(
@@ -46,7 +45,14 @@ export function initConfig(
 }
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent, NameSearchComponent, IdGeneratorComponent, DataExportComponent, ChangeLogComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    NotAuthorizedComponent,
+    NameSearchComponent,
+    IdGeneratorComponent,
+    ChangeLogComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

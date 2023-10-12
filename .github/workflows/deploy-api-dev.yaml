@@ -65,8 +65,8 @@ jobs:
         env:
           STACK_NAME: ${{ vars.PDR_API_STACK_NAME }}
           STAGE: ${{ vars.PDR_API_STAGE }}
-          SSO_ISSUER: ${{ var.SSO_ISSUER }}
-          SSO_JWKSURI: ${{ var.SSO_JWKSURI }}
+          SSO_ISSUER: ${{ vars.SSO_ISSUER }}
+          SSO_JWKSURI: ${{ vars.SSO_JWKSURI }}
         run: |
           sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI"
 

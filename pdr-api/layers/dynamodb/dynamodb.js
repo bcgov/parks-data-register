@@ -185,7 +185,6 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
 
 
 module.exports = {
-  dynamodb,
   TABLE_NAME,
   AWS_REGION,
   AUDIT_TABLE_NAME,

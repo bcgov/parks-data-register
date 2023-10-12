@@ -1,0 +1,9 @@
+{
+  "name": "config-post",
+  "version": "1.0.0",
+  "author": "Digitalspace <contact@digitalspace.ca>",
+  "dependencies": {
+    "@aws-sdk/credential-provider-node": "^3.425.0",
+    "@opensearch-project/opensearch": "^2.4.0"
+  }
+}

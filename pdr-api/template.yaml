@@ -13,8 +13,125 @@ Parameters:
   Stage:
     Type: String
     Default: api
+  DomainName:
+    Description: User-defined OpenSearch domain name
+    Type: String
+    Default: 'data-register'
+  KMSKeyId:
+    Type: String
+    Default: 'arn:aws:kms:ca-central-1:970582042516:alias/aws/es'
+  InstanceCount:
+    Type: Number
+    Default: 1
+  InstanceType:
+    Type: String
+    Default: 't3.small.search'
+  OpenSearchMainIndex:
+    Type: String
+    Default: 'main-index'
+  SecurityGroupId:
+    Type: String
+    Default: 'sg-0fc22027b778c9405'
+  SubnetId:
+    Type: String
+    Default: 'subnet-0896ff158c3ecdc53'
 
 Resources:
+
+  ## Roles
+  StreamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole'
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+      Policies:
+        - PolicyName: 'ProcessDynamoDBStreamRolePolicyOne'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:PutItem
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:BatchGetItem
+                  - dynamodb:DescribeTable
+                  - dynamodb:ConditionCheckItem
+                Resource:
+                  - arn:aws:dynamodb:ca-central-1:970582042516:table/Audit
+                  - arn:aws:dynamodb:ca-central-1:970582042516:table/Audit/index/*
+                Effect: Allow
+        - PolicyName: 'ProcessDynamoDBStreamRolePolicyTwo'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action:
+                  - es:ESHttpPost
+                  - es:ESHttpPut
+                Resource: arn:aws:es:ca-central-1:970582042516:domain/data-register/*
+                Effect: Allow
+
+  ## Opensearch
+  OpenSearch:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: !Ref DomainName
+      VPCOptions:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          - !Ref SubnetId
+      ClusterConfig:
+        DedicatedMasterEnabled: false
+        InstanceCount: !Ref InstanceCount
+        InstanceType: !Ref InstanceType
+        MultiAZWithStandbyEnabled: false
+        WarmEnabled: false
+        ZoneAwarenessEnabled: false
+      NodeToNodeEncryptionOptions:
+        Enabled: true
+      EncryptionAtRestOptions:
+        Enabled: true
+        KmsKeyId: !Ref KMSKeyId
+      DomainEndpointOptions:
+        EnforceHTTPS: true
+      AdvancedSecurityOptions:
+        Enabled: true
+        InternalUserDatabaseEnabled: false
+        MasterUserOptions:
+          MasterUserARN: !GetAtt StreamRole.Arn
+      EBSOptions:
+        EBSEnabled: true
+        Iops: '3000'
+        VolumeSize: '10'
+        Throughput: '125'
+        VolumeType: 'gp3'
+      AccessPolicies:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: 'Allow'
+            Principal:
+              AWS: '*'
+            Action: 'es:*'
+            Resource: !GetAtt StreamRole.Arn
+
   ### LAMBDA LAYERS ###
   BaseLayer:
     Type: AWS::Serverless::LayerVersion
@@ -56,6 +173,35 @@ Resources:
       BuildMethod: makefile
 
   ### LAMBDA FUNCTIONS ###
+
+  SearchFunction:
+    FunctionName: SearchFunction
+    Type: AWS::Serverless::Function
+    Properties:
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          - !Ref SubnetId
+      CodeUri: handlers/search
+      Handler: index.handler
+      Role: !GetAtt StreamRole.Arn
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 7
+      Description: Search Handler
+      Policies:
+        - ElasticsearchHttpPostPolicy:
+            DomainName: data-register
+      Environment:
+        Variables:
+          LOG_LEVEL: info
+          OPENSEARCH_MAIN_INDEX: !Ref OpenSearchMainIndex
+          OPENSEARCH_DOMAIN_ENDPOINT: !Sub
+            - 'https://${Domain}/'
+            - Domain: !GetAtt OpenSearch.DomainEndpoint
 
   # Config
   ConfigGet:
@@ -173,13 +319,38 @@ Resources:
     Properties:
       CodeUri: handlers/dynamoStream/
       Handler: index.handler
+      Role: !GetAtt StreamRole.Arn
+      MemorySize: 512
+      Timeout: 60
       Layers:
         - !Ref BaseLayer
         - !Ref DynamoDBLayer
       Runtime: nodejs18.x
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          - !Ref SubnetId
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NameRegister
+            TableName: !Ref Audit
+        - ElasticsearchHttpPostPolicy:
+            DomainName: data-register
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt NameRegister.StreamArn
+            BatchSize: 10
+            StartingPosition: TRIM_HORIZON
       Environment:
         Variables:
           LOG_LEVEL: info
+          OPENSEARCH_MAIN_INDEX: !Ref OpenSearchMainIndex
+          OPENSEARCH_DOMAIN_ENDPOINT: !Sub
+            - 'https://${Domain}/'
+            - Domain: !GetAtt OpenSearch.DomainEndpoint
 
   ### AUTHORIZER ###
   Authorizer:
@@ -238,6 +409,8 @@ Resources:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
       TableName: NameRegister
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
   Audit:
@@ -266,6 +439,8 @@ Resources:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
       TableName: Audit
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
     DependsOn: NameRegister
 
 Outputs:
@@ -275,3 +450,8 @@ Outputs:
   ApiDeployment:
     Description: 'API Gateway endpoint URL for Stage for Config function'
     Value: !Sub 'https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/config/'
+  OpenSearch:
+    Description: 'OpenSearch Domain Endpoint'
+    Value: !Sub
+      - 'https://${Domain}/'
+      - Domain: !GetAtt OpenSearch.DomainEndpoint

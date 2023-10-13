@@ -80,8 +80,9 @@ jobs:
           STAGE: ${{ vars.PDR_API_STAGE }}
           SSO_ISSUER: ${{ vars.SSO_ISSUER }}
           SSO_JWKSURI: ${{ vars.SSO_JWKSURI }}
+          KMS_KEY_ARN: ${{ vars.KMS_KEY_ARN }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI"
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN"
 
       - shell: bash
         env:

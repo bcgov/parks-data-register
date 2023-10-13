@@ -10,7 +10,8 @@ const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByLegalName";
 const options = {
   region: AWS_REGION
 };
-if (process.env.IS_OFFLINE) {
+if (process.env.IS_OFFLINE === 'true') {
+  // Env vars evaluate as strings
   options.endpoint = process.env.DYNAMODB_ENDPOINT_URL || 'http://localhost:8000';
 }
 

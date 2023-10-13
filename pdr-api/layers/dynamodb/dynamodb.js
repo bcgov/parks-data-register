@@ -11,7 +11,7 @@ const options = {
   region: AWS_REGION
 };
 if (process.env.IS_OFFLINE) {
-  options.endpoint = process.env.AWS_ENDPOINT_URL || 'http://localhost:8000';
+  options.endpoint = process.env.DYNAMODB_ENDPOINT_URL || 'http://localhost:8000';
 }
 
 const dynamodb = new AWS.DynamoDB(options);

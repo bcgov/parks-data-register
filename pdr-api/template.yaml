@@ -13,7 +13,7 @@ Globals:
         SSO_ISSUER: !Ref SSOIssuerUrl
         SSO_JWKSURI: !Ref SSOJWKSUri
         IS_OFFLINE: false
-        AWS_ENDPOINT_URL: https://localhost:8000
+        DYNAMODB_ENDPOINT_URL: https://localhost:8000
 
 Parameters:
   Stage:

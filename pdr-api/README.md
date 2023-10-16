@@ -12,9 +12,14 @@ Data models can be found in [/docs](https://github.com/bcgov/parks-data-register
 ![State chart](./docs/park-name-status.svg)
 <img src="./docs/park-name-status.svg">
 
+
+## OpenSearch System Integration
+
+![Architecture](./docs/Data Register - OpenSearch Architecture.drawio.svg)
+<img src="./docs/Data Register - OpenSearch Architecture.drawio.svg">
+
+
 # Local Development
-
-
 
 ## Prerequisites
 

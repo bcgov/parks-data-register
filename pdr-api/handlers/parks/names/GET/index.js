@@ -6,7 +6,7 @@ exports.handler = async (event, context) => {
 
   try {
     const queryParams = event.queryStringParameters;
-    const isAdmin = JSON.parse(event.requestContext.authorizer.isAdmin);
+    const isAdmin = JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
 
     // Check if query is valid
     validateRequest(queryParams, isAdmin);
@@ -32,7 +32,15 @@ exports.handler = async (event, context) => {
     }
 
     logger.debug('Get all park names query', query);
-    const res = await runQuery(query);
+    let res = await runQuery(query);
+
+    // Prune notes field for non admin users
+    if (!isAdmin) {
+      for (let i = 0; i < res.items.length; i++) {
+        delete res.items[i].notes;
+      }
+    }
+
     logger.debug('Get all park names result', res);
 
     return sendResponse(200, res, 'Success', null, context);

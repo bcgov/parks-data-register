@@ -38,7 +38,13 @@ exports.handler = async (event, context) => {
     }
 
     logger.debug('Get park name query', query);
-    const res = await runQuery(query);
+    let res = await runQuery(query);
+    // Prune notes field for non admin users
+    if (!isAdmin) {
+      for (let i = 0; i < res.items.length; i++) {
+        delete res.items[i].notes;
+      }
+    }
     logger.debug('Get park name result', res);
 
     return sendResponse(200, res, 'Success', null, context);

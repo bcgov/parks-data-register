@@ -173,4 +173,3 @@ You can find more information and examples about filtering Lambda function logs 
 ## Resources
 
 See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.
-

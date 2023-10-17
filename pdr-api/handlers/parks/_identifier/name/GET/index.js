@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
     const status = event.queryStringParameters?.status || null;
 
     const queryParams = event.queryStringParameters;
-    const isAdmin = JSON.parse(event.requestContext.authorizer.isAdmin);
+    const isAdmin = JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
 
     // Check if query is valid
     validateRequest(queryParams, isAdmin);

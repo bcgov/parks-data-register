@@ -197,6 +197,9 @@ Resources:
           - !Ref SubnetId
       CodeUri: handlers/search
       Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
       Role: !GetAtt StreamRole.Arn
       Runtime: nodejs18.x
       Architectures:
@@ -214,6 +217,13 @@ Resources:
           OPENSEARCH_DOMAIN_ENDPOINT: !Sub
             - 'https://${Domain}/'
             - Domain: !GetAtt OpenSearch.DomainEndpoint
+      Events:
+        SearchGet:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: GET
+            RestApiId: !Ref ApiDeployment
 
   # Config
   ConfigGet:

@@ -32,7 +32,7 @@ exports.handler = async function (event, context) {
       const creationTime = new Date(record.dynamodb.ApproximateCreationDateTime).toISOString();
       const gsipk = record.dynamodb.Keys.pk;
       const gsisk = record.dynamodb.Keys.sk;
-      const user = newImage?.lastModifiedBy || "system";
+      const user = newImage?.lastModifiedBy?.S || "system";
 
       // This forms the primary key in opensearch so we can reference it later to update/remove if need be
       const openSearchId = `${record.dynamodb.Keys.pk.S}#${record.dynamodb.Keys.sk.S}`;

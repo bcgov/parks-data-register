@@ -1,4 +1,24 @@
+@import "@digitalspace/bcparks-bootstrap-theme/dist/scss/variables";
+
 .white-divider {
   background-color: white;
   height: 3px;
+}
+
+.audio-column {
+  padding-top: 0.7rem;
+  i {
+    font-size: 1.25rem;
+  }
+}
+
+.action-column {
+  padding-top: 0.7rem;
+  i {
+    color: #326eaa;
+    font-size: 1.25rem;
+  }
+  i:hover {
+    cursor: pointer;
+  }
 }

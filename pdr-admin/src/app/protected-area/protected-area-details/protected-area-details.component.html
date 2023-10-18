@@ -1,0 +1,41 @@
+<section class="mb-5">
+  <div class="d-flex justify-content-between mb-1">
+    <h1 class="mb-0">
+      {{ currentData.pk }} <span class="fw-normal">{{ currentData.legalName }}</span>
+    </h1>
+    <button type="button" class="btn btn-outline-primary" (click)="editItem()">
+      <i class="bi bi-pen"></i> Edit record
+    </button>
+  </div>
+  <div class="d-flex justify-content-start text-muted">
+    <small class="me-5"><strong>Type</strong> {{ currentData.type }}</small>
+    <small class="me-5"><strong>Status</strong> {{ currentData.status }}</small>
+    <small class="me-5"><strong>Last updated</strong> {{ currentData.updateDate }}</small>
+  </div>
+</section>
+
+<section class="mb-5">
+  <h2>Current name</h2>
+  <app-protected-area-details-section [data]="currentData"></app-protected-area-details-section>
+</section>
+
+<!-- <section class="mb-5">
+    <h2>Search terms</h2>
+  </section> -->
+
+<!-- <section class="mb-5">
+    <h2>Notes</h2>
+  </section> -->
+
+<section class="mb-5" *ngFor="let data of historicalData">
+  <h2>Historical name</h2>
+  <app-protected-area-details-section [data]="data"></app-protected-area-details-section>
+</section>
+
+<!-- <section class="mb-5">
+    <h2>Associated sites</h2>
+  </section>
+
+  <section class="mb-5">
+    <h2>Recent chances</h2>
+  </section> -->

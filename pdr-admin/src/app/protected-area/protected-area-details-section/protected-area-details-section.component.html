@@ -1,0 +1,18 @@
+<p>
+  <strong>Effective date</strong><small class="ms-2">{{ data?.effectiveDate || data?.sk || "-" }}</small>
+</p>
+<p>
+  <strong>Legal name</strong><small class="ms-2">{{ data?.legalName || "-" }}</small>
+</p>
+<p>
+  <strong>Display name</strong><small class="ms-2">{{ data?.displayName || "-" }}</small>
+</p>
+<p>
+  <strong>Phonetic name</strong><small class="ms-2">{{ data?.phoneticName || "-" }}</small>
+</p>
+<p>
+  <strong>Audio link</strong>
+  <small class="ms-2">
+    <a href="{{ data?.audioClip || '-' }}">{{ data?.audioClip || "-" }}</a>
+  </small>
+</p>

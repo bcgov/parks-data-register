@@ -1,6 +1,6 @@
 // Import necessary libraries and modules
 const OPENSEARCH_DOMAIN_ENDPOINT = process.env.OPENSEARCH_DOMAIN_ENDPOINT;
-const OPENSEARCH_MAIN_INDEX      = process.env.OPENSEARCH_MAIN_INDEX;
+const OPENSEARCH_MAIN_INDEX = process.env.OPENSEARCH_MAIN_INDEX;
 
 import { defaultProvider } from '@aws-sdk/credential-provider-node'; // V3 SDK.
 import { Client } from '@opensearch-project/opensearch';
@@ -36,20 +36,35 @@ export const handler = async (event, context) => {
     const isAdmin = JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
 
     // Construct the search query
-    const query = {
+    let query = {
       query: {
-        query_string: {
-          query: queryParams?.text,
-        },
-      },
+        bool: {
+          must: [
+            {
+              query_string: {
+                query: queryParams?.text,
+              }
+            }
+          ]
+        }
+      }
     };
+
+    // Public users get status=current
+    if (!isAdmin) {
+      query.query.bool['filter'] = {
+        term: {
+          status: 'current'
+        }
+      }
+    }
 
     // Send the query to the OpenSearch cluster
     let response = await client.search({
       index: OPENSEARCH_MAIN_INDEX, // Index to search
       body: query,
     });
-    logger.debug(response); // Log the response
+    logger.debug(JSON.stringify(response)); // Log the response
 
     // Redact the "notes" field if the user is not an admin
     if (!isAdmin) {

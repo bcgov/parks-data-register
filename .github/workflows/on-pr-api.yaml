@@ -64,4 +64,4 @@ jobs:
           AWS_REGION: local-env
           AWS_ACCESS_KEY_ID: notused
           AWS_SECRET_ACCESS_KEY: notused
-        run: jest --coverage
+        run: ./node_modules/jest/bin/jest.js --coverage

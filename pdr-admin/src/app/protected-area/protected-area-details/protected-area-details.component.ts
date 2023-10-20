@@ -14,7 +14,6 @@ export class ProtectedAreaDetailsComponent {
   historicalData = null;
 
   constructor(private protectedAreaService: ProtectedAreaService) {
-    this.protectedAreaService.fetchData();
     this.subscriptions.add(
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
         this.currentData = res;

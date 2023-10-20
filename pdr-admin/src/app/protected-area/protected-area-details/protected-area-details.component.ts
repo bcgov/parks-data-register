@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 
 @Component({
   selector: 'app-protected-area-details',
@@ -7,49 +8,26 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./protected-area-details.component.scss'],
 })
 export class ProtectedAreaDetailsComponent {
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  private subscriptions = new Subscription();
 
-  currentData = {
-    pk: '0001',
-    sk: 'Details',
-    type: 'Protected area',
-    createDate: '2019-08-10T16:15:50.868Z',
-    updateDate: '2023-08-10T16:11:54.513Z',
-    effectiveDate: '2023-08-5T16:11:54.513Z',
-    legalName: 'Strathcona Park',
-    displayName: 'Strathcona Park',
-    phoneticName: 'stɹæθˈkoʊnə ˈpɑrk',
-    audioClip: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    status: 'current',
-    notes: 'Name changed because the old one was terrible',
-    searchTerms: 'here are the search terms'
-  };
-  historicalData = [
-    {
-      pk: '0001',
-      sk: '2019-08-10T16:15:50.868Z',
-      type: 'Protected area',
-      legalName: 'Strathcona Awesome-o Park',
-      displayName: 'Strathcona Awesome-o Park',
-      phoneticName: 'strath park',
-      audioClip: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      status: 'old',
-      notes: 'Initial Park created for BC',
-    },
-    {
-      pk: '0001',
-      sk: '2020-08-10T16:15:50.868Z',
-      type: 'Protected area',
-      legalName: 'Strath Park',
-      displayName: 'Strath Park',
-      phoneticName: 'strath park',
-      audioClip: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      status: 'old',
-      notes: 'Updated name',
-    },
-  ];
+  currentData = null;
+  historicalData = null;
 
-  editItem() {
-    this.router.navigate(['edit'], { relativeTo: this.route });
+  constructor(private protectedAreaService: ProtectedAreaService) {
+    this.protectedAreaService.fetchData();
+    this.subscriptions.add(
+      this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
+        this.currentData = res;
+      })
+    );
+    this.subscriptions.add(
+      this.protectedAreaService.watchHistoricalProtectedArea().subscribe((res) => {
+        this.historicalData = res;
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

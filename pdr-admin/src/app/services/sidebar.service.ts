@@ -17,7 +17,9 @@ export class SideBarService implements OnDestroy {
 
   constructor(protected router: Router, protected keyCloakService: KeycloakService) {
     let routesArray = router.config.filter((obj) => {
-      if (obj.path === 'login') {
+      if (!obj?.data || !obj?.data['label']) {
+        return false;
+      } else if (obj.path === 'login') {
         return keyCloakService.isAuthenticated() ? false : true;
       } else {
         return obj.path !== '**' && obj.path !== 'unauthorized';
@@ -28,7 +30,6 @@ export class SideBarService implements OnDestroy {
     this.subscriptions.add(
       router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
         this.currentRoute = event;
-
         if (this.currentRoute.url === '/') {
           routesArray.map((route) => (route['active'] = false));
           routesArray[0]['active'] = true;
@@ -41,6 +42,8 @@ export class SideBarService implements OnDestroy {
             }
           }
         }
+
+        this.routes.next(routesArray);
       })
     );
   }

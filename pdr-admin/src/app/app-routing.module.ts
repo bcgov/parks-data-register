@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, provideRouter, withComponentInputBinding } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
@@ -85,7 +85,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
+  imports: [],
   exports: [RouterModule],
+  providers: [provideRouter(routes, withComponentInputBinding())],
 })
 export class AppRoutingModule {}

@@ -34,22 +34,14 @@ jobs:
         with:
           use-intaller: true
 
-      ### Assume AWS IAM Role
-      - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ca-central-1
-
       ### SAM Build
       - name: Cache SAM Build
         id: cache-sam-build
         uses: actions/cache@v3
         with:
           path: |
-            **${{ vars.PDR_API_DIRECTORY }}/.aws-sam
-          key: ${{ github.sha }}-${{ vars.PDR_API_DIRECTORY }}-sam-cache
+            pdr-api/.aws-sam
+          key: ${{ github.sha }}-pdr-api-sam-cache
       - name: Run sam build
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
@@ -68,7 +60,8 @@ jobs:
         env:
           TABLE_NAME: NameRegister-tests
           IS_OFFLINE: true
+          DYNAMODB_ENDPOINT_URL: http://127.0.0.1:8000
           AWS_REGION: local-env
           AWS_ACCESS_KEY_ID: notused
           AWS_SECRET_ACCESS_KEY: notused
-        run: jest --coverage
+        run: ./node_modules/jest/bin/jest.js --coverage

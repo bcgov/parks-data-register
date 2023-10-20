@@ -64,8 +64,10 @@ jobs:
           AWS_REGION: local-env
           AWS_ACCESS_KEY_ID: notused
           AWS_SECRET_ACCESS_KEY: notused
-        run: ./node_modules/jest/bin/jest.js --coverage  --coverageReporters json-summary
+        run: ./node_modules/jest/bin/jest.js --coverage --coverageReporters json-summary
 
       # Code Coverage Report Comment
       - name: Jest Coverage Comment
         uses: MishaKav/jest-coverage-comment@main
+        with:
+          coverage-summary-path: .pdr-api/coverage/coverage-summary.json

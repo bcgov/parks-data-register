@@ -25,8 +25,9 @@ import { BreadcrumbModule } from './breadcrumb/breadcrumb.module';
 import { HomeModule } from './home/home.module';
 import { NameSearchComponent } from './name-search/name-search.component';
 import { NgdsFormsModule } from '@digitalspace/ngds-forms';
-import { IdGeneratorComponent } from './id-generator/id-generator.component';
 import { ChangeLogComponent } from './change-log/change-log.component';
+import { ProtectedAreaModule } from './protected-area/protected-area.module';
+import { SiteModule } from './site/site.module';
 
 export function initConfig(
   configService: ConfigService,
@@ -45,14 +46,7 @@ export function initConfig(
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    NotAuthorizedComponent,
-    NameSearchComponent,
-    IdGeneratorComponent,
-    ChangeLogComponent,
-  ],
+  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent, NameSearchComponent, ChangeLogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -64,6 +58,8 @@ export function initConfig(
     BreadcrumbModule,
     HomeModule,
     NgdsFormsModule,
+    ProtectedAreaModule,
+    SiteModule,
   ],
   providers: [
     {

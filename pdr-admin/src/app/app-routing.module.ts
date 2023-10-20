@@ -5,14 +5,16 @@ import { AuthGuard } from './guards/auth.guard';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { LoginComponent } from './login/login.component';
 import { NameSearchComponent } from './name-search/name-search.component';
-import { IdGeneratorComponent } from './id-generator/id-generator.component';
 import { ChangeLogComponent } from './change-log/change-log.component';
+import { ProtectedAreaRoutingModule } from './protected-area/protected-area-routing.module';
+import { SiteRoutingModule } from './site/site-routing.module';
+import { ProtectedAreaComponent } from './protected-area/protected-area.component';
+import { SiteComponent } from './site/site.component';
 
 const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    canActivate: [AuthGuard],
     data: {
       label: 'Home',
       breadcrumb: 'Home',
@@ -27,7 +29,6 @@ const routes: Routes = [
       showSideBar: false,
       showBreadCrumb: false,
     },
-    children: [],
   },
   {
     path: 'login',
@@ -42,20 +43,11 @@ const routes: Routes = [
     path: 'name-search',
     pathMatch: 'full',
     component: NameSearchComponent,
+    canActivate: [AuthGuard],
     data: {
       label: 'Name search',
       breadcrumb: 'Name search',
       icon: 'bi-search',
-    },
-  },
-  {
-    path: 'id-generator',
-    pathMatch: 'full',
-    component: IdGeneratorComponent,
-    data: {
-      label: 'ID generator',
-      breadcrumb: 'ID generator',
-      icon: 'bi-fingerprint',
     },
   },
   {
@@ -67,6 +59,22 @@ const routes: Routes = [
       breadcrumb: 'Change log',
       icon: 'bi-clock-history',
     },
+  },
+  {
+    path: 'protected-area/:id',
+    component: ProtectedAreaComponent,
+    data: {
+      breadcrumb: 'Protected Area',
+    },
+    loadChildren: () => ProtectedAreaRoutingModule,
+  },
+  {
+    path: 'site/:id',
+    component: SiteComponent,
+    data: {
+      breadcrumb: 'Site',
+    },
+    loadChildren: () => SiteRoutingModule,
   },
   {
     // wildcard route

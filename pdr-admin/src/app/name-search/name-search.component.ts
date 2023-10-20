@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -8,6 +9,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./name-search.component.scss'],
 })
 export class NameSearchComponent implements OnInit, OnDestroy {
+  constructor(private router: Router) {}
+
   private subscriptions = new Subscription();
 
   data = [];
@@ -42,8 +45,38 @@ export class NameSearchComponent implements OnInit, OnDestroy {
   }
 
   submit() {
+    // TODO: Connect this to service layer
     console.log('Form:', this.form);
-    return;
+    this.data = [
+      {
+        pk: '0001',
+        legalName: 'Strathcona Park',
+        type: 'Protected area',
+        status: 'Current',
+        audioClip: true,
+      },
+    ];
+  }
+
+  viewItem(item) {
+    this.router.navigate([this.getPathFromType(item.type), item.pk]);
+  }
+
+  editItem(item) {
+    this.router.navigate([this.getPathFromType(item.type), item.pk, 'edit']);
+  }
+
+  getPathFromType(type) {
+    switch (type) {
+      case 'Protected area':
+        return 'protected-area';
+      case 'Site':
+        return 'site';
+      case 'Unofficial site':
+        return 'site';
+      default:
+        return '';
+    }
   }
 
   ngOnDestroy() {

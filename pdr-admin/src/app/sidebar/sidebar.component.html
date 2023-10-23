@@ -3,7 +3,7 @@
     <div class="flex-grow-1">
       <ul class="list-unstyled components">
         <ng-container *ngFor="let route of routes">
-          <li *ngIf="route.data.label" [ngClass]="route.active ? 'active' : ''">
+          <li [ngClass]="route.active ? 'active' : ''">
             <a (click)="onNavigate(route.path)">
               <i *ngIf="route.data.icon" class="bi me-2" [ngClass]="route.data.icon"></i>
               {{ route.data.label }}</a

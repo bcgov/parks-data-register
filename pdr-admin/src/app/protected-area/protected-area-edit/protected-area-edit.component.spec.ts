@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProtectedAreaEditComponent } from './protected-area-edit.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProtectedAreaEditComponent', () => {
   let component: ProtectedAreaEditComponent;
@@ -8,7 +9,8 @@ describe('ProtectedAreaEditComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ProtectedAreaEditComponent]
+      declarations: [ProtectedAreaEditComponent],
+      imports: [RouterTestingModule],
     });
     fixture = TestBed.createComponent(ProtectedAreaEditComponent);
     component = fixture.componentInstance;

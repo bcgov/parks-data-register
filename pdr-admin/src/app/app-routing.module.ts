@@ -7,9 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { NameSearchComponent } from './name-search/name-search.component';
 import { ChangeLogComponent } from './change-log/change-log.component';
 import { ProtectedAreaRoutingModule } from './protected-area/protected-area-routing.module';
-import { SiteRoutingModule } from './site/site-routing.module';
 import { ProtectedAreaComponent } from './protected-area/protected-area.component';
-import { SiteComponent } from './site/site.component';
 
 const routes: Routes = [
   {
@@ -67,14 +65,6 @@ const routes: Routes = [
       breadcrumb: 'Protected Area',
     },
     loadChildren: () => ProtectedAreaRoutingModule,
-  },
-  {
-    path: 'site/:id',
-    component: SiteComponent,
-    data: {
-      breadcrumb: 'Site',
-    },
-    loadChildren: () => SiteRoutingModule,
   },
   {
     // wildcard route

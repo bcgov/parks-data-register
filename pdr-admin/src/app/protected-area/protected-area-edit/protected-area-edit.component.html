@@ -1,13 +1,14 @@
 <section class="mb-4">
   <h2>Edit record</h2>
 </section>
-
 <section>
   <h3 class="mb-4">What do you want to do?</h3>
   <div class="row mb-4">
     <div class="col-12 col-sm-4 mb-2 mb-sm-4">
       <div class="d-grid gap-2">
-        <button class="btn btn-primary" type="button"><i class="bi bi-pen me-2"></i>Edit current name data</button>
+        <button class="btn btn-primary" type="button" [routerLink]="'current'">
+          <i class="bi bi-pen me-2"></i>Edit current name data
+        </button>
       </div>
     </div>
     <div class="col-12 col-sm-8 text-muted">
@@ -20,7 +21,7 @@
   <div class="row mb-4">
     <div class="col-12 col-sm-4 mb-2 mb-sm-4">
       <div class="d-grid gap-2">
-        <button class="btn btn-outline-primary" type="button">
+        <button class="btn btn-outline-primary" type="button" [routerLink]="'legal'">
           <i class="bi bi-arrow-clockwise me-2"></i>Change legal name
         </button>
       </div>
@@ -35,7 +36,7 @@
   <div class="row">
     <div class="col-12 col-sm-4 mb-2 mb-sm-4">
       <div class="d-grid gap-2">
-        <button class="btn btn-outline-primary" type="button">
+        <button class="btn btn-outline-primary" type="button" [routerLink]="'repeal'">
           <i class="bi bi-toggles me-2"></i>Set status to repealed
         </button>
       </div>

@@ -7,12 +7,6 @@ This folder consists of the back end code for the Parks Data Register API. It co
 The AWS resources for this project are defined in the `template.yaml` file.
 Data models can be found in [/docs](https://github.com/bcgov/parks-data-register/tree/main/pdr-api/docs)
 
-## Park Name Status States
-
-![State chart](./docs/park-name-status.svg)
-<img src="./docs/park-name-status.svg">
-
-
 ## OpenSearch System Integration
 
 ![Architecture](./docs/Data Register - OpenSearch Architecture.drawio.svg)

@@ -27,7 +27,6 @@ import { NameSearchComponent } from './name-search/name-search.component';
 import { NgdsFormsModule } from '@digitalspace/ngds-forms';
 import { ChangeLogComponent } from './change-log/change-log.component';
 import { ProtectedAreaModule } from './protected-area/protected-area.module';
-import { SiteModule } from './site/site.module';
 
 export function initConfig(
   configService: ConfigService,
@@ -59,7 +58,6 @@ export function initConfig(
     HomeModule,
     NgdsFormsModule,
     ProtectedAreaModule,
-    SiteModule,
   ],
   providers: [
     {

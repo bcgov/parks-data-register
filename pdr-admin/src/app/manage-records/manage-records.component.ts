@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-name-search',
-  templateUrl: './name-search.component.html',
-  styleUrls: ['./name-search.component.scss'],
+  selector: 'app-manage-records',
+  templateUrl: './manage-records.component.html',
+  styleUrls: ['./manage-records.component.scss'],
 })
-export class NameSearchComponent implements OnInit, OnDestroy {
+export class ManageRecordsComponent implements OnDestroy {
   constructor(private router: Router) {}
 
   private subscriptions = new Subscription();
@@ -20,29 +20,13 @@ export class NameSearchComponent implements OnInit, OnDestroy {
     'Joffre Lakes Provincial Park',
     'Mount Seymour Provincial Park',
   ];
-  statusPicklistItems = ['Any', 'Current', 'Repealed'];
-  audioPicklistItems = ['Any', 'Has Audio', 'No Audio'];
-  nameControlDisabled = false;
-  pkControlDisabled = false;
+  typePicklistItems = ['Any', 'Protected area'];
+  statusPicklistItems = ['Any', 'Established', 'Repealed'];
   form = new UntypedFormGroup({
-    name: new UntypedFormControl(null),
-    pk: new UntypedFormControl(null),
+    search: new UntypedFormControl(null),
+    type: new UntypedFormControl(null),
     status: new UntypedFormControl(this.statusPicklistItems[0]),
-    audioClip: new UntypedFormControl(this.audioPicklistItems[0]),
   });
-
-  ngOnInit() {
-    this.subscriptions.add(
-      this.form.get('name').valueChanges.subscribe((name) => {
-        this.pkControlDisabled = !!name;
-      })
-    );
-    this.subscriptions.add(
-      this.form.get('pk').valueChanges.subscribe((pk) => {
-        this.nameControlDisabled = !!pk;
-      })
-    );
-  }
 
   submit() {
     // TODO: Connect this to service layer
@@ -52,8 +36,7 @@ export class NameSearchComponent implements OnInit, OnDestroy {
         pk: '0001',
         legalName: 'Strathcona Park',
         type: 'Protected area',
-        status: 'Current',
-        audioClip: true,
+        status: 'Established',
       },
     ];
   }
@@ -70,10 +53,10 @@ export class NameSearchComponent implements OnInit, OnDestroy {
     switch (type) {
       case 'Protected area':
         return 'protected-area';
-      case 'Site':
-        return 'site';
-      case 'Unofficial site':
-        return 'site';
+      // case 'Site':
+      //   return 'site';
+      // case 'Unofficial site':
+      //   return 'site';
       default:
         return '';
     }

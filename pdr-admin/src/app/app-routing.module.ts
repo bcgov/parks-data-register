@@ -4,10 +4,10 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { LoginComponent } from './login/login.component';
-import { NameSearchComponent } from './name-search/name-search.component';
 import { ChangeLogComponent } from './change-log/change-log.component';
 import { ProtectedAreaRoutingModule } from './protected-area/protected-area-routing.module';
 import { ProtectedAreaComponent } from './protected-area/protected-area.component';
+import { ManageRecordsComponent } from './manage-records/manage-records.component';
 
 const routes: Routes = [
   {
@@ -38,13 +38,13 @@ const routes: Routes = [
     },
   },
   {
-    path: 'name-search',
+    path: 'manage-records',
     pathMatch: 'full',
-    component: NameSearchComponent,
+    component: ManageRecordsComponent,
     canActivate: [AuthGuard],
     data: {
-      label: 'Name search',
-      breadcrumb: 'Name search',
+      label: 'Manage records',
+      breadcrumb: 'Manage records',
       icon: 'bi-search',
     },
   },

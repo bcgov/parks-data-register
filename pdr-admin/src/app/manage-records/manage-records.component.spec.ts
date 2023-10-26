@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NameSearchComponent } from './name-search.component';
+import { ManageRecordsComponent } from './manage-records.component';
 import { NgdsFormsModule } from '@digitalspace/ngds-forms';
 
-describe('NameSearchComponent', () => {
-  let component: NameSearchComponent;
-  let fixture: ComponentFixture<NameSearchComponent>;
+describe('ManageRecordsComponent', () => {
+  let component: ManageRecordsComponent;
+  let fixture: ComponentFixture<ManageRecordsComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [NameSearchComponent],
+      declarations: [ManageRecordsComponent],
       imports: [NgdsFormsModule],
     });
-    fixture = TestBed.createComponent(NameSearchComponent);
+    fixture = TestBed.createComponent(ManageRecordsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

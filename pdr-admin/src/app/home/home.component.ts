@@ -11,16 +11,10 @@ export class HomeComponent {
   // This can be pulled in via the config.
   public cardConfig = [
     {
-      cardHeader: 'Name Search',
-      cardTitle: 'Search data records',
-      cardText: 'View, add, or change name records',
-      navigation: 'name-search',
-    },
-    {
-      cardHeader: 'ID Generator',
-      cardTitle: 'Create new legal name or IDs',
-      cardText: 'Create, view, or cancel pending IDs.',
-      navigation: 'id-generator',
+      cardHeader: 'Manage Records',
+      cardTitle: 'Search and manage records',
+      cardText: 'Find, view, or change records.',
+      navigation: 'manage-records',
     },
     {
       cardHeader: 'Change Log',

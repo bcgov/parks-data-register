@@ -325,6 +325,12 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+        MaxAge: "'600'"
+        AllowCredentials: true
       Auth:
         DefaultAuthorizer: KCAuthorizer
         Authorizers:

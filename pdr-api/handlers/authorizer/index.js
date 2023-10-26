@@ -39,7 +39,12 @@ exports.handler = async function (event, context, callback) {
 
   // Sysadmin
   logger.debug('User authenticated.');
-  return generatePolicy(token.data.sid, 'Allow', event.methodArn, permissionObject);
+  
+  // extract the base API gateway ARN from the event so that a policy can be generated for all routes
+  // TODO: this will likely have to change to enforce more granular role permissions
+  const methodArn = event.methodArn.replace(`${event.httpMethod}${event.path}`, `*`);
+
+  return generatePolicy(token.data.sid, 'Allow', methodArn, permissionObject);
 };
 
 // Help function to generate an IAM policy

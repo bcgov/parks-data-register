@@ -1,16 +1,17 @@
 const AWS = require('aws-sdk');
 
-const { REGION, ENDPOINT, DBMODEL } = require('./settings');
+const { AWS_REGION, DBMODEL, DYNAMODB_ENDPOINT_URL } = require('./settings');
 
 module.exports = async () => {
-  const dynamoDb = new AWS.DynamoDB({
-    region: REGION,
-    endpoint: ENDPOINT
+  const dynamodb = new AWS.DynamoDB({
+    region: AWS_REGION,
+    endpoint: DYNAMODB_ENDPOINT_URL
   });
 
   try {
-    await dynamoDb.createTable(DBMODEL).promise();
+    await dynamodb.createTable(DBMODEL).promise();
   } catch (err) {
     console.log('err:', err);
   }
+
 };

@@ -23,7 +23,7 @@ import { EventService } from './services/event.service';
 import { ToggleButtonModule } from './toggle-button/toggle-button.module';
 import { BreadcrumbModule } from './breadcrumb/breadcrumb.module';
 import { HomeModule } from './home/home.module';
-import { NameSearchComponent } from './name-search/name-search.component';
+import { ManageRecordsComponent } from './manage-records/manage-records.component';
 import { NgdsFormsModule } from '@digitalspace/ngds-forms';
 import { ChangeLogComponent } from './change-log/change-log.component';
 import { ProtectedAreaModule } from './protected-area/protected-area.module';
@@ -45,7 +45,7 @@ export function initConfig(
 }
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent, NameSearchComponent, ChangeLogComponent],
+  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent, ManageRecordsComponent, ChangeLogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

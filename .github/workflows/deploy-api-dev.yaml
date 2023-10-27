@@ -70,8 +70,9 @@ jobs:
           KMS_KEY_ARN: ${{ vars.KMS_KEY_ARN }}
           VPC_SG: ${{ vars.VPC_SG }}
           VPC_SUBNET: ${{ vars.VPC_SUBNET }}
+          ACCT_ID: ${{ vars.ACCT_ID }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "SecurityGroupId=$VPC_SG" "SubnetId=$VPC_SUBNET"
+          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "SecurityGroupId=$VPC_SG" "SubnetId=$VPC_SUBNET" "AccountId=$ACCT_ID"
 
       - shell: bash
         env:

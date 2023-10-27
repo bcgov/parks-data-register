@@ -109,8 +109,6 @@ Resources:
     Type: AWS::OpenSearchService::Domain
     Properties:
       DomainName: !Ref DomainName
-      SoftwareUpdateOptions:
-        AutoSoftwareUpdatEnabed: true
       VPCOptions:
         SecurityGroupIds:
           - !Ref SecurityGroupId

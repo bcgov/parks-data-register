@@ -16,6 +16,9 @@ Globals:
         DYNAMODB_ENDPOINT_URL: dynamodb.ca-central-1.amazonaws.com
 
 Parameters:
+  AccountId:
+    Type: String
+    Default: '970582042516'
   Stage:
     Type: String
     Default: api
@@ -84,9 +87,9 @@ Resources:
                   - dynamodb:BatchGetItem
                   - dynamodb:DescribeTable
                   - dynamodb:ConditionCheckItem
-                Resource:
-                  - arn:aws:dynamodb:ca-central-1:970582042516:table/Audit
-                  - arn:aws:dynamodb:ca-central-1:970582042516:table/Audit/index/*
+                Resource: !Sub
+                  - 'arn:aws:dynamodb:ca-central-1:${AccountId}:table/Audit/*'
+                  - AccountId: !Ref AccountId
                 Effect: Allow
         - PolicyName: 'ProcessDynamoDBStreamRolePolicyTwo'
           PolicyDocument:
@@ -96,7 +99,9 @@ Resources:
                 Action:
                   - es:ESHttpPost
                   - es:ESHttpPut
-                Resource: arn:aws:es:ca-central-1:970582042516:domain/data-register/*
+                Resource: !Sub
+                  - 'arn:aws:es:ca-central-1:${AccountId}:domain/data-register/*'
+                  - AccountId: !Ref AccountId
                 Effect: Allow
 
   ## Opensearch
@@ -211,7 +216,7 @@ Resources:
       Description: Search Handler
       Policies:
         - ElasticsearchHttpPostPolicy:
-            DomainName: data-register
+            DomainName: !Ref DomainName
       Environment:
         Variables:
           LOG_LEVEL: info
@@ -366,7 +371,7 @@ Resources:
             TableName: !Ref NameRegister
             TableName: !Ref Audit
         - ElasticsearchHttpPostPolicy:
-            DomainName: data-register
+            DomainName: !Ref DomainName
       Events:
         Stream:
           Type: DynamoDB

@@ -2,6 +2,9 @@ import { Component, OnDestroy } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SearchService } from '../services/search.service';
+import { DataService } from '../services/data.service';
+import { Constants } from '../utils/constants';
 
 @Component({
   selector: 'app-manage-records',
@@ -9,7 +12,13 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./manage-records.component.scss'],
 })
 export class ManageRecordsComponent implements OnDestroy {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private searchService: SearchService, private dataService: DataService) {
+    this.subscriptions.add(
+      this.searchService.watchSearchResults().subscribe((res) => {
+        this.data = res ? res : [];
+      })
+    );
+  }
 
   private subscriptions = new Subscription();
 
@@ -23,25 +32,18 @@ export class ManageRecordsComponent implements OnDestroy {
   typePicklistItems = ['Any', 'Protected area'];
   statusPicklistItems = ['Any', 'Established', 'Repealed'];
   form = new UntypedFormGroup({
-    search: new UntypedFormControl(null),
+    text: new UntypedFormControl(null),
     type: new UntypedFormControl(null),
     status: new UntypedFormControl(this.statusPicklistItems[0]),
   });
 
   submit() {
-    // TODO: Connect this to service layer
-    console.log('Form:', this.form);
-    this.data = [
-      {
-        pk: '0001',
-        legalName: 'Strathcona Park',
-        type: 'Protected area',
-        status: 'Established',
-      },
-    ];
+    this.searchService.fetchData(this.form.value.text);
   }
 
   viewItem(item) {
+    this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
+    // TODO: When we have historical park names, we want to set HISTORICAL_PROTECTED_AREA here.
     this.router.navigate([this.getPathFromType(item.type), item.pk]);
   }
 

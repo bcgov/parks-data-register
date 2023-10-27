@@ -332,6 +332,7 @@ Resources:
         MaxAge: "'600'"
       Auth:
         DefaultAuthorizer: KCAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           KCAuthorizer:
             FunctionPayloadType: REQUEST

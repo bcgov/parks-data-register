@@ -58,9 +58,7 @@ export class ApiService implements OnDestroy {
   get(pk, queryParamsObject = null as any) {
     if (this.networkStatus) {
       let queryString = this.generateQueryString(queryParamsObject);
-      return lastValueFrom(
-        this.http.get<any>(`${this.apiPath}/${pk}?${queryString}`).pipe(catchError(this.errorHandler))
-      );
+      return this.http.get<any>(`${this.apiPath}/${pk}?${queryString}`).pipe(catchError(this.errorHandler));
     } else {
       throw 'Network Offline';
     }

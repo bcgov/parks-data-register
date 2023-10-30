@@ -9,7 +9,7 @@
   // Environment name
   window.__env.ENVIRONMENT = "local"; // local | dev | test | prod
 
-  window.__env.API_LOCATION = "https://zloys5cfvf.execute-api.ca-central-1.amazonaws.com";//"http://localhost:3000";
+  window.__env.API_LOCATION = "http://localhost:3000";
   window.__env.API_PATH = "/api";
   window.__env.GH_HASH = "local-build";
   window.__env.KEYCLOAK_CLIENT_ID = "data-register";

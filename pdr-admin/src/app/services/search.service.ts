@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { Constants } from '../utils/constants';
 import { ApiService } from './api.service';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +17,8 @@ export class SearchService {
     }
 
     // Calling API with status = null gives you current and historical
-    let res = await this.apiService.get('search', queryParams);
-    let data = this.apiService.getArrayFromSearchResults(res);
+    const res = await lastValueFrom(this.apiService.get('search', queryParams));
+    const data = this.apiService.getArrayFromSearchResults(res);
     this.dataService.setItemValue(Constants.dataIds.SEARCH_RESULTS, data);
     return data;
   }

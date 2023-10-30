@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { SearchService } from '../services/search.service';
 import { DataService } from '../services/data.service';
 import { Constants } from '../utils/constants';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-manage-records',
@@ -12,16 +13,27 @@ import { Constants } from '../utils/constants';
   styleUrls: ['./manage-records.component.scss'],
 })
 export class ManageRecordsComponent implements OnDestroy {
-  constructor(private router: Router, private searchService: SearchService, private dataService: DataService) {
+  constructor(
+    private router: Router,
+    private searchService: SearchService,
+    private dataService: DataService,
+    private loadingService: LoadingService
+  ) {
     this.subscriptions.add(
       this.searchService.watchSearchResults().subscribe((res) => {
         this.data = res ? res : [];
+      })
+    );
+    this.subscriptions.add(
+      this.loadingService.getLoadingStatus().subscribe((res) => {
+        this.loading = res;
       })
     );
   }
 
   private subscriptions = new Subscription();
 
+  loading = false;
   data = [];
   parkNames = [
     'Garibaldi Provincial Park',

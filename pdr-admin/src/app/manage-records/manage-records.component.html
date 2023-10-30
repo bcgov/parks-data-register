@@ -9,6 +9,7 @@
           [label]="'Search'"
           [resetButton]="true"
           [placeholder]="'Enter any search term'"
+          (keyup.enter)="submit()"
         ></ngds-text-input>
       </div>
       <div class="col">
@@ -36,7 +37,14 @@
       <div class="col"></div>
       <div class="col-12 col-md-4">
         <div class="d-grid">
-          <button type="button" class="btn btn-primary" (click)="submit()">Search</button>
+          <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="loading">
+            <ng-container *ngIf="!loading">Search</ng-container>
+            <ng-container *ngIf="loading">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </ng-container>
+          </button>
         </div>
       </div>
     </div>

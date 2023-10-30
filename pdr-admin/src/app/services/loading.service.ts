@@ -9,9 +9,7 @@ export class LoadingService {
   public fetchList = new BehaviorSubject({});
   public loading = new BehaviorSubject(false);
 
-  constructor(
-    private logger: LoggerService
-  ) {}
+  constructor(private logger: LoggerService) {}
 
   addToFetchList(id, attributes = { loading: true }) {
     this.logger.debug(`addToFetchList: ${id} ${JSON.stringify(attributes)}`);
@@ -21,8 +19,8 @@ export class LoadingService {
     this.updateLoadingStatus();
   }
 
-  removeToFetchList(id) {
-    this.logger.debug(`removeToFetchList: ${id}`);
+  removeFromFetchList(id) {
+    this.logger.debug(`removeFromFetchList: ${id}`);
     let obj = { ...this.fetchList.value };
     delete obj[id];
     this.fetchList.next(obj);
@@ -34,10 +32,7 @@ export class LoadingService {
     // We have these extra checks so we don't constantly spam the subscribers.
     if (Object.keys(this.fetchList.value).length > 0 && !this.loading.value) {
       this.loading.next(true);
-    } else if (
-      Object.keys(this.fetchList.value).length <= 0 &&
-      this.loading.value
-    ) {
+    } else if (Object.keys(this.fetchList.value).length <= 0 && this.loading.value) {
       this.loading.next(false);
     }
   }

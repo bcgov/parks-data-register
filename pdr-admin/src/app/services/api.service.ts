@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subscription, merge, of, fromEvent, map, throwError, catchError } from 'rxjs';
+import { Subscription, merge, of, fromEvent, map, throwError, catchError, lastValueFrom } from 'rxjs';
 import { ConfigService } from './config.service';
 
 @Injectable({
@@ -100,5 +100,16 @@ export class ApiService implements OnDestroy {
       queryString = queryString.substring(1);
     }
     return queryString;
+  }
+
+  public getArrayFromSearchResults(data) {
+    let res = [];
+    for (const record of data.data.hits) {
+      // At the moment, all records have type Protected Area
+      // TODO: Actually set type attribute
+      record._source.type = 'Protected area';
+      res.push(record._source);
+    }
+    return res;
   }
 }

@@ -99,6 +99,8 @@ jobs:
           ENV: ${{ vars.ENVIRONMENT_STAGE }}
           AWS_REGION: ${{ vars.AWS_REGION }}
           API_STAGE: ${{ vars.PDR_API_STAGE }}
+          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
         run: |
           sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides \
           "ProjectName=$PROJECT_NAME \
@@ -106,7 +108,9 @@ jobs:
           ApiGatewayId=$API_GATEWAY_ID \
           Env=$ENV \
           AWSRegion=$AWS_REGION \
-          ApiStage=$API_STAGE"
+          ApiStage=$API_STAGE" \
+          EnvDomainName: $DOMAIN_NAME \
+          DomainCertificateArn: $AWS_CERTIFICATE_ARN 
 
       ### Upload dist to S3 ###
       - name: Deploy to S3

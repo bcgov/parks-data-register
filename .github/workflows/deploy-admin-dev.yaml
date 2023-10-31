@@ -105,8 +105,8 @@ jobs:
           Env=$ENV \
           AWSRegion=$AWS_REGION \
           ApiStage=$API_STAGE" \
-          EnvDomainName: $DOMAIN_NAME \
-          DomainCertificateArn: $AWS_CERTIFICATE_ARN 
+          EnvDomainName=$DOMAIN_NAME \
+          DomainCertificateArn=$AWS_CERTIFICATE_ARN 
 
       ### Upload dist to S3 ###
       - name: Deploy to S3

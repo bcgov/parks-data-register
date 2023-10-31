@@ -33,6 +33,12 @@ Parameters:
     Type: String
     Default: api
     Description: API stage.
+  EnvDomainName:
+    Type: String
+    Default: dev-data.bcparks.ca
+  DomainCertificateArn:
+    Type: String
+    Default: arn:aws:acm:us-east-1:970582042516:certificate/ef1d2666-8278-4d20-bdff-e27b55b3246f
 
 Resources:
   CloudFrontOriginAccessIdentity:
@@ -52,9 +58,14 @@ Resources:
           - ErrorCode: 403
             ResponseCode: 200
             ResponsePagePath: "/index.html"
-        # Aliases:
-        #   - !Ref DomainName
-        Comment: !Sub "Cloudfront distribution for ${ProjectName}"
+        Aliases:
+          - !Ref EnvDomainName
+        ViewerCertificate:
+          AcmCertificateArn: !Ref DomainCertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1
+
+        Comment: !Sub "CloudFront distribution for ${AWS::StackName}"
         DefaultRootObject: "index.html"
         Enabled: true
         HttpVersion: http2
@@ -104,12 +115,12 @@ Resources:
         Logging:
             Bucket: !GetAtt LogsS3Bucket.DomainName
             IncludeCookies: false
-            Prefix: !Sub ${ProjectName}-${Env}-logs
+            Prefix: !Sub ${AWS::StackName}-${Env}-logs
 
   DistS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${ProjectName}-${Env}
+      BucketName: !Sub ${AWS::StackName}-${Env}
 
   DistS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -126,7 +137,7 @@ Resources:
   LogsS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${ProjectName}-${Env}-logs
+      BucketName: !Sub ${AWS::StackName}-${Env}-logs
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerPreferred

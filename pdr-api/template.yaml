@@ -16,6 +16,12 @@ Globals:
         DYNAMODB_ENDPOINT_URL: dynamodb.ca-central-1.amazonaws.com
 
 Parameters:
+  TableNameRegister:
+    Type: String
+    Default: 'NameRegister'
+  TableNameAudit:
+    Type: String
+    Default: 'Audit'
   AccountId:
     Type: String
     Default: '970582042516'
@@ -248,11 +254,11 @@ Resources:
       Description: Config GET lambda function
       Environment:
         Variables:
-          TABLE_NAME: !Ref NameRegister
+          TABLE_NAME: !Ref TableNameRegister
           LOG_LEVEL: info
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref NameRegister
+            TableName: !Ref TableNameRegister
       Events:
         ConfigGet:
           Type: Api
@@ -281,11 +287,11 @@ Resources:
       Description: All Park Names GET lambda function
       Environment:
         Variables:
-          TABLE_NAME: !Ref NameRegister
+          TABLE_NAME: !Ref TableNameRegister
           LOG_LEVEL: info
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref NameRegister
+            TableName: !Ref TableNameRegister
       Events:
         ParksAllNamesGet:
           Type: Api
@@ -312,11 +318,11 @@ Resources:
       Description: Park Name GET lambda function
       Environment:
         Variables:
-          TABLE_NAME: !Ref NameRegister
+          TABLE_NAME: !Ref TableNameRegister
           LOG_LEVEL: info
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref NameRegister
+            TableName: !Ref TableNameRegister
       Events:
         ParkNameGet:
           Type: Api
@@ -331,7 +337,6 @@ Resources:
     Properties:
       StageName: !Ref Stage
       Cors:
-        ApiGatewayApi:
         AllowMethods: "'POST,GET,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
@@ -367,8 +372,8 @@ Resources:
           - !Ref SubnetId
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref NameRegister
-            TableName: !Ref Audit
+            TableName: !Ref TableNameRegister
+            TableName: !Ref TableNameAudit
         - ElasticsearchHttpPostPolicy:
             DomainName: !Ref DomainName
       Events:
@@ -444,7 +449,7 @@ Resources:
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
-      TableName: NameRegister
+      TableName: !Ref TableNameRegister
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
       StreamSpecification:
@@ -474,7 +479,7 @@ Resources:
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
-      TableName: Audit
+      TableName: !Ref TableNameAudit
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
     DependsOn: NameRegister

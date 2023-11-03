@@ -7,6 +7,7 @@ import { KeycloakService } from '../services/keycloak.service';
 import { HomeComponent } from './home.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NavCardModule } from '../nav-card/nav-card.module';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -15,7 +16,7 @@ describe('HomeComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [HomeComponent],
-      imports: [RouterTestingModule, HttpClientTestingModule, NavCardModule],
+      imports: [RouterTestingModule, HttpClientTestingModule, NavCardModule, ToastrModule.forRoot({})],
       providers: [KeycloakService, ConfigService],
     }).compileComponents();
 

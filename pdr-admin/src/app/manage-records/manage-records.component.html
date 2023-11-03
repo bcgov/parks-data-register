@@ -37,7 +37,7 @@
       <div class="col"></div>
       <div class="col-12 col-md-4">
         <div class="d-grid">
-          <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="loading">
+          <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="loading || disableSearch">
             <ng-container *ngIf="!loading">Search</ng-container>
             <ng-container *ngIf="loading">
               <div class="spinner-border spinner-border-sm" role="status">

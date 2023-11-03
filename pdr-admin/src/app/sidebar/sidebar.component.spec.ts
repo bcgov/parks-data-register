@@ -9,6 +9,7 @@ import { KeycloakService } from 'src/app/services/keycloak.service';
 import { SideBarService } from 'src/app/services/sidebar.service';
 
 import { SidebarComponent } from './sidebar.component';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -29,7 +30,7 @@ describe('SidebarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SidebarComponent],
-      imports: [RouterTestingModule.withRoutes(mockRoutes)],
+      imports: [RouterTestingModule.withRoutes(mockRoutes), ToastrModule.forRoot({})],
       providers: [
         KeycloakService,
         ConfigService,

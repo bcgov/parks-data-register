@@ -1,25 +1,70 @@
 <ng-container *ngIf="data?.status !== 'Repealed'">
   <p>
-    <strong>Effective date</strong><small class="ms-2">{{ data?.effectiveDate || data?.sk || "-" }}</small>
+    <strong>Effective date</strong
+    ><small class="ms-2">
+      <ng-container *ngIf="data && data.effectiveDate">
+        {{ data.effectiveDate }}
+      </ng-container>
+      <ng-container *ngIf="!data || !data.effectiveDate">
+        <span class="text-muted fst-italic">None</span>
+      </ng-container>
+    </small>
   </p>
   <p>
-    <strong>Legal name</strong><small class="ms-2">{{ data?.legalName || "-" }}</small>
+    <strong>Legal name</strong
+    ><small class="ms-2">
+      <ng-container *ngIf="data && data.legalName">
+        {{ data.legalName }}
+      </ng-container>
+      <ng-container *ngIf="!data || !data.legalName">
+        <span class="text-muted fst-italic">None</span>
+      </ng-container>
+    </small>
   </p>
   <p>
-    <strong>Display name</strong><small class="ms-2">{{ data?.displayName || "-" }}</small>
+    <strong>Display name</strong
+    ><small class="ms-2">
+      <ng-container *ngIf="data && data.displayName">
+        {{ data.displayName }}
+      </ng-container>
+      <ng-container *ngIf="!data || !data.displayName">
+        <span class="text-muted fst-italic">None</span>
+      </ng-container>
+    </small>
   </p>
   <p>
-    <strong>Phonetic name</strong><small class="ms-2">{{ data?.phoneticName || "-" }}</small>
+    <strong>Phonetic name</strong>
+    <small class="ms-2">
+      <ng-container *ngIf="data && data.phoneticName">
+        {{ data.phoneticName }}
+      </ng-container>
+      <ng-container *ngIf="!data || !data.phoneticName">
+        <span class="text-muted fst-italic">None</span>
+      </ng-container>
+    </small>
   </p>
   <p>
     <strong>Audio link</strong>
     <small class="ms-2">
-      <a href="{{ data?.audioClip || '-' }}">{{ data?.audioClip || "-" }}</a>
+      <ng-container *ngIf="data && data.audioClip">
+        <a href="{{ data.audioClip }}">{{ data?.audioClip }}</a>
+      </ng-container>
+      <ng-container *ngIf="!data || !data.audioClip">
+        <span class="text-muted fst-italic">None</span>
+      </ng-container>
     </small>
   </p>
 </ng-container>
 <ng-container *ngIf="data?.status === 'Repealed'">
   <p>
-    <strong>Repealed date</strong><small>{{ data?.repealedDate || "-" }}</small>
+    <strong>Repealed date</strong
+    ><small>
+      <ng-container *ngIf="data && data.repealedDate">
+        {{ data.repealedDate }}
+      </ng-container>
+      <ng-container *ngIf="!data || !data.repealedDate">
+        <span class="text-muted fst-italic">None</span>
+      </ng-container>
+    </small>
   </p>
 </ng-container>

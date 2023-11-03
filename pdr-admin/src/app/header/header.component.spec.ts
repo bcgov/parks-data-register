@@ -6,6 +6,7 @@ import { ConfigService } from '../services/config.service';
 import { KeycloakService } from '../services/keycloak.service';
 
 import { HeaderComponent } from './header.component';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -19,7 +20,7 @@ describe('HeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, ToastrModule.forRoot({})],
       declarations: [HeaderComponent],
       providers: [{ provide: ConfigService, useValue: fakeConfigService }, KeycloakService, HttpClient, HttpHandler],
     }).compileComponents();

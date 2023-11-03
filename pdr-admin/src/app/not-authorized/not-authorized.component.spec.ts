@@ -5,6 +5,7 @@ import { ConfigService } from '../services/config.service';
 import { KeycloakService } from '../services/keycloak.service';
 
 import { NotAuthorizedComponent } from './not-authorized.component';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('NotAuthorizedComponent', () => {
   let component: NotAuthorizedComponent;
@@ -12,7 +13,7 @@ describe('NotAuthorizedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, ToastrModule.forRoot({})],
       declarations: [NotAuthorizedComponent],
       providers: [KeycloakService, ConfigService, HttpClient, HttpHandler],
     }).compileComponents();

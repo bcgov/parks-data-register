@@ -4,6 +4,7 @@ import { ConfigService } from 'src/app/services/config.service';
 import { KeycloakService } from 'src/app/services/keycloak.service';
 
 import { ToggleButtonComponent } from './toggle-button.component';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('ToggleButtonComponent', () => {
   let component: ToggleButtonComponent;
@@ -11,10 +12,10 @@ describe('ToggleButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ToggleButtonComponent ],
-      providers: [KeycloakService, ConfigService, HttpClient, HttpHandler]
-    })
-    .compileComponents();
+      imports: [ToastrModule.forRoot({})],
+      declarations: [ToggleButtonComponent],
+      providers: [KeycloakService, ConfigService, HttpClient, HttpHandler],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -4,11 +4,12 @@ import { AppComponent } from './app.component';
 import { HeaderModule } from './header/header.module';
 import { InfiniteLoadingBarModule } from './infinite-loading-bar/infinite-loading-bar.module';
 import { FooterModule } from './footer/footer.module';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('AppComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HeaderModule, InfiniteLoadingBarModule, FooterModule],
+      imports: [RouterTestingModule, HeaderModule, InfiniteLoadingBarModule, FooterModule, ToastrModule.forRoot({})],
       declarations: [AppComponent],
     })
   );

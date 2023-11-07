@@ -27,6 +27,7 @@ import { ManageRecordsComponent } from './manage-records/manage-records.componen
 import { NgdsFormsModule } from '@digitalspace/ngds-forms';
 import { ChangeLogComponent } from './change-log/change-log.component';
 import { ProtectedAreaModule } from './protected-area/protected-area.module';
+import { ToastrModule } from 'ngx-toastr';
 
 export function initConfig(
   configService: ConfigService,
@@ -58,6 +59,7 @@ export function initConfig(
     HomeModule,
     NgdsFormsModule,
     ProtectedAreaModule,
+    ToastrModule.forRoot({}),
   ],
   providers: [
     {

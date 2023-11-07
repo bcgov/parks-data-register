@@ -1,9 +1,9 @@
 <section class="mb-5">
-  <h2>Current name</h2>
+  <h2>Legal name</h2>
   <app-protected-area-details-section [data]="currentData"></app-protected-area-details-section>
 </section>
 
-<section class="mb-5">
+<!-- <section class="mb-5">
   <h2>Search terms</h2>
   {{ currentData?.searchTerms || "-" }}
 </section>
@@ -11,14 +11,14 @@
 <section class="mb-5">
   <h2>Notes</h2>
   <small class="me-5">None</small>
-</section>
+</section> -->
 
 <section class="mb-5" *ngFor="let data of historicalData">
   <h2>Historical name</h2>
   <app-protected-area-details-section [data]="data"></app-protected-area-details-section>
 </section>
 
-<section class="mb-5">
+<!-- <section class="mb-5">
   <h2>Associated sites</h2>
   <small class="me-5">None</small>
 </section>
@@ -26,4 +26,4 @@
 <section class="mb-5">
   <h2>Recent chances</h2>
   <small class="me-5">None</small>
-</section>
+</section> -->

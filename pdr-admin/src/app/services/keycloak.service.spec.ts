@@ -5,10 +5,12 @@ import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
 import { ToastService } from './toast.service';
 import { JwtUtil } from '../utils/jwt-utils';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('KeycloakService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [ToastrModule.forRoot({})],
       providers: [KeycloakService, ConfigService, LoggerService, ToastService, HttpClient, HttpHandler],
     });
   });

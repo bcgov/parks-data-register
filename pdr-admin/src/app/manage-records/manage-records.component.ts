@@ -29,11 +29,22 @@ export class ManageRecordsComponent implements OnDestroy {
         this.loading = res;
       })
     );
+
+    this.subscriptions.add(
+      this.form.valueChanges.subscribe((changes) => {
+        if (!changes.text && changes.type === 'Any' && changes.status === 'Any') {
+          this.disableSearch = true;
+        } else {
+          this.disableSearch = false;
+        }
+      })
+    );
   }
 
   private subscriptions = new Subscription();
 
   loading = false;
+  disableSearch = false;
   data = [];
   parkNames = [
     'Garibaldi Provincial Park',
@@ -45,7 +56,7 @@ export class ManageRecordsComponent implements OnDestroy {
   statusPicklistItems = ['Any', 'Established', 'Repealed'];
   form = new UntypedFormGroup({
     text: new UntypedFormControl(null),
-    type: new UntypedFormControl(null),
+    type: new UntypedFormControl(this.typePicklistItems[0]),
     status: new UntypedFormControl(this.statusPicklistItems[0]),
   });
 
@@ -78,5 +89,6 @@ export class ManageRecordsComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.searchService.clearSearchResults();
   }
 }

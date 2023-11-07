@@ -342,6 +342,16 @@ Resources:
         AllowOrigin: "'*'"
         MaxAge: "'600'"
       Auth:
+        ApiKeyRequired: true
+        UsagePlan:
+          CreateUsagePlan: PER_API
+          Description: Usage plan for the Data Register
+          Quota:
+            Limit: 1000
+            Period: DAY
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
         DefaultAuthorizer: KCAuthorizer
         AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:

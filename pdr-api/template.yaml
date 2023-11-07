@@ -113,6 +113,7 @@ Resources:
   ## Opensearch
   OpenSearch:
     Type: AWS::OpenSearchService::Domain
+    DependsOn: StreamRole
     Properties:
       DomainName: !Ref DomainName
       VPCOptions:

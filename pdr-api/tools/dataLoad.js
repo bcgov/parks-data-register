@@ -2,8 +2,9 @@ const AWS = require('aws-sdk');
 const csv = require('csvtojson');
 const { DateTime } = require('luxon');
 
+// These are taken from the Parks Name xslx file and map to the related named sheet.
 const bcParkNamesPath = './BC Parks Names.csv';
-const parParksPath = './PAR - Parks.csv';
+const parParksPath = './PAR-Parks.csv';
 
 const TABLE_NAME = process.env.TABLE_NAME || 'NameRegister';
 const TIMEZONE = 'America/Vancouver';
@@ -27,8 +28,14 @@ async function run() {
 
   const currentPSTDateTime = DateTime.now().setZone(TIMEZONE);
   const currentTimeISO = currentPSTDateTime.toUTC().toISO();
-
+  let i =1;
   for (let record of bcParksNames) {
+    if (i % 100 == 0 && i != 0) {
+      process.stdout.write(`${i}\r\n`);
+    } else {
+      process.stdout.write('.');
+    }
+    i++;
     // establishedDate:
     const res = getEstablishedDate(record, parParks);
     const establishedDate = res[0];
@@ -69,6 +76,7 @@ async function run() {
       console.log(updateParams);
     }
   }
+  process.stdout.write(`${i-1}\r\n`);
   console.log('Data load complete.');
 }
 

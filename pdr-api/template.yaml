@@ -235,8 +235,6 @@ Resources:
             Path: /search
             Method: GET
             RestApiId: !Ref ApiDeployment
-            Auth:
-              ApiKeyRequired: true
         SearchOptions:
           Type: Api
           Properties:

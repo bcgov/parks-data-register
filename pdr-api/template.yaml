@@ -235,6 +235,18 @@ Resources:
             Path: /search
             Method: GET
             RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: true
+        SearchOptions:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
 
   # Config
   ConfigGet:
@@ -267,7 +279,19 @@ Resources:
             Method: GET
             RestApiId: !Ref ApiDeployment
             Auth:
+              ApiKeyRequired: false
               Authorizer: NONE
+              OverrideApiAuth: true
+        ConfigOptions:
+          Type: Api
+          Properties:
+            Path: /config
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
 
   # ParksAllNamesGet
   ParksAllNamesGet:
@@ -299,6 +323,16 @@ Resources:
             Path: /parks/names
             Method: GET
             RestApiId: !Ref ApiDeployment
+        ParksAllNamesOptions:
+          Type: Api
+          Properties:
+            Path: /parks/names
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
 
   # ParkNameGet
   ParkNameGet:
@@ -330,6 +364,16 @@ Resources:
             Path: /parks/{identifier}/name
             Method: GET
             RestApiId: !Ref ApiDeployment
+        ParkNameOptions:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/name
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
 
   ### API ###
   ApiDeployment:

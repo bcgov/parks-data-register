@@ -51,6 +51,12 @@ Resources:
     Type: "AWS::CloudFront::Distribution"
     Properties:
       DistributionConfig:
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: blacklist
+            # Belarus, Central African Republic, China, Democratic Republic of the Congo, Iran, Iraq, Democratic People's Republic of Korea, Lebanon, Libya, Mali, Myanmar, Nicaragua, Russia, Somalia, South Sudan, Sudan, Syria, Ukraine, Venezuela, Yemen, Zimbabwe
+            Locations: [BY, CF, CN, CD, IR, IQ, KP, LB, LY, ML, MM, NI, RU, SO, SS, SD, SY, UA, VE, YE, ZW]
+        PriceClass: PriceClass_100
         CustomErrorResponses:
           - ErrorCode: 404
             ResponseCode: 200
@@ -64,7 +70,6 @@ Resources:
           AcmCertificateArn: !Ref DomainCertificateArn
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1
-
         Comment: !Sub "CloudFront distribution for ${AWS::StackName}"
         DefaultRootObject: "index.html"
         Enabled: true
@@ -81,7 +86,7 @@ Resources:
             DomainName: !Sub "${ApiGatewayId}.execute-api.${AWSRegion}.amazonaws.com"
             CustomOriginConfig:
               HTTPSPort: 443
-              OriginProtocolPolicy: https-only
+              OriginProtocolPolicy: http-only
               OriginSSLProtocols:
                 - TLSv1.2
         # To connect the CDN to the origins you need to specify behaviours
@@ -113,9 +118,9 @@ Resources:
             # CachingDisabled
             CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
         Logging:
-            Bucket: !GetAtt LogsS3Bucket.DomainName
-            IncludeCookies: false
-            Prefix: !Sub ${AWS::StackName}-${Env}-logs
+          Bucket: !GetAtt LogsS3Bucket.DomainName
+          IncludeCookies: false
+          Prefix: !Sub ${AWS::StackName}-${Env}-logs
 
   DistS3Bucket:
     Type: AWS::S3::Bucket
@@ -141,7 +146,6 @@ Resources:
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerPreferred
-      
 
   LogsS3BucketPolicy:
     Type: AWS::S3::BucketPolicy

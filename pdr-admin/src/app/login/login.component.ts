@@ -23,6 +23,8 @@ export class LoginComponent implements OnInit {
   }
 
   handleLogin(idpHint: string) {
+    console.log("idpHint:", idpHint)
+    console.log("this.keycloakService:", this.keycloakService)
     this.keycloakService.login(idpHint);
   }
 }

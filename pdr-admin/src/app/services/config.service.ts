@@ -33,7 +33,7 @@ export class ConfigService {
         console.error('Error getting local configuration:', e);
       }
     }
-
+    console.log(this.configuration)
     if (this.configuration['logLevel'] === 0) {
       console.log('Configuration:', this.configuration);
     }

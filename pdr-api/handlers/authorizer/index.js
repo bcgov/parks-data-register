@@ -33,14 +33,16 @@ exports.handler = async function (event, context, callback) {
     logger.debug('permissionObject', JSON.stringify(permissionObject));
     if (!permissionObject.isAuthenticated) {
       logger.debug('User is not authenticated.');
-      return generatePolicy('user', 'Deny', event.methodArn)
+      return generatePolicy('user', 'Deny', event.methodArn);
     }
   }
+
+  const methodArn = event.methodArn.replace(`${event.httpMethod}${event.path}`, `*`);
 
   if (!headers?.Authorization || headers?.Authorization === 'None') {
     logger.info(`Public user`);
     // Public user.
-    return generatePolicy('public', 'Allow', event.methodArn, publicPermissionObject, headers);
+    return generatePolicy('public', 'Allow', methodArn, publicPermissionObject, headers);
   }
 
   // Sysadmin
@@ -49,7 +51,6 @@ exports.handler = async function (event, context, callback) {
   // extract the base API gateway ARN from the event so that a policy can be generated for all routes
   // TODO: this will likely have to change to enforce more granular role permissions
   logger.info(`methodArn: ${event.methodArn}`);
-  const methodArn = event.methodArn.replace(`${event.httpMethod}${event.path}`, `*`);
 
   return generatePolicy(token.data.sid, 'Allow', methodArn, permissionObject, headers);
 };

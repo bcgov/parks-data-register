@@ -27,13 +27,13 @@ export class ConfigService {
       try {
         // Attempt to get application via this.httpClient. This uses the url of the application that you are running it from
         // This will not work for local because it will try and get localhost:4200/api instead of 3000/api...
-        this.configuration = await firstValueFrom(this.httpClient.get(`/api/config`));
+        this.configuration = (await firstValueFrom(this.httpClient.get(`/api/config`)))['data'];
       } catch (e) {
         // If all else fails, we'll just use the variables found in env.js
         console.error('Error getting local configuration:', e);
       }
     }
-    console.log(this.configuration)
+    console.log(this.configuration);
     if (this.configuration['logLevel'] === 0) {
       console.log('Configuration:', this.configuration);
     }

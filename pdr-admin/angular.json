@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "baseHref": "/admin/",
             "outputPath": "dist/pdr-admin",
             "index": "src/index.html",
             "main": "src/main.ts",

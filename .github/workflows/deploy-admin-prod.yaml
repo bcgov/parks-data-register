@@ -98,6 +98,7 @@ jobs:
           API_STAGE: ${{ vars.PDR_API_STAGE }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
+          BASE_HREF: "admin/"
         run: |
           sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides \
           "ProjectName=$PROJECT_NAME \
@@ -105,9 +106,10 @@ jobs:
           ApiGatewayId=$API_GATEWAY_ID \
           Env=$ENV \
           AWSRegion=$AWS_REGION \
-          ApiStage=$API_STAGE" \
-          EnvDomainName=$DOMAIN_NAME \
-          DomainCertificateArn=$AWS_CERTIFICATE_ARN 
+          ApiStage=$API_STAGE \
+          AdminDomainName=$DOMAIN_NAME \
+          AdminDomainCertificateArn=$AWS_CERTIFICATE_ARN \
+          BaseHref=$BASE_HREF
 
       ### Upload dist to S3 ###
       - name: Deploy to S3
@@ -117,8 +119,8 @@ jobs:
           WORKING_DIRECTORY: ${{ vars.PDR_ADMIN_DIRECTORY }}
         run: |
           aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/$DIR_NAME
-          aws s3 rm s3://$S3_BUCKET/ --recursive --exclude "*" --include "latest/*"
-          aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/latest
+          aws s3 rm s3://$S3_BUCKET/ --recursive --exclude "*" --include "latest/admin/*"
+          aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/latest/admin
 
       - shell: bash
         env:

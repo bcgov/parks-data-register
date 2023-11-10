@@ -22,6 +22,10 @@ Parameters:
     Type: String
     Default: ca-central-1
     Description: AWS Region.
+  BaseHref:
+    Type: String
+    Default: admin/
+    Description: Base href to use for cloudfront.
   DistOriginPath:
     Type: String
     Default: latest
@@ -60,10 +64,10 @@ Resources:
         CustomErrorResponses:
           - ErrorCode: 404
             ResponseCode: 200
-            ResponsePagePath: "/index.html"
+            ResponsePagePath: !Sub /${BaseHref}index.html
           - ErrorCode: 403
             ResponseCode: 200
-            ResponsePagePath: "/index.html"
+            ResponsePagePath: !Sub /${BaseHref}index.html
         Aliases:
           - !Ref AdminDomainName
         ViewerCertificate:
@@ -71,7 +75,7 @@ Resources:
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1
         Comment: !Sub "CloudFront distribution for ${AWS::StackName}"
-        DefaultRootObject: "index.html"
+        DefaultRootObject: !Sub ${BaseHref}index.html
         Enabled: true
         HttpVersion: http2
         # List of origins that Cloudfront will connect to
@@ -92,27 +96,18 @@ Resources:
         # To connect the CDN to the origins you need to specify behaviours
         DefaultCacheBehavior:
           # Compress resources automatically ( gzip )
-          Compress: "true"
+          Compress: true
           AllowedMethods:
             - GET
             - HEAD
             - OPTIONS
-          # CachingOptimized
-          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          # CachingDisabled
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
           TargetOriginId: !Ref DistS3Bucket
           ViewerProtocolPolicy: redirect-to-https
           # Simple CORS
           ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
         CacheBehaviors:
-          - PathPattern: !Sub /admin/*
-            TargetOriginId: !Ref DistS3Bucket
-            ViewerProtocolPolicy: redirect-to-https
-            AllowedMethods:
-              - GET
-              - HEAD
-              - OPTIONS
-            # CachingDisabled
-            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
           - PathPattern: !Sub /${ApiStage}/*
             TargetOriginId: !Sub ${ApiGatewayId}
             ViewerProtocolPolicy: redirect-to-https
@@ -124,8 +119,13 @@ Resources:
               - POST
               - PATCH
               - DELETE
-            # CachingDisabled
-            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          - PathPattern: !Sub ${BaseHref}*
+            TargetOriginId: !Ref DistS3Bucket
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
         Logging:
           Bucket: !GetAtt LogsS3Bucket.DomainName
           IncludeCookies: false

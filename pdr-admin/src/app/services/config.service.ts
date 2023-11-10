@@ -27,7 +27,7 @@ export class ConfigService {
       try {
         // Attempt to get application via this.httpClient. This uses the url of the application that you are running it from
         // This will not work for local because it will try and get localhost:4200/api instead of 3000/api...
-        this.configuration = (await firstValueFrom(this.httpClient.get(`/api/config`)))['data'];
+        this.configuration = await this.getConfigFromApi();
       } catch (e) {
         // If all else fails, we'll just use the variables found in env.js
         console.error('Error getting local configuration:', e);
@@ -49,5 +49,26 @@ export class ConfigService {
 
   get config(): any {
     return this.configuration;
+  }
+
+  async delay(delayInms) {
+    return new Promise((resolve) => setTimeout(resolve, delayInms));
+  }
+
+  async getConfigFromApi() {
+    let n1 = 0;
+    let n2 = 1;
+    // We want to try and connect to API forever.
+    // The delay is increased based on the fibonacci sequence.
+    while (true) {
+      try {
+        return (await firstValueFrom(this.httpClient.get(`/api/config`)))['data'];
+      } catch (err) {
+        const delay = n1 + n2;
+        await this.delay(delay * 1000);
+        n1 = n2;
+        n2 = delay;
+      }
+    }
   }
 }

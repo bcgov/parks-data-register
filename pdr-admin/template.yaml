@@ -24,7 +24,7 @@ Parameters:
     Description: AWS Region.
   BaseHref:
     Type: String
-    Default: admin
+    Default: admin/
     Description: Base href to use for cloudfront.
   DistOriginPath:
     Type: String
@@ -64,10 +64,10 @@ Resources:
         CustomErrorResponses:
           - ErrorCode: 404
             ResponseCode: 200
-            ResponsePagePath: !Sub /${BaseHref}/index.html
+            ResponsePagePath: !Sub /${BaseHref}index.html
           - ErrorCode: 403
             ResponseCode: 200
-            ResponsePagePath: !Sub /${BaseHref}/index.html
+            ResponsePagePath: !Sub /${BaseHref}index.html
         Aliases:
           - !Ref AdminDomainName
         ViewerCertificate:
@@ -75,7 +75,7 @@ Resources:
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1
         Comment: !Sub "CloudFront distribution for ${AWS::StackName}"
-        DefaultRootObject: !Sub ${BaseHref}/index.html
+        DefaultRootObject: !Sub ${BaseHref}index.html
         Enabled: true
         HttpVersion: http2
         # List of origins that Cloudfront will connect to
@@ -119,7 +119,7 @@ Resources:
               - POST
               - PATCH
               - DELETE
-          - PathPattern: !Sub ${BaseHref}/*
+          - PathPattern: !Sub ${BaseHref}*
             TargetOriginId: !Ref DistS3Bucket
             ViewerProtocolPolicy: redirect-to-https
             AllowedMethods:

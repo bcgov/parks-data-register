@@ -52,7 +52,7 @@ Resources:
         Comment: CloudFront access identity
 
   CloudFrontDistribution:
-    Type: "AWS::CloudFront::Distribution"
+    Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Restrictions:

@@ -108,7 +108,7 @@ jobs:
           ApiStage=$API_STAGE \
           AdminDomainName=$DOMAIN_NAME \
           AdminDomainCertificateArn=$AWS_CERTIFICATE_ARN \
-          BaseHref=$BASE_HREF
+          BaseHref=$BASE_HREF"
 
       ### Upload dist to S3 ###
       - name: Deploy to S3

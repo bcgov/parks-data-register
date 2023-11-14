@@ -26,8 +26,7 @@ export class ProtectedAreaService {
     try {
       let res = [];
       if (id) {
-        res = await lastValueFrom(this.apiService.get(`parks/${id}/name`, queryParams));
-        res = res['data']['items'];
+        res = (await lastValueFrom(this.apiService.get(`parks/${id}/name`, queryParams)))['data']['items'];
       }
       const currentProtectedAreaIndex = res.findIndex((element) => element.status === 'current');
       this.dataService.setItemValue(

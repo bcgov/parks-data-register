@@ -13,6 +13,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
+    canActivate: [AuthGuard],
     data: {
       label: 'Home',
       breadcrumb: 'Home',
@@ -52,6 +53,7 @@ const routes: Routes = [
     path: 'change-log',
     pathMatch: 'full',
     component: ChangeLogComponent,
+    canActivate: [AuthGuard],
     data: {
       label: 'Change log',
       breadcrumb: 'Change log',

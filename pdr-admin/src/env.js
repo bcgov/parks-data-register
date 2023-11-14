@@ -16,6 +16,7 @@
   window.__env.KEYCLOAK_URL = "https://dev.loginproxy.gov.bc.ca/auth";
   window.__env.KEYCLOAK_REALM = "bcparks-service-transformation";
   window.__env.KEYCLOAK_ENABLED = true;
+  window.__env.API_KEY = "api-key-goes-here";
 
   // Add any feature-toggles
   // window.__env.coolFeatureActive = false;

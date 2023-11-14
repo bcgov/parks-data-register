@@ -61,7 +61,9 @@ export class ManageRecordsComponent implements OnDestroy {
   });
 
   submit() {
-    this.searchService.fetchData(this.form.value.text);
+    if (!this.disableSearch) {
+      this.searchService.fetchData(this.form.value.text);
+    }
   }
 
   viewItem(item) {

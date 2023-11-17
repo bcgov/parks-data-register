@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
     let body = JSON.parse(event.body);
 
     // Force set the body.orcs based on the path parameters
-    body.orcs = `${identifier}`  + "";
+    body.orcs = `${identifier}`;
 
     // Gets the current date and time in the Pacific Time Zone.
     const currentPSTDateTime = DateTime.now().setZone(TIMEZONE);

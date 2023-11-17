@@ -27,6 +27,10 @@
       "AttributeType": "S"
     },
     {
+      "AttributeName": "phoneticName",
+      "AttributeType": "S"
+    },
+    {
       "AttributeName": "status",
       "AttributeType": "S"
     }

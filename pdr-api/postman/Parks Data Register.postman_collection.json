@@ -1,9 +1,7 @@
 {
 	"info": {
-		"_postman_id": "a2e251b4-244d-4a97-95c1-7b957fc54cd2",
 		"name": "Parks Data Register",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "21509305"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -17,7 +15,15 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/config"
+						"url": {
+							"raw": "{{base_url}}/config",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"config"
+							]
+						}
 					},
 					"response": []
 				}
@@ -108,6 +114,76 @@
 										}
 									},
 									"response": []
+								},
+								{
+									"name": "Put Specific Park (Minor)",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"orcs\": \"1\",\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "localhost:3000/parks/1/name?updateType=minor",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"parks",
+												"1",
+												"name"
+											],
+											"query": [
+												{
+													"key": "updateType",
+													"value": "minor"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Put Specific Park (Major)",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"orcs\": \"1\",\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "localhost:3000/parks/1/name?updateType=major",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"parks",
+												"1",
+												"name"
+											],
+											"query": [
+												{
+													"key": "updateType",
+													"value": "major"
+												}
+											]
+										}
+									},
+									"response": []
 								}
 							]
 						}
@@ -118,14 +194,38 @@
 	],
 	"auth": {
 		"type": "oauth2",
-		"oauth2": {
-			"clientId": "{{client_id}}",
-			"accessTokenUrl": "{{access_token_url}}",
-			"authUrl": "{{auth_url}}",
-			"redirect_uri": "{{callback_url}}",
-			"tokenName": "{{token_name}}",
-			"addTokenTo": "header"
-		}
+		"oauth2": [
+			{
+				"key": "clientId",
+				"value": "{{client_id}}",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "{{access_token_url}}",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "{{auth_url}}",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "{{callback_url}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "{{token_name}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
 	},
 	"event": [
 		{

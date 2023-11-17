@@ -88,6 +88,7 @@ function handleContextAndAPIKey(authResponse, permissionObject, headers) {
   // Set the context
   authResponse.context = {
     isAdmin: permissionObject?.isAdmin,
+    userID: permissionObject?.email,
     role: JSON.stringify(permissionObject?.roles)
   };
 

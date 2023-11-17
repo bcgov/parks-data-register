@@ -4,8 +4,9 @@
   "description": "parks-data-register-api-tests",
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.44.0",
+    "aws-sdk": "^2.1467.0",
     "jest": "^29.7.0",
-    "aws-sdk": "^2.1467.0"
+    "luxon": "^3.4.4"
   },
   "scripts": {
     "start": "sam local start-api --env-vars env.json --skip-pull-image 2>&1 | tr '\r' '\n'",
@@ -25,5 +26,9 @@
       "^/opt/dynamodb": "<rootDir>/.aws-sam/build/DynamoDBLayer/dynamodb",
       "^/opt/base": "<rootDir>/.aws-sam/build/BaseLayer/base"
     }
+  },
+  "dependencies": {
+    "aws-sdk-mock": "^5.8.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }

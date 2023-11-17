@@ -24,9 +24,13 @@ exports.handler = async (event, context) => {
   try {
     // Extracts the 'updateType' parameter from the query string.
     const updateType = event?.queryStringParameters?.updateType;
+    const identifier = event.pathParameters.identifier;
 
     // Parses the request body as JSON.
-    const body = JSON.parse(event.body);
+    let body = JSON.parse(event.body);
+
+    // Force set the body.orcs based on the path parameters
+    body.orcs = `${identifier}`  + "";
 
     // Gets the current date and time in the Pacific Time Zone.
     const currentPSTDateTime = DateTime.now().setZone(TIMEZONE);
@@ -74,8 +78,11 @@ exports.handler = async (event, context) => {
  */
 function validateRequest(body) {
   // Checks if the 'effectiveDate' and 'legalName' properties are present in the payload.
-  if (!body.effectiveDate || !body.legalName) {
+  if (!body.effectiveDate || !body.legalName || !body.status) {
     // Throws an error if the payload is invalid.
+    throw new Error('Invalid payload.');
+  }
+  if (body.status !== 'established' && body.status !== 'repealed') {
     throw new Error('Invalid payload.');
   }
 }
@@ -142,6 +149,7 @@ async function createChangeLogItem(body, currentTimeISO) {
   changelogRecord['newLegalName'] = { 'S': body.legalName };
   changelogRecord['newEffectiveDate'] = { 'S': body.effectiveDate };
   changelogRecord['newStatus'] = { 'S': body.status };
+  changelogRecord['status'] = { 'S': 'historical' };
 
   // Calls the 'putItem' function to store the changelog record in DynamoDB.
   await putItem(changelogRecord);

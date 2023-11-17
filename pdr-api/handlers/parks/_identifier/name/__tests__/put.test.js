@@ -53,6 +53,9 @@ describe('Lambda Handler Tests', () => {
 
     const result = await handler({
       body: JSON.stringify(body),
+      pathParameters: {
+        "identifier": "41"
+      },
       queryStringParameters: {
         updateType: 'minor'
       },
@@ -83,6 +86,9 @@ describe('Lambda Handler Tests', () => {
       queryStringParameters: {
         updateType: 'minor'
       },
+      pathParameters: {
+        "identifier": "41"
+      },
       requestContext: {
         authorizer: {
           isAdmin: true,
@@ -91,6 +97,33 @@ describe('Lambda Handler Tests', () => {
       }
     });
     expect(result.statusCode).toBe(200);
+  });
+
+  test('minorUpdate should return a response with status code missing things 400', async () => {
+    const body = {
+      "orcs": "41",
+      "effectiveDate": "1911-03-01",
+      "legalName": "Strathcona Park",
+      "status": "established",
+      "searchTerms": "mount asdf"
+    };
+
+    const result = await handler({
+      body: JSON.stringify(body),
+      queryStringParameters: {
+        updateType: 'minor'
+      },
+      pathParameters: {
+        "identifier": "41"
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true,
+          userID: IDIR_TEST_USER
+        }
+      }
+    });
+    expect(result.statusCode).toBe(400);
   });
 
   test('minorUpdate should fail because of type issues 400', async () => {
@@ -109,6 +142,9 @@ describe('Lambda Handler Tests', () => {
       body: JSON.stringify(body),
       queryStringParameters: {
         updateType: 'minor'
+      },
+      pathParameters: {
+        "identifier": "3"
       },
       requestContext: {
         authorizer: {
@@ -136,6 +172,39 @@ describe('Lambda Handler Tests', () => {
       body: JSON.stringify(body),
       queryStringParameters: {
         updateType: 'somethingWrong'
+      },
+      pathParameters: {
+        "identifier": "123"
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true,
+          userID: IDIR_TEST_USER
+        }
+      }
+    });
+    expect(result.statusCode).toBe(400);
+  });
+
+  test('Invalid status: 400', async () => {
+    const body = {
+      "orcs": "123",
+      "effectiveDate": "1911-03-01",
+      "legalName": "Strathcona Park",
+      "status": "aaa",
+      "phoneticName": "STRA",
+      "displayName": "Strathcona Park",
+      "searchTerms": "mount asdf",
+      "notes": "Some Notes"
+    };
+
+    const result = await handler({
+      body: JSON.stringify(body),
+      queryStringParameters: {
+        updateType: 'minor'
+      },
+      pathParameters: {
+        "identifier": "123"
       },
       requestContext: {
         authorizer: {
@@ -187,6 +256,9 @@ describe('Lambda Handler Tests', () => {
       body: JSON.stringify(body),
       queryStringParameters: {
         updateType: 'major'
+      },
+      pathParameters: {
+        "identifier": "111"
       },
       requestContext: {
         authorizer: {

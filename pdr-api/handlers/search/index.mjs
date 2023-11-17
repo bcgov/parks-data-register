@@ -14,9 +14,9 @@ const client = new Client({
     getCredentials: () => {
       const credentialsProvider = defaultProvider();
       return credentialsProvider();
-    },
+    }
   }),
-  node: OPENSEARCH_DOMAIN_ENDPOINT, // OpenSearch domain URL
+  node: OPENSEARCH_DOMAIN_ENDPOINT // OpenSearch domain URL
 });
 
 // Lambda function entry point
@@ -42,7 +42,7 @@ export const handler = async (event, context) => {
           must: [
             {
               query_string: {
-                query: queryParams?.text,
+                query: queryParams?.text
               }
             }
           ]
@@ -56,13 +56,29 @@ export const handler = async (event, context) => {
         term: {
           status: 'current'
         }
+      };
+    } else {
+      if (queryParams?.status) {
+        query.query.bool['filter'] = {
+          term: {
+            status: queryParams?.status
+          }
+        };
+      }
+      //TODO: Type to be implemented in #226, not currently in data model
+      if (queryParams?.type) {
+        query.query.bool['filter'] = {
+          term: {
+            type: queryParams?.type
+          }
+        };
       }
     }
 
     // Send the query to the OpenSearch cluster
     let response = await client.search({
       index: OPENSEARCH_MAIN_INDEX, // Index to search
-      body: query,
+      body: query
     });
     logger.debug(JSON.stringify(response)); // Log the response
 

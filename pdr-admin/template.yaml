@@ -37,10 +37,10 @@ Parameters:
     Type: String
     Default: api
     Description: API stage.
-  AdminDomainName:
+  EnvDomainName:
     Type: String
     Default: dev-data.bcparks.ca
-  AdminDomainCertificateArn:
+  DomainCertificateArn:
     Type: String
     Default: arn:aws:acm:us-east-1:970582042516:certificate/ef1d2666-8278-4d20-bdff-e27b55b3246f
 
@@ -50,6 +50,28 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: CloudFront access identity
+
+  CloudFrontAPICachePolicy:
+      Type: AWS::CloudFront::CachePolicy
+      Properties:
+        CachePolicyConfig:
+          Comment: "Custom CloudFront Caching Policy to allow the Authorization header through to the Origins."
+          DefaultTTL: 3600
+          MaxTTL: 86400
+          MinTTL: 1
+          Name: !Sub ${ApiGatewayId}-CFCachePolicy
+          ParametersInCacheKeyAndForwardedToOrigin:
+            CookiesConfig:
+              CookieBehavior: none
+            EnableAcceptEncodingBrotli: false
+            EnableAcceptEncodingGzip: false
+            HeadersConfig:
+              HeaderBehavior: whitelist
+              Headers:
+                - Authorization
+                - X-Api-Key
+            QueryStringsConfig:
+              QueryStringBehavior: all
 
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
@@ -69,9 +91,9 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: !Sub /${BaseHref}index.html
         Aliases:
-          - !Ref AdminDomainName
+          - !Ref EnvDomainName
         ViewerCertificate:
-          AcmCertificateArn: !Ref AdminDomainCertificateArn
+          AcmCertificateArn: !Ref DomainCertificateArn
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1
         Comment: !Sub "CloudFront distribution for ${AWS::StackName}"
@@ -90,7 +112,7 @@ Resources:
             DomainName: !Sub "${ApiGatewayId}.execute-api.${AWSRegion}.amazonaws.com"
             CustomOriginConfig:
               HTTPSPort: 443
-              OriginProtocolPolicy: http-only
+              OriginProtocolPolicy: https-only
               OriginSSLProtocols:
                 - TLSv1.2
         # To connect the CDN to the origins you need to specify behaviours
@@ -118,7 +140,7 @@ Resources:
               - PATCH
               - DELETE
             # CachingDisabled
-            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            CachePolicyId: !Ref CloudFrontAPICachePolicy
             TargetOriginId: !Sub ${ApiGatewayId}
             ViewerProtocolPolicy: redirect-to-https
           - PathPattern: !Sub ${BaseHref}*

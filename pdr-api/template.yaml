@@ -374,6 +374,47 @@ Resources:
               Authorizer: NONE
               OverrideApiAuth: true
 
+  # ParkNamePut
+  ParkNamePut:
+    FunctionName: ParkNamePut
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/parks/_identifier/name/PUT
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Park Name PUT lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        ParkNamePut:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/name
+            Method: PUT
+            RestApiId: !Ref ApiDeployment
+        ParkNameOptions:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/name
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
+
   ### API ###
   ApiDeployment:
     Type: AWS::Serverless::Api

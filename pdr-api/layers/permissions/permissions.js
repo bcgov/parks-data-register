@@ -153,6 +153,7 @@ exports.resolvePermissions = function (token) {
   return {
     roles: roles,
     isAdmin: isAdmin,
-    isAuthenticated: isAuthenticated
+    isAuthenticated: isAuthenticated,
+    email: token.data.email
   };
 };

@@ -113,10 +113,10 @@ async function minorUpdate(user, body, currentTimeISO) {
  */
 async function majorChange(user, body, currentTimeISO) {
   // Creates a changelog item for the legal name change.
-  await createChangeLogItem(body, currentTimeISO);
+  const putTransaction = await createChangeLogItem(body, currentTimeISO);
 
   // Calls the 'updateRecord' function to update the record.
-  const attributes = await updateRecord(user, body, currentTimeISO);
+  const attributes = await updateRecord(user, body, currentTimeISO, putTransaction);
 
   // Returns a success response with the updated attributes.
   return sendResponse(200, attributes, 'Record updated', 'Legal Name Change');
@@ -151,8 +151,12 @@ async function createChangeLogItem(body, currentTimeISO) {
   changelogRecord['newStatus'] = { 'S': body.status };
   changelogRecord['status'] = { 'S': 'historical' };
 
-  // Calls the 'putItem' function to store the changelog record in DynamoDB.
-  await putItem(changelogRecord);
+  return {
+    Put: {
+      TableName: TABLE_NAME,
+      Item: changelogRecord
+    }
+  }
 }
 
 /**
@@ -163,7 +167,7 @@ async function createChangeLogItem(body, currentTimeISO) {
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the updated attributes.
  */
-async function updateRecord(user, body, currentTimeISO) {
+async function updateRecord(user, body, currentTimeISO, putTransaction = undefined) {
   // Defines the parameters for updating the record.
   let updateParams = {
     TableName: TABLE_NAME,
@@ -192,11 +196,39 @@ async function updateRecord(user, body, currentTimeISO) {
     // Logs the update parameters for debugging purposes.
     logger.debug(updateParams);
 
-    // Executes the update operation and retrieves the updated attributes.
-    const { Attributes } = await dynamodb.updateItem(updateParams).promise();
+    if (putTransaction) {
+      // We can't have this in a transaction.
+      delete updateParams.ReturnValues;
+      await dynamodb.transactWriteItems({
+        TransactItems: [
+          putTransaction,
+          {
+            Update: updateParams
+          }
+        ]
+      }).promise();
 
-    // Converts the DynamoDB attributes to a more usable format.
-    return AWS.DynamoDB.Converter.unmarshall(Attributes);
+      // Return the object we would have inserted.
+      return {
+        pk: body.orcs,
+        sk: 'Details',
+        updateDate: currentTimeISO,
+        effectiveDate: body.effectiveDate,
+        legalName: body.legalName,
+        displayName: body.displayName,
+        phoneticName: body.phoneticName,
+        searchTerms: body.searchTerms,
+        lastModifiedBy: user,
+        status: body.status,
+        notes: body.note
+      }
+    } else {
+      // Executes the update operation and retrieves the updated attributes.
+      const { Attributes } = await dynamodb.updateItem(updateParams).promise();
+
+      // Converts the DynamoDB attributes to a more usable format.
+      return AWS.DynamoDB.Converter.unmarshall(Attributes);
+    }
   } catch (error) {
     // Logs any errors that occur during the update operation.
     logger.error(error);

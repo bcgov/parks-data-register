@@ -404,16 +404,6 @@ Resources:
             Path: /parks/{identifier}/name
             Method: PUT
             RestApiId: !Ref ApiDeployment
-        ParkNameOptions:
-          Type: Api
-          Properties:
-            Path: /parks/{identifier}/name
-            Method: OPTIONS
-            RestApiId: !Ref ApiDeployment
-            Auth:
-              ApiKeyRequired: false
-              Authorizer: NONE
-              OverrideApiAuth: true
 
   ### API ###
   ApiDeployment:

@@ -50,30 +50,8 @@ export const handler = async (event, context) => {
       }
     };
 
-    // Public users get status=current
-    if (!isAdmin) {
-      query.query.bool['filter'] = {
-        term: {
-          status: 'current'
-        }
-      };
-    } else {
-      if (queryParams?.status) {
-        query.query.bool['filter'] = {
-          term: {
-            status: queryParams?.status
-          }
-        };
-      }
-      //TODO: Type to be implemented in #226, not currently in data model
-      if (queryParams?.type) {
-        query.query.bool['filter'] = {
-          term: {
-            type: queryParams?.type
-          }
-        };
-      }
-    }
+    // Build the search query
+    query = buildQuery(isAdmin, queryParams, query);
 
     // Send the query to the OpenSearch cluster
     let response = await client.search({
@@ -98,3 +76,43 @@ export const handler = async (event, context) => {
     return sendResponse(err?.code || 400, [], err?.msg || 'Error', err?.error || err, context);
   }
 };
+
+
+// Build the search query
+function buildQuery(isAdmin, queryStringParameters, query) {
+  try {
+    logger.info('Building query');
+    for (let key of Object.keys(queryStringParameters)) {
+      const value = queryStringParameters[key];
+      // Remove text from terms, it is sent in another part of the query
+      if (key != 'text') {
+        // Multiple terms to be comma seperated eg. ?status=current,pending
+        const terms = value.split(',');
+        query.query.bool.must.push({
+          terms: {
+            [key]: terms
+          }
+        });
+      }
+    }
+
+    // Prevent any non-admins from seeing protected areas with a status of 'pending'
+    if (!isAdmin) {
+      query.query.bool['must_not'] = [];
+      query.query.bool.must_not.push({
+        match: {
+          status: 'pending'
+        }
+      });
+    }
+
+    logger.debug('Query:', JSON.stringify(query));
+    return query;
+
+  } catch (err){
+    logger.error(JSON.stringify(err)); // Log the error
+
+    // Send an error response
+    return sendResponse(err?.code || 400, [], err?.msg || 'Error', err?.error || err, context);
+  }
+}

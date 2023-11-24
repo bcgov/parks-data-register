@@ -14,9 +14,9 @@ const client = new Client({
     getCredentials: () => {
       const credentialsProvider = defaultProvider();
       return credentialsProvider();
-    },
+    }
   }),
-  node: OPENSEARCH_DOMAIN_ENDPOINT, // OpenSearch domain URL
+  node: OPENSEARCH_DOMAIN_ENDPOINT // OpenSearch domain URL
 });
 
 // Lambda function entry point
@@ -42,7 +42,7 @@ export const handler = async (event, context) => {
           must: [
             {
               query_string: {
-                query: queryParams?.text,
+                query: queryParams?.text
               }
             }
           ]
@@ -50,19 +50,13 @@ export const handler = async (event, context) => {
       }
     };
 
-    // Public users get status=current
-    if (!isAdmin) {
-      query.query.bool['filter'] = {
-        term: {
-          status: 'current'
-        }
-      }
-    }
+    // Build the search query
+    query = buildQuery(isAdmin, queryParams, query);
 
     // Send the query to the OpenSearch cluster
     let response = await client.search({
       index: OPENSEARCH_MAIN_INDEX, // Index to search
-      body: query,
+      body: query
     });
     logger.debug(JSON.stringify(response)); // Log the response
 
@@ -82,3 +76,43 @@ export const handler = async (event, context) => {
     return sendResponse(err?.code || 400, [], err?.msg || 'Error', err?.error || err, context);
   }
 };
+
+
+// Build the search query
+function buildQuery(isAdmin, queryStringParameters, query) {
+  try {
+    logger.info('Building query');
+    for (let key of Object.keys(queryStringParameters)) {
+      const value = queryStringParameters[key];
+      // Remove text from terms, it is sent in another part of the query
+      if (key != 'text') {
+        // Multiple terms to be comma seperated eg. ?status=current,pending
+        const terms = value.split(',');
+        query.query.bool.must.push({
+          terms: {
+            [key]: terms
+          }
+        });
+      }
+    }
+
+    // Prevent any non-admins from seeing protected areas with a status of 'pending'
+    if (!isAdmin) {
+      query.query.bool['must_not'] = [];
+      query.query.bool.must_not.push({
+        match: {
+          status: 'pending'
+        }
+      });
+    }
+
+    logger.debug('Query:', JSON.stringify(query));
+    return query;
+
+  } catch (err){
+    logger.error(JSON.stringify(err)); // Log the error
+
+    // Send an error response
+    return sendResponse(err?.code || 400, [], err?.msg || 'Error', err?.error || err, context);
+  }
+}

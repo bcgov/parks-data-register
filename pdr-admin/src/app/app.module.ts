@@ -23,10 +23,8 @@ import { EventService } from './services/event.service';
 import { ToggleButtonModule } from './toggle-button/toggle-button.module';
 import { BreadcrumbModule } from './breadcrumb/breadcrumb.module';
 import { HomeModule } from './home/home.module';
-import { ManageRecordsComponent } from './manage-records/manage-records.component';
 import { NgdsFormsModule } from '@digitalspace/ngds-forms';
 import { ChangeLogComponent } from './change-log/change-log.component';
-import { ProtectedAreaModule } from './protected-area/protected-area.module';
 import { ToastrModule } from 'ngx-toastr';
 
 export function initConfig(
@@ -46,10 +44,9 @@ export function initConfig(
 }
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent, ManageRecordsComponent, ChangeLogComponent],
+  declarations: [AppComponent, LoginComponent, NotAuthorizedComponent, ChangeLogComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     HeaderModule,
     InfiniteLoadingBarModule,
     FooterModule,
@@ -58,7 +55,7 @@ export function initConfig(
     BreadcrumbModule,
     HomeModule,
     NgdsFormsModule,
-    ProtectedAreaModule,
+    AppRoutingModule,
     ToastrModule.forRoot({}),
   ],
   providers: [

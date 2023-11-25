@@ -1,7 +1,7 @@
 <div class="container-fluid bg-info p-4">
   <section class="pb-3">
     <h3>Find a protected area</h3>
-    <div class="row-cols-1 row-cols-md-2 row row-cols-lg-3 g-3">
+    <div class="row mb-3">
       <div class="col">
         <ngds-text-input
           class="form-id"
@@ -12,15 +12,8 @@
           (keyup.enter)="submit()"
         ></ngds-text-input>
       </div>
-      <div class="col">
-        <ngds-picklist-input
-          [control]="form?.controls?.['type']"
-          [selectionListItems]="typePicklistItems"
-          [label]="'Filter by type'"
-          [placeholder]="'Any'"
-        >
-        </ngds-picklist-input>
-      </div>
+    </div>
+    <div class="row-cols-1 row-cols-md-2 row row-cols-lg-3 g-3">
       <div class="col">
         <ngds-picklist-input
           [control]="form?.controls?.['status']"
@@ -57,7 +50,6 @@
       <tr>
         <th scope="col" colspan="1">Park ID</th>
         <th scope="col">LEGAL NAME</th>
-        <th scope="col">TYPE</th>
         <th scope="col">Protected Area Status</th>
         <th scope="col" colspan="1">ACTIONS</th>
       </tr>
@@ -68,7 +60,6 @@
         <td class="pt-3 pb-3">
           <strong>{{ item.legalName }}</strong>
         </td>
-        <td class="pt-3 pb-3">{{ item.type }}</td>
         <td class="pt-3 pb-3">{{ item.status }}</td>
         <td class="action-column" colspan="1">
           <div class="d-flex">

@@ -1,22 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProtectedAreaComponent } from './protected-area.component';
+import { ProtectedAreaManageComponent } from './protected-area-manage.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ConfigService } from '../services/config.service';
+import { ConfigService } from 'src/app/services/config.service';
 import { ToastrModule } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
 
-describe('ProtectedAreaComponent', () => {
-  let component: ProtectedAreaComponent;
-  let fixture: ComponentFixture<ProtectedAreaComponent>;
+describe('ProtectedAreaManageComponent', () => {
+  let component: ProtectedAreaManageComponent;
+  let fixture: ComponentFixture<ProtectedAreaManageComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ProtectedAreaComponent],
+      declarations: [ProtectedAreaManageComponent],
       imports: [RouterTestingModule, HttpClientTestingModule, ToastrModule.forRoot({})],
       providers: [ConfigService],
     });
-    fixture = TestBed.createComponent(ProtectedAreaComponent);
+    fixture = TestBed.createComponent(ProtectedAreaManageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

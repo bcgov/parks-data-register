@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Data, NavigationEnd, Router } from '@angular/ro
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { Breadcrumb } from '../models/breadcrumb.model';
-import { DataService } from './data.service';
+import { ProtectedAreaService } from './protected-area.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,24 +11,24 @@ import { DataService } from './data.service';
 export class BreadcrumbService {
   // Subject emitting the breadcrumb hierarchy
   private readonly _breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
-  public park;
+  public protectedArea;
   public subscriptions = new Subscription();
 
   // Observable exposing the breadcrumb hierarchy
   readonly breadcrumbs = this._breadcrumbs.asObservable();
 
-  constructor(private router: Router, private dataService: DataService) {
+  constructor(private router: Router, private protectedAreaService: ProtectedAreaService) {
     // Initial seed
-    this.setBreadcrum();
+    this.setBreadcrumb();
 
-    // this.subscriptions.add(
-    //   this.dataService.watchItem(Constants.dataIds.CURRENT_PARK_KEY).subscribe((res) => {
-    //     if (res) {
-    //       this.park = this.parkService.getCachedPark(res);
-    //       this.setBreadcrum();
-    //     }
-    //   })
-    // );
+    this.subscriptions.add(
+      this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
+        if (res) {
+          this.protectedArea = res;
+          this.setBreadcrumb();
+        }
+      })
+    );
 
     this.router.events
       .pipe(
@@ -36,11 +36,11 @@ export class BreadcrumbService {
         filter((event) => event instanceof NavigationEnd)
       )
       .subscribe(() => {
-        this.setBreadcrum();
+        this.setBreadcrumb();
       });
   }
 
-  private setBreadcrum() {
+  private setBreadcrumb() {
     // Construct the breadcrumb hierarchy
     const root = this.router.routerState.snapshot.root;
     const breadcrumbs: Breadcrumb[] = [];
@@ -58,10 +58,12 @@ export class BreadcrumbService {
       // Add an element for the current route part
       if (route.data['breadcrumb']) {
         let label = '';
+        let altLabel;
         switch (route.data['breadcrumb']) {
-          // case 'PARK NAME':
-          //   label = this.park?.name || route.params['parkId'];
-          //   break;
+          case 'PROTECTED_AREA_DETAILS':
+            label = `${this.protectedArea?.displayName || '-'}`;
+            altLabel = 'Details';
+            break;
           // case 'FACILITY NAME':
           //   label = route.params['facilityId'];
           //   break;
@@ -77,9 +79,13 @@ export class BreadcrumbService {
           label: label,
           url: `/${routeUrl.join('/')}`,
         };
+
+        if (altLabel) {
+          breadcrumb['altLabel'] = altLabel;
+        }
+
         breadcrumbs.push(breadcrumb);
       }
-
       // Add another element for the next route part
       this.addBreadcrumb(route.firstChild as any, routeUrl, breadcrumbs);
     }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 
@@ -7,21 +7,25 @@ import { ProtectedAreaService } from 'src/app/services/protected-area.service';
   templateUrl: './protected-area-details.component.html',
   styleUrls: ['./protected-area-details.component.scss'],
 })
-export class ProtectedAreaDetailsComponent {
+export class ProtectedAreaDetailsComponent implements OnInit {
   private subscriptions = new Subscription();
 
   currentData = null;
   historicalData = null;
 
-  constructor(private protectedAreaService: ProtectedAreaService) {
+  constructor(private protectedAreaService: ProtectedAreaService, private ref: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
     this.subscriptions.add(
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
         this.currentData = res;
+        this.ref.detectChanges();
       })
     );
     this.subscriptions.add(
       this.protectedAreaService.watchHistoricalProtectedArea().subscribe((res) => {
         this.historicalData = res;
+        this.ref.detectChanges();
       })
     );
   }

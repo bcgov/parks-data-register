@@ -5,6 +5,11 @@ const { logger, sendResponse } = require("/opt/base");
 const { decodeJWT, resolvePermissions } = require("/opt/permissions");
 
 exports.handler = async (event, context) => {
+  // Allow CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return sendResponse(200, {}, 'Success', null, context);
+  }
+
   const token = await decodeJWT(event);
   const permissionObject = resolvePermissions(token);
   if (permissionObject.isAdmin !== true) {

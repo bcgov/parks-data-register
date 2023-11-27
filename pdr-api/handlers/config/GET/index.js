@@ -3,6 +3,11 @@ const { sendResponse, checkWarmup, logger } = require('/opt/base');
 
 exports.handler = async (event, context) => {
   logger.debug('Read Config', event);
+  // Allow CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return sendResponse(200, {}, 'Success', null, context);
+  }
+
   if (checkWarmup(event)) {
     return sendResponse(200, [], 'Warm up.', null);
   }

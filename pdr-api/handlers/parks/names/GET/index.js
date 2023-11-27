@@ -3,6 +3,10 @@ const { sendResponse, logger } = require('/opt/base');
 
 exports.handler = async (event, context) => {
   logger.debug('Get all park names details', event);
+  // Allow CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return sendResponse(200, {}, 'Success', null, context);
+  }
 
   try {
     const queryParams = event.queryStringParameters;

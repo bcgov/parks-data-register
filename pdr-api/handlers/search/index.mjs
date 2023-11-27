@@ -22,6 +22,10 @@ const client = new Client({
 // Lambda function entry point
 export const handler = async (event, context) => {
   logger.debug('Search:', event); // Log the search event
+  // Allow CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return sendResponse(200, {}, 'Success', null, context);
+  }
 
   try {
     // Extract query parameters from the event

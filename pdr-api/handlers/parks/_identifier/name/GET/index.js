@@ -3,6 +3,10 @@ const { sendResponse, logger } = require('/opt/base');
 
 exports.handler = async (event, context) => {
   logger.debug('Get park name details', event);
+  // Allow CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return sendResponse(200, {}, 'Success', null, context);
+  }
 
   try {
     const identifier = event.pathParameters.identifier;

@@ -20,6 +20,10 @@ exports.handler = async (event, context) => {
    */
   logger.info('Update park name details');
   logger.debug(event);
+  // Allow CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return sendResponse(200, {}, 'Success', null, context);
+  }
 
   try {
     // Extracts the 'updateType' parameter from the query string.

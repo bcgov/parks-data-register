@@ -92,7 +92,7 @@ fdescribe('Specific Park Names GET', () => {
       status: 'pending'
     };
     // public not allowed to see status = pending
-    const res2 = await lambda.handler(event.null);
+    const res2 = await lambda.handler(event, null);
     expect(res2.statusCode).toBe(400);
   });
 });

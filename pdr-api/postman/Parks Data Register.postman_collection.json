@@ -35,6 +35,45 @@
 			"name": "Parks",
 			"item": [
 				{
+					"name": "Search",
+					"item":[
+						{
+							"name": "Search",
+							"request": {
+								"auth": {
+									"type": "inherit"
+								},
+								"method":"GET",
+								"url": {
+									"raw": "{{base_url}}/search?text=Strathcona Park&status=current&type=protectedArea",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"search"
+									],
+									"query": [
+										{
+											"key": "text",
+											"value": "Strathcona Park"
+										},
+										{
+											"key": "status",
+											"value": "current,pending"
+										},
+										{
+											"key": "type",
+											"value": "protectedArea"
+										}
+
+									]
+								}
+							}
+						}
+
+					]
+				},
+				{
 					"name": "Names",
 					"item": [
 						{

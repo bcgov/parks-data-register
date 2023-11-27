@@ -1267,10 +1267,10 @@
     bootstrap "^5.3.1"
     jquery "^3.6.0"
 
-"@digitalspace/ngds-forms@^0.0.77":
-  version "0.0.77"
-  resolved "https://registry.yarnpkg.com/@digitalspace/ngds-forms/-/ngds-forms-0.0.77.tgz#67a98394674c63c530f0b033b02125bf9f5a6d95"
-  integrity sha512-vRp06imotFJFbRIPrvFgdAwlBImlDZPpXLG++5b+sFccIJ1nS8fLFAEyFgmf65Xt6EiYmzpyC/5/cG7u74YDwg==
+"@digitalspace/ngds-forms@^0.0.80":
+  version "0.0.80"
+  resolved "https://registry.yarnpkg.com/@digitalspace/ngds-forms/-/ngds-forms-0.0.80.tgz#28e5e706bb4d1773c8159fdfd4475fe1e0dec71a"
+  integrity sha512-Tx4YTq8LGTVLL/PK7VbNWv3yd86auhETqnMERk+mFrkPSN6HTXVxBULoSgzCEIJ6DLqLjSxMzAf6oQP56loFVA==
   dependencies:
     tslib "^2.3.0"
 
@@ -4890,6 +4890,11 @@ lru-cache@^7.4.4, lru-cache@^7.5.1, lru-cache@^7.7.1:
   version "7.18.3"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.18.3.tgz#f793896e0fd0e954a59dfdd82f0773808df6aa89"
   integrity sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==
+
+luxon@^3.4.4:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.4.4.tgz#cf20dc27dc532ba41a169c43fdcc0063601577af"
+  integrity sha512-zobTr7akeGHnv7eBOXcRgMeCP6+uyYsczwmeRCauvpvaAltgNyTbLH/+VaEAPUeWBT+1GuNmz4wC/6jtQzbbVA==
 
 magic-string@0.30.1:
   version "0.30.1"

@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BreadcrumbComponent } from './breadcrumb.component';
 import { ConfigService } from '../services/config.service';
 import { KeycloakService } from '../services/keycloak.service';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('BreadcrumbComponent', () => {
   let component: BreadcrumbComponent;
@@ -20,7 +21,7 @@ describe('BreadcrumbComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes(mockRoutes)],
+      imports: [RouterTestingModule.withRoutes(mockRoutes), ToastrModule.forRoot({})],
       declarations: [BreadcrumbComponent],
       providers: [{ provide: ConfigService, useValue: fakeConfigService }, KeycloakService, HttpClient, HttpHandler],
     }).compileComponents();

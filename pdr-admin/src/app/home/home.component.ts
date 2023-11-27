@@ -11,16 +11,16 @@ export class HomeComponent {
   // This can be pulled in via the config.
   public cardConfig = [
     {
-      cardHeader: 'Manage Records',
-      cardTitle: 'Search and manage records',
-      cardText: 'Find, view, or change records.',
-      navigation: 'manage-records',
+      cardHeader: 'Protected Area',
+      cardTitle: 'Search and manage protected areas',
+      cardText: 'Find, view, or change protected areas.',
+      navigation: ['protected-areas'],
     },
     {
       cardHeader: 'Change Log',
       cardTitle: 'See changes',
       cardText: 'View changes by date, type, and actor.',
-      navigation: 'change-log',
+      navigation: ['change-log'],
     },
   ];
   constructor(protected keyCloakService: KeycloakService, protected configService: ConfigService) {

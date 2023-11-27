@@ -24,7 +24,7 @@ describe('NavCardComponent', () => {
 
   it('navigates', async () => {
     const navSpy = spyOn(component['router'], 'navigate');
-    component.navigate('mock');
+    component.navigate(['mock']);
     expect(navSpy).toHaveBeenCalledOnceWith(['mock']);
   });
 });

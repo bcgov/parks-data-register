@@ -1,16 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { BreadcrumbService } from '../services/breadcrumb.service';
 import { Subscription } from 'rxjs';
+import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 
 @Component({
-  selector: 'app-protected-area',
-  templateUrl: './protected-area.component.html',
-  styleUrls: ['./protected-area.component.scss'],
+  selector: 'app-protected-area-edit',
+  templateUrl: './protected-area-edit.component.html',
+  styleUrls: ['./protected-area-edit.component.scss'],
 })
-export class ProtectedAreaComponent implements OnInit {
+export class ProtectedAreaEditComponent implements OnInit {
   private subscriptions = new Subscription();
 
-  showSearch = false;
+  showEdit = false;
 
   constructor(private breadcrumbService: BreadcrumbService, private ref: ChangeDetectorRef) {}
 
@@ -18,10 +18,10 @@ export class ProtectedAreaComponent implements OnInit {
     this.subscriptions.add(
       this.breadcrumbService.breadcrumbs.subscribe((res) => {
         if (res) {
-          if (res[res.length - 1]?.label === 'Protected Areas') {
-            this.showSearch = true;
+          if (res[res.length - 1]?.label === 'Edit') {
+            this.showEdit = true;
           } else {
-            this.showSearch = false;
+            this.showEdit = false;
           }
           this.ref.detectChanges();
         }

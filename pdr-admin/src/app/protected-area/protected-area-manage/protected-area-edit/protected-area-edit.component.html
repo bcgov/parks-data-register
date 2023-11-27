@@ -1,7 +1,5 @@
-<section class="mb-4">
+<section *ngIf="showEdit">
   <h2>Edit record</h2>
-</section>
-<section>
   <h3 class="mb-4">What do you want to do?</h3>
   <div class="row mb-4">
     <div class="col-12 col-sm-4 mb-2 mb-sm-4">
@@ -50,3 +48,5 @@
     </div>
   </div>
 </section>
+
+<router-outlet></router-outlet>

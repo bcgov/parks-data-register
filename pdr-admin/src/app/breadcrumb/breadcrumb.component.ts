@@ -27,13 +27,16 @@ export class BreadcrumbComponent implements OnDestroy {
   ) {
     this.subscriptions.add(
       breadcrumbService.breadcrumbs.subscribe((res) => {
-        this.breadcrumbs = res;
-        this.lastBreadcrumb = this.breadcrumbs.pop();
-        if (this.lastBreadcrumb?.label !== 'Home') {
-          this.breadcrumbs.unshift({
-            label: 'Home',
-            url: '',
-          });
+        if (res) {
+          this.breadcrumbs = [...res];
+          this.lastBreadcrumb = this.breadcrumbs[this.breadcrumbs.length - 1];
+          this.breadcrumbs.splice(-1);
+          if (this.lastBreadcrumb?.label !== 'Home') {
+            this.breadcrumbs.unshift({
+              label: 'Home',
+              url: '',
+            });
+          }
         }
       })
     );

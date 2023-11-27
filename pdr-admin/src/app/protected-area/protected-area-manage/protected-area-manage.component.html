@@ -1,0 +1,34 @@
+<div class="container-fluid pt-4 px-4">
+  <section class="pb-4 mb-4 border-bottom">
+    <div class="d-flex justify-content-between flex-wrap mb-1">
+      <h1 class="mb-0">
+        {{ currentData?.pk || "-" }} <span class="fw-normal">{{ currentData?.legalName || "-" }}</span>
+      </h1>
+      <button
+        *ngIf="state === 'details'"
+        type="button"
+        class="btn btn-outline-primary my-3 my-sm-0"
+        (click)="navigate('edit')"
+      >
+        <i class="bi bi-pen me-2"></i>Edit
+      </button>
+      <button
+        *ngIf="state === 'edit'"
+        type="button"
+        class="btn btn-outline-primary my-3 my-sm-0"
+        (click)="navigate('')"
+      >
+        <i class="bi bi-card-heading me-2"></i>Details
+      </button>
+    </div>
+    <div class="d-flex justify-content-start text-muted">
+      <div class="me-4 fs-5"><strong>Type</strong> {{ currentData?.type || "-" }}</div>
+      <div class="me-4 fs-5"><strong>Status</strong> {{ currentData?.status || "-" }}</div>
+      <div class="me-4 fs-5"><strong>Last updated</strong> {{ currentData?.updateDate || "-" }}</div>
+    </div>
+  </section>
+</div>
+<div class="container-fluid pb-4 px-4">
+  <app-protected-area-details *ngIf="showDetails"></app-protected-area-details>
+  <router-outlet></router-outlet>
+</div>

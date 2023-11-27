@@ -1,13 +1,10 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes, provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { LoginComponent } from './login/login.component';
 import { ChangeLogComponent } from './change-log/change-log.component';
-import { ProtectedAreaRoutingModule } from './protected-area/protected-area-routing.module';
-import { ProtectedAreaComponent } from './protected-area/protected-area.component';
-import { ManageRecordsComponent } from './manage-records/manage-records.component';
 
 const routes: Routes = [
   {
@@ -39,14 +36,12 @@ const routes: Routes = [
     },
   },
   {
-    path: 'manage-records',
-    pathMatch: 'full',
-    component: ManageRecordsComponent,
+    path: 'protected-areas',
     canActivate: [AuthGuard],
+    loadChildren: () => import('./protected-area/protected-area.module').then((m) => m.ProtectedAreaModule),
     data: {
-      label: 'Manage records',
-      breadcrumb: 'Manage records',
-      icon: 'bi-search',
+      label: 'Protected Areas',
+      icon: 'bi-shield-fill',
     },
   },
   {
@@ -61,14 +56,6 @@ const routes: Routes = [
     },
   },
   {
-    path: 'protected-area/:id',
-    component: ProtectedAreaComponent,
-    data: {
-      breadcrumb: 'Protected Area',
-    },
-    loadChildren: () => ProtectedAreaRoutingModule,
-  },
-  {
     // wildcard route
     path: '**',
     redirectTo: '/',
@@ -77,8 +64,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [],
+  imports: [RouterModule.forRoot(routes, { bindToComponentInputs: true })],
   exports: [RouterModule],
-  providers: [provideRouter(routes, withComponentInputBinding())],
+  providers: [],
 })
 export class AppRoutingModule {}

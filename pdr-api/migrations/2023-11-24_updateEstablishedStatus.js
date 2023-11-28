@@ -35,12 +35,14 @@ async function run() {
 
     // Iterate through the items and update the necessary fields
     let updates = [];
+    let skipped = 0;
     for (let item of items.Items) {
       // Future proofing in case this is run again
-      // If the item has a type, this migration has already been run and should be aborted.
+      // If the item has a type, or type = protectedArea, skip this item
       if (item?.type?.S) {
-        if (item?.type?.S !== 'protectedArea' && item?.type?.S !== 'protected-area'){
-          throw 'Encountered item with attribute `type` != `protectedArea`. This suggests this migration has already been run. Aborting migration.'
+        if (item?.type?.S !== 'protectedArea' && item?.type?.S !== 'protected-area') {
+          skipped++;
+          continue;
         }
       }
       // If the item is the config object, don't touch it
@@ -59,7 +61,7 @@ async function run() {
       item['type'] = { S: 'protectedArea' };
       updates.push(item);
     }
-    
+
     // batchWrite (PUT) the updates. Note batchWriteItems is an overwrite, not an update
     if (updates.length) {
       let transactionMap = [];
@@ -90,6 +92,7 @@ async function run() {
         await dynamodb.batchWriteItem(chunk).promise();
       }
       finishConsoleUpdates();
+      console.log(skipped, 'items skipped.');
     }
 
   } catch (err) {

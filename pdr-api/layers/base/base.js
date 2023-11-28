@@ -27,6 +27,7 @@ exports.sendResponse = function (code, data, message, error, context, other = nu
     data: data,
     msg: message,
     error: error,
+    context: context
   }
   // If other fields are present, attach them to the body.
   if (other) {

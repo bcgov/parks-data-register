@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Mark Lisé",
     "DateCreated": "Aug 10, 2023, 08:57 AM",
-    "DateLastModified": "Oct 18, 2023, 11:13 AM",
+    "DateLastModified": "Nov 24, 2023, 09:09 AM",
     "Description": "Data model for the BC Parks Name Register.",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -65,6 +65,10 @@
         {
           "AttributeName": "lastModifiedBy",
           "AttributeType": "S"
+        },
+        {
+          "AttributeName": "type",
+          "AttributeType": "S"
         }
       ],
       "TableFacets": [
@@ -102,7 +106,8 @@
             "phoneticName",
             "status",
             "audioClip",
-            "notes"
+            "notes",
+            "type"
           ],
           "DataAccess": {
             "MySql": {}
@@ -175,13 +180,16 @@
             "S": "stɹæθˈkoʊnə ˈpɑrk"
           },
           "status": {
-            "S": "current"
+            "S": "established"
           },
           "notes": {
             "S": "Name changed because the old one was terrible"
           },
           "lastModifiedBy": {
             "S": "JUSER"
+          },
+          "type": {
+            "S": "protectedArea"
           }
         },
         {
@@ -201,13 +209,16 @@
             "S": "strath park"
           },
           "status": {
-            "S": "old"
+            "S": "historical"
           },
           "notes": {
             "S": "Initial Park created for BC"
           },
           "lastModifiedBy": {
             "S": "JUSER"
+          },
+          "type": {
+            "S": "protectedArea"
           }
         },
         {
@@ -230,7 +241,7 @@
             "S": "Joffre Lakes"
           },
           "status": {
-            "S": "current"
+            "S": "established"
           },
           "notes": {
             "S": "Initial creation of Joffre"
@@ -240,6 +251,9 @@
           },
           "lastModifiedBy": {
             "S": "JUSER"
+          },
+          "type": {
+            "S": "protectedArea"
           }
         },
         {
@@ -259,13 +273,54 @@
             "S": "strath park"
           },
           "status": {
-            "S": "old"
+            "S": "historical"
           },
           "notes": {
             "S": "Updated name"
           },
           "lastModifiedBy": {
             "S": "JUSER"
+          },
+          "type": {
+            "S": "protectedArea"
+          }
+        },
+        {
+          "pk": {
+            "S": "9876"
+          },
+          "sk": {
+            "S": "Details"
+          },
+          "createDate": {
+            "S": "2023-11-24T14:53:00.000Z"
+          },
+          "updateDate": {
+            "S": "2023-11-24T14:54:00.000Z"
+          },
+          "legalName": {
+            "S": "Repealed Provincial Park"
+          },
+          "displayName": {
+            "S": "Repealed Provincial Park"
+          },
+          "phoneticName": {
+            "S": "rɪˈpild prəˈvɪnʃəl pɑrk"
+          },
+          "status": {
+            "S": "repealed"
+          },
+          "notes": {
+            "S": "Protected area repealed, does not exist anymore."
+          },
+          "searchTerms": {
+            "S": "Established park name"
+          },
+          "lastModifiedBy": {
+            "S": "JUSER"
+          },
+          "type": {
+            "S": "protectedArea"
           }
         }
       ],

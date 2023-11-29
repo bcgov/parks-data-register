@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "4da72fb6-aac3-4f94-bb68-7629c5f4185f",
+		"_postman_id": "5027d9f1-b4d2-4c08-bdab-a9f29a5af674",
 		"name": "Parks Data Register",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "300975"
+		"_exporter_id": "14509064",
+		"_collection_link": "https://bcparks-dup.postman.co/workspace/BCParks-Day-Use-Pass~c6a232b9-cbde-4bc3-aa2c-906ab8c015e7/collection/14509064-5027d9f1-b4d2-4c08-bdab-a9f29a5af674?action=share&source=collection_link&creator=14509064"
 	},
 	"item": [
 		{
@@ -18,9 +19,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/config",
+							"raw": "{{vanity_url}}/config",
 							"host": [
-								"{{base_url}}"
+								"{{vanity_url}}"
 							],
 							"path": [
 								"config"
@@ -36,18 +37,22 @@
 			"item": [
 				{
 					"name": "Search",
-					"item":[
+					"item": [
 						{
 							"name": "Search",
 							"request": {
-								"auth": {
-									"type": "inherit"
-								},
-								"method":"GET",
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}",
+										"type": "text"
+									}
+								],
 								"url": {
-									"raw": "{{base_url}}/search?text=Strathcona Park&status=current&type=protectedArea",
+									"raw": "{{vanity_url}}/search?text=park&status=established,historical",
 									"host": [
-										"{{base_url}}"
+										"{{vanity_url}}"
 									],
 									"path": [
 										"search"
@@ -55,22 +60,22 @@
 									"query": [
 										{
 											"key": "text",
-											"value": "Strathcona Park"
+											"value": "park"
 										},
 										{
 											"key": "status",
-											"value": "current,pending"
+											"value": "established,historical"
 										},
 										{
 											"key": "type",
-											"value": "protectedArea"
+											"value": "protectedArea",
+											"disabled": true
 										}
-
 									]
 								}
-							}
+							},
+							"response": []
 						}
-
 					]
 				},
 				{
@@ -82,13 +87,13 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "Authorization",
-										"value": "None",
+										"key": "x-api-key",
+										"value": "{{x-api-key}}",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/parks/names?legalName=Strathcona Park",
+									"raw": "{{base_url}}/parks/names?status=established&legalName=Strathcona Park",
 									"host": [
 										"{{base_url}}"
 									],
@@ -99,8 +104,7 @@
 									"query": [
 										{
 											"key": "status",
-											"value": "current",
-											"disabled": true
+											"value": "established"
 										},
 										{
 											"key": "legalName",
@@ -125,15 +129,15 @@
 										"method": "GET",
 										"header": [
 											{
-												"key": "Authorization",
-												"value": "None",
+												"key": "x-api-key",
+												"value": "{{x-api-key}}",
 												"type": "text"
 											}
 										],
 										"url": {
-											"raw": "{{base_url}}/parks/:identifier/name?status=current",
+											"raw": "{{vanity_url}}/parks/:identifier/name?status=established",
 											"host": [
-												"{{base_url}}"
+												"{{vanity_url}}"
 											],
 											"path": [
 												"parks",
@@ -143,13 +147,13 @@
 											"query": [
 												{
 													"key": "status",
-													"value": "current"
+													"value": "established"
 												}
 											],
 											"variable": [
 												{
 													"key": "identifier",
-													"value": ""
+													"value": "1"
 												}
 											]
 										}
@@ -160,10 +164,16 @@
 									"name": "Put Specific Park (Minor)",
 									"request": {
 										"method": "PUT",
-										"header": [],
+										"header": [
+											{
+												"key": "x-api-key",
+												"value": "{{x-api-key}}",
+												"type": "text"
+											}
+										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"orcs\": \"1\",\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRAbthcormba2\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -200,10 +210,16 @@
 									"name": "Put Specific Park (Major)",
 									"request": {
 										"method": "PUT",
-										"header": [],
+										"header": [
+											{
+												"key": "x-api-key",
+												"value": "{{x-api-key}}",
+												"type": "text"
+											}
+										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"orcs\": \"1\",\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -224,6 +240,52 @@
 												{
 													"key": "updateType",
 													"value": "major"
+												}
+											],
+											"variable": [
+												{
+													"key": "identifier",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Put Specific Park (Repeal)",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-api-key",
+												"value": "{{x-api-key}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/parks/:identifier/name?updateType=repeal",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"parks",
+												":identifier",
+												"name"
+											],
+											"query": [
+												{
+													"key": "updateType",
+													"value": "repeal"
 												}
 											],
 											"variable": [

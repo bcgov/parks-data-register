@@ -8,7 +8,7 @@ export enum LogLevel {
   Warn = 3,
   Error = 4,
   Fatal = 5,
-  Off = 6
+  Off = 6,
 }
 
 @Injectable({
@@ -47,15 +47,13 @@ export class LoggerService {
       const logEntry = {
         level: level,
         date: new Date().getTime() / 1000, // Epoch time
-        message: msg
+        message: msg,
       };
-
-      console.log(this.entryToString(logEntry));
     }
   }
 
   private entryToString(logEntry) {
-    return `(${LogLevel[logEntry.level]}) ${this.logWithDate ? logEntry.date + ' ' : '' }${logEntry.message}`;
+    return `(${LogLevel[logEntry.level]}) ${this.logWithDate ? logEntry.date + ' ' : ''}${logEntry.message}`;
   }
 
   private shouldLog(level: LogLevel): boolean {

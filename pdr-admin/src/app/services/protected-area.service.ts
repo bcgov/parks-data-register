@@ -7,11 +7,15 @@ import { EventObject, EventKeywords, EventService } from './event.service';
 import { ToastService, ToastTypes } from './toast.service';
 import { LoadingService } from './loading.service';
 import { LoggerService } from './logger.service';
+import { Utils } from '../utils/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProtectedAreaService {
+  private utils = new Utils();
+  validAttributes = ['effectiveDate', 'legalName', 'phoneticName', 'displayName', 'searchTerms', 'audioClip', 'notes'];
+
   constructor(
     private dataService: DataService,
     private apiService: ApiService,
@@ -34,12 +38,33 @@ export class ProtectedAreaService {
         res.splice(currentProtectedAreaIndex, 1)[0]
       );
       this.dataService.setItemValue(Constants.dataIds.HISTORICAL_PROTECTED_AREA, res);
-    } catch (e) {
-      this.loggerService.error(e);
+    } catch (err) {
+      this.loggerService.error(err);
       this.toastService.addMessage(`Something went wrong. Please try again.`, ``, ToastTypes.ERROR);
-      this.eventService.setError(new EventObject(EventKeywords.ERROR, String(e), 'Park Service'));
+      this.eventService.setError(new EventObject(EventKeywords.ERROR, String(err), 'Protected Area Service - Search'));
     }
     this.loadingService.removeFromFetchList(Constants.dataIds.SEARCH_RESULTS);
+  }
+
+  async edit(pk, putObj, updateType) {
+    this.loadingService.addToFetchList(Constants.dataIds.PROTECTED_AREA_PUT);
+
+    if (updateType !== 'minor' && updateType !== 'major') throw 'UpdateType must be either minor or major.';
+
+    delete putObj.pk;
+    delete putObj.sk;
+
+    try {
+      putObj = this.utils.cleanPutObject(putObj, this.validAttributes);
+      const res = await lastValueFrom(this.apiService.put(['parks', pk, 'name'], putObj, { updateType: updateType }));
+      this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, res.data);
+      this.toastService.addMessage(`Your changes were saved.`, ``, ToastTypes.SUCCESS);
+    } catch (err) {
+      this.loggerService.error(err);
+      this.toastService.addMessage(`Something went wrong. Please try again.`, ``, ToastTypes.ERROR);
+      this.eventService.setError(new EventObject(EventKeywords.ERROR, String(err), 'Protected Area Service - Put'));
+    }
+    this.loadingService.removeFromFetchList(Constants.dataIds.PROTECTED_AREA_PUT);
   }
 
   watchCurrentProtectedArea() {

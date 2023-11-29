@@ -230,9 +230,6 @@ export class KeycloakService {
    * @memberof KeycloakService
    */
   login(idpHint: string) {
-    console.log("here:", idpHint)
-    console.log("localStorage.getItem(this.REDIRECT_KEY):", localStorage.getItem(this.REDIRECT_KEY))
-    console.log("window.location.href", window.location.href)
     let redirectUri = localStorage.getItem(this.REDIRECT_KEY) || window.location.href;
     // by default keycloak login will want to redirect back to the login page
     // redirect to '/dayuse' instead

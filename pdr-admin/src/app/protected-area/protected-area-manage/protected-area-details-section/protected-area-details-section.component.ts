@@ -14,7 +14,7 @@ export class ProtectedAreaDetailsSectionComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (this.data) {
       if (changes['data'].currentValue?.effectiveDate) {
-        this.data['effectiveDate'] = this.utils.formatDateForDisplay(changes['data'].currentValue?.effectiveDate);
+        this.data['effectiveDateDisplay'] = this.utils.formatDateForDisplay(changes['data'].currentValue?.effectiveDate);
       } else {
         this.data['effectiveDate'] = this.utils.formatDateForDisplay(this.data.sk);
       }

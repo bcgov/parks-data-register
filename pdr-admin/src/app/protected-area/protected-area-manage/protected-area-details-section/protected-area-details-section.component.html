@@ -2,10 +2,10 @@
   <p>
     <strong>Effective date</strong
     ><small class="ms-2">
-      <ng-container *ngIf="data && data.effectiveDate">
-        {{ data.effectiveDate }}
+      <ng-container *ngIf="data && data.effectiveDateDisplay">
+        {{ data.effectiveDateDisplay }}
       </ng-container>
-      <ng-container *ngIf="!data || !data.effectiveDate">
+      <ng-container *ngIf="!data || !data.effectiveDateDisplay">
         <span class="text-muted fst-italic">None</span>
       </ng-container>
     </small>

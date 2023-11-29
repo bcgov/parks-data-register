@@ -1,12 +1,8 @@
 const AWS = require("aws-sdk");
-const { TABLE_NAME, dynamodb, getOne } = require('/opt/dynamodb');
+const { TABLE_NAME, dynamodb, getOne, ESTABLISHED_STATE, HISTORICAL_STATE, REPEALED_STATE } = require('/opt/dynamodb');
 const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
-
-const ESTABLISHED_STATE = 'established';
-const HISTORICAL_STATE = 'historical';
-const REPEALED_STATE = 'repealed';
 
 /**
  * AWS Lambda function for updating park name details.

@@ -6,6 +6,9 @@ const AWS_REGION = process.env.AWS_REGION || 'ca-central-1';
 const AUDIT_TABLE_NAME = process.env.TABLE_NAME || "Audit";
 const STATUS_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByStatusOfOrcs";
 const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByLegalName";
+const ESTABLISHED_STATE = 'established';
+const HISTORICAL_STATE = 'historical';
+const REPEALED_STATE = 'repealed';
 
 const options = {
   region: AWS_REGION
@@ -191,6 +194,9 @@ module.exports = {
   AUDIT_TABLE_NAME,
   STATUS_INDEX_NAME,
   LEGALNAME_INDEX_NAME,
+  ESTABLISHED_STATE,
+  HISTORICAL_STATE,
+  REPEALED_STATE,
   batchWriteData,
   dynamodb,
   runQuery,

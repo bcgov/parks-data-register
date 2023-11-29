@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Mark Lisé",
     "DateCreated": "Aug 10, 2023, 08:57 AM",
-    "DateLastModified": "Nov 24, 2023, 09:09 AM",
+    "DateLastModified": "Nov 29, 2023, 08:50 AM",
     "Description": "Data model for the BC Parks Name Register.",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -68,6 +68,18 @@
         },
         {
           "AttributeName": "type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "newLegalName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "newEffectiveDate",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "newStatus",
           "AttributeType": "S"
         }
       ],
@@ -219,6 +231,15 @@
           },
           "type": {
             "S": "protectedArea"
+          },
+          "newLegalName": {
+            "S": "Strath Park"
+          },
+          "newEffectiveDate": {
+            "S": "2020-08-10T16:15:50.868Z"
+          },
+          "newStatus": {
+            "S": "established"
           }
         },
         {
@@ -283,6 +304,15 @@
           },
           "type": {
             "S": "protectedArea"
+          },
+          "newLegalName": {
+            "S": "Strathcona Park"
+          },
+          "newEffectiveDate": {
+            "S": "2023-08-10T16:11:54.513Z"
+          },
+          "newStatus": {
+            "S": "established"
           }
         },
         {
@@ -321,6 +351,44 @@
           },
           "type": {
             "S": "protectedArea"
+          }
+        },
+        {
+          "pk": {
+            "S": "9876"
+          },
+          "sk": {
+            "S": "2023-11-24T14:54:00.000Z"
+          },
+          "legalName": {
+            "S": "Not Yet Repealed"
+          },
+          "displayName": {
+            "S": "Not Yet Repealed"
+          },
+          "phoneticName": {
+            "S": "nɑt jɛt rɪˈpild"
+          },
+          "status": {
+            "S": "historical"
+          },
+          "notes": {
+            "S": "Changelog item when protected area is repealed"
+          },
+          "lastModifiedBy": {
+            "S": "JUSER"
+          },
+          "type": {
+            "S": "protectedArea"
+          },
+          "newLegalName": {
+            "S": "Repealed Provincial Park"
+          },
+          "newEffectiveDate": {
+            "S": "2023-11-24T14:54:00.000Z"
+          },
+          "newStatus": {
+            "S": "repealed"
           }
         }
       ],

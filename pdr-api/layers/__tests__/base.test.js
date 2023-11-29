@@ -31,6 +31,7 @@ describe('Base Layer Tests', () => {
       data: [],
       msg: 'Error',
       error: { error: 'error' },
+      context: null,
       other1: 1,
       other2: 2
     })

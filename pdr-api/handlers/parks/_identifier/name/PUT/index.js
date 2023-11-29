@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const { TABLE_NAME, dynamodb, getOne, putItem } = require('/opt/dynamodb');
+const { TABLE_NAME, dynamodb, getOne, ESTABLISHED_STATE, HISTORICAL_STATE, REPEALED_STATE } = require('/opt/dynamodb');
 const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
@@ -53,13 +53,29 @@ exports.handler = async (event, context) => {
       return sendResponse(403, [], 'Unauthorized', 'Unauthorized');
     }
 
+    // Retrieves the current record based on the 'orcs' identifier.
+    const currentRecord = await getOne(body.orcs, 'Details');
+
+    // If no currentRecord exists, we shouldn't perform any actions.
+    if (!currentRecord?.pk) {
+      throw `Protected area with identifier '${identifier}' not found.`
+    }
+
+    // If the currentRecord status is not established, we shouldn't edit it.
+    if (currentRecord?.status !== ESTABLISHED_STATE) {
+      throw `Cannot edit protected area with status: ${currentRecord.status}`;
+    }
+
     // Checks the type of update and calls the corresponding function.
     if (updateType === 'minor') {
       // Don't trigger a legal name change
       return await minorUpdate(user, body, currentTimeISO);
     } else if (updateType === 'major') {
       // Legal Name Change update
-      return await majorChange(user, body, currentTimeISO);
+      return await majorChange(user, body, currentTimeISO, currentRecord, ESTABLISHED_STATE);
+    } else if (updateType === 'repeal') {
+      // Repeal protected area
+      return await majorChange(user, body, currentTimeISO, currentRecord, REPEALED_STATE);
     } else {
       // Returns an error response for an invalid updateType.
       return sendResponse(400, [], 'Error invalid updateType', 'Error', context);
@@ -82,11 +98,9 @@ exports.handler = async (event, context) => {
  */
 function validateRequest(body) {
   // Checks if the 'effectiveDate' and 'legalName' properties are present in the payload.
-  if (!body.effectiveDate || !body.legalName || !body.status) {
+  // New status is assumed based on updateType
+  if (!body.effectiveDate || !body.legalName) {
     // Throws an error if the payload is invalid.
-    throw new Error('Invalid payload.');
-  }
-  if (body.status !== 'established' && body.status !== 'repealed') {
     throw new Error('Invalid payload.');
   }
 }
@@ -101,29 +115,34 @@ function validateRequest(body) {
  */
 async function minorUpdate(user, body, currentTimeISO) {
   // Calls the 'updateRecord' function to update the record.
-  const attributes = await updateRecord(user, body, currentTimeISO);
+  const attributes = await updateRecord(user, body, currentTimeISO, ESTABLISHED_STATE);
 
   // Returns a success response with the updated attributes.
   return sendResponse(200, attributes, 'Record updated');
 }
 
 /**
- * Handles a legal name change.
+ * Handles a legal name change or a repeal.
  *
  * @param {string} user - The user making the update.
  * @param {Object} body - The request body.
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the response object.
  */
-async function majorChange(user, body, currentTimeISO) {
+async function majorChange(user, body, currentTimeISO, currentRecord, newStatus) {
   // Creates a changelog item for the legal name change.
-  const putTransaction = await createChangeLogItem(body, currentTimeISO);
+  const putTransaction = await createChangeLogItem(body, currentTimeISO, currentRecord, newStatus);
 
   // Calls the 'updateRecord' function to update the record.
-  const attributes = await updateRecord(user, body, currentTimeISO, putTransaction);
+  const attributes = await updateRecord(user, body, currentTimeISO, newStatus, putTransaction);
+
+  let context = 'Legal Name Change.';
+  if (newStatus === REPEALED_STATE) {
+    context = 'Protected area repealed.'
+  }
 
   // Returns a success response with the updated attributes.
-  return sendResponse(200, attributes, 'Record updated', 'Legal Name Change');
+  return sendResponse(200, attributes, 'Protected area record updated', null, context);
 }
 
 /**
@@ -134,12 +153,9 @@ async function majorChange(user, body, currentTimeISO) {
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<void>} - A Promise that resolves when the changelog item is created.
  */
-async function createChangeLogItem(body, currentTimeISO) {
+async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatus) {
   // Logs the creation of a changelog item.
   logger.info('Creating changelog item');
-
-  // Retrieves the current record based on the 'orcs' identifier.
-  const currentRecord = await getOne(body.orcs, 'Details');
 
   // Converts the current record to a format suitable for DynamoDB.
   let changelogRecord = AWS.DynamoDB.Converter.marshall(currentRecord);
@@ -152,8 +168,8 @@ async function createChangeLogItem(body, currentTimeISO) {
   // part of this majorChange update.
   changelogRecord['newLegalName'] = { 'S': body.legalName };
   changelogRecord['newEffectiveDate'] = { 'S': body.effectiveDate };
-  changelogRecord['newStatus'] = { 'S': body.status };
-  changelogRecord['status'] = { 'S': 'historical' };
+  changelogRecord['newStatus'] = { 'S': newStatus };
+  changelogRecord['status'] = { 'S': HISTORICAL_STATE };
 
   return {
     Put: {
@@ -171,7 +187,7 @@ async function createChangeLogItem(body, currentTimeISO) {
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the updated attributes.
  */
-async function updateRecord(user, body, currentTimeISO, putTransaction = undefined) {
+async function updateRecord(user, body, currentTimeISO, status, putTransaction = undefined) {
   // Defines the parameters for updating the record.
   let updateParams = {
     TableName: TABLE_NAME,
@@ -187,7 +203,7 @@ async function updateRecord(user, body, currentTimeISO, putTransaction = undefin
       ':phoneticName': { S: body.phoneticName },
       ':searchTerms': { S: body.searchTerms },
       ':lastModifiedBy': { S: user },
-      ':status': { S: body.status },
+      ':status': { S: status },
       ':notes': { S: body.notes }
     },
     ExpressionAttributeNames: { '#status': 'status' },
@@ -223,7 +239,7 @@ async function updateRecord(user, body, currentTimeISO, putTransaction = undefin
         phoneticName: body.phoneticName,
         searchTerms: body.searchTerms,
         lastModifiedBy: user,
-        status: body.status,
+        status: status,
         notes: body.note
       }
     } else {

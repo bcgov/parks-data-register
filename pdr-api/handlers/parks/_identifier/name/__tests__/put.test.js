@@ -1,9 +1,55 @@
-describe('Lambda Handler Tests', () => {
-  const { DocumentClient } = require('aws-sdk/clients/dynamodb');
-  const { handler } = require('../PUT/index'); // Update the path accordingly
-  const { Settings } = require('luxon');
-  const oldNow = Settings.now();
+const { DocumentClient } = require('aws-sdk/clients/dynamodb');
+const { handler } = require('../PUT/index'); // Update the path accordingly
+const { Settings } = require('luxon');
+const oldNow = Settings.now();
 
+const item1 = {
+  "pk": "41",
+  "sk": "Details",
+  "effectiveDate": "1911-03-01",
+  "legalName": "Strathcona Park",
+  "status": "established",
+  "phoneticName": "STRA",
+  "displayName": "Strathcona Park",
+  "searchTerms": "mount asdf",
+  "notes": "Some Notes"
+};
+
+const item2 = { ...item1 };
+item2.status = "repealed";
+
+async function insertItem(item) {
+  const { REGION, ENDPOINT, TABLE_NAME } = require('../../../../../__tests__/settings');
+  const ddb = new DocumentClient({
+    region: REGION,
+    endpoint: ENDPOINT,
+    convertEmptyValues: true
+  });
+  await ddb
+    .put({
+      TableName: TABLE_NAME,
+      Item: item
+    })
+    .promise();
+}
+
+async function removeItem(item) {
+  const { REGION, ENDPOINT, TABLE_NAME } = require('../../../../../__tests__/settings');
+  const ddb = new DocumentClient({
+    region: REGION,
+    endpoint: ENDPOINT,
+    convertEmptyValues: true
+  });
+  await ddb.delete({
+    TableName: TABLE_NAME,
+    Key: {
+      "pk": item.pk,
+      "sk": item.sk
+    }
+  }).promise();
+}
+
+describe('Lambda Handler Tests', () => {
   const IDIR_TEST_USER = 'IDIR_USER_TODO';
 
   beforeAll(() => {
@@ -70,11 +116,10 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('minorUpdate should return a response with status code 200', async () => {
+    await insertItem(item1);
     const body = {
-      "orcs": "41",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
-      "status": "established",
       "phoneticName": "STRA",
       "displayName": "Strathcona Park",
       "searchTerms": "mount asdf",
@@ -97,6 +142,7 @@ describe('Lambda Handler Tests', () => {
       }
     });
     expect(result.statusCode).toBe(200);
+    await removeItem(item1);
   });
 
   test('minorUpdate should return a response with status code missing things 400', async () => {
@@ -155,6 +201,70 @@ describe('Lambda Handler Tests', () => {
     });
     expect(result.statusCode).toBe(400);
   });
+
+  test('Repeal should repeal a protectedArea 200', async () => {
+    await insertItem(item1);
+    const body = {
+      "effectiveDate": "1911-03-01",
+      "legalName": "Strathcona Park",
+      "phoneticName": "STRA",
+      "displayName": "Strathcona Park",
+      "searchTerms": "mount asdf",
+      "notes": "Some Notes"
+    }
+
+    const result = await handler({
+      body: JSON.stringify(body),
+      queryStringParameters: {
+        updateType: 'repeal'
+      },
+      pathParameters: {
+        "identifier": "41"
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true,
+          userID: IDIR_TEST_USER
+        }
+      }
+    });
+
+    expect(result.statusCode).toBe(200);
+    const payload = JSON.parse(result.body);
+    expect(payload.data.status).toBe('repealed');
+    await removeItem(item1);
+  })
+
+  test('Edit should fail if status isnt established 400', async () => {
+    await insertItem(item2);
+    const body = {
+      "effectiveDate": "1911-03-01",
+      "legalName": "Strathcona Park",
+      "status": "established",
+      "phoneticName": "STRA",
+      "displayName": "Strathcona Park",
+      "searchTerms": "mount asdf",
+      "notes": "Some Notes"
+    }
+
+    const result = await handler({
+      body: JSON.stringify(body),
+      queryStringParameters: {
+        updateType: 'minorUpdate'
+      },
+      pathParameters: {
+        "identifier": "41"
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true,
+          userID: IDIR_TEST_USER
+        }
+      }
+    });
+    expect(result.statusCode).toBe(400);
+    await removeItem(item2);
+  })
 
   test('Invalid update type: 400', async () => {
     const body = {
@@ -217,32 +327,9 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('nameChange should return a response with status code 200', async () => {
-    // Put the document we want to update first.
-    const { REGION, ENDPOINT, TABLE_NAME } = require('../../../../../__tests__/settings');
-    const ddb = new DocumentClient({
-      region: REGION,
-      endpoint: ENDPOINT,
-      convertEmptyValues: true
-    });
-    await ddb
-      .put({
-        TableName: TABLE_NAME,
-        Item: {
-          "pk": "111",
-          "sk": "Details",
-          "effectiveDate": "1911-03-01",
-          "legalName": "Strathcona Park",
-          "status": "established",
-          "phoneticName": "STRA",
-          "displayName": "Strathcona Park",
-          "searchTerms": "mount asdf",
-          "notes": "Some Notes"
-        }
-      })
-      .promise();
-
+    await insertItem(item1);
     const body = {
-      "orcs": "111",
+      "orcs": "41",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park 2",
       "status": "established",
@@ -258,7 +345,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'major'
       },
       pathParameters: {
-        "identifier": "111"
+        "identifier": "41"
       },
       requestContext: {
         authorizer: {
@@ -271,5 +358,6 @@ describe('Lambda Handler Tests', () => {
     const payload = JSON.parse(result.body);
     expect(payload.data.legalName).toBe('Strathcona Park 2');
     expect(payload.data.lastModifiedBy).toBe(IDIR_TEST_USER)
+    await removeItem(item1);
   });
 });

@@ -82,6 +82,6 @@ exports.handler = async function (event, context) {
     logger.info(`Writing batch data`);
     await batchWriteData(auditRecordsToCreate, 25, AUDIT_TABLE_NAME)
   } catch (e) {
-    debug.error(JSON.stringify(e));
+    logger.error(JSON.stringify(e));
   }
 };

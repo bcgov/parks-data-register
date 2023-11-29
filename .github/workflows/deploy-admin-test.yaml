@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: test
     strategy:
+      max-parallel: 1
       matrix:
         node-version: [18.x]
     defaults:

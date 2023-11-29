@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     strategy:
+      max-parallel: 1
       matrix:
         node-version: [18.x]
     defaults:

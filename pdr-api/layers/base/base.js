@@ -40,7 +40,7 @@ exports.sendResponse = function (code, data, message, error, context, other = nu
       "Access-Control-Allow-Headers":
         "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "OPTIONS,GET,POST",
+      "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT",
     },
     body: JSON.stringify(body),
   };

@@ -62,11 +62,13 @@ async function run() {
         ':phoneticName': { S: record.phoneticName },
         ':status': { S: 'established' },
         ':notes': { S: record['validation note'] },
-        ':type': { S: 'protectedArea'}
+        ':type': { S: 'protectedArea'},
+        ':searchTerms': { S: ''},
+        ':audioClip': { S: ''}
       },
       ExpressionAttributeNames: { '#status': 'status', '#type': 'type' },
       UpdateExpression:
-        'SET createDate = :createDate, updateDate = :updateDate, effectiveDate = :effectiveDate, legalName = :legalName, displayName = :displayName, phoneticName = :phoneticName, #status = :status, notes = :notes', '#type': 'type',
+        'SET createDate = :createDate, updateDate = :updateDate, effectiveDate = :effectiveDate, legalName = :legalName, displayName = :displayName, phoneticName = :phoneticName, #status = :status, notes = :notes, #type: type, searchTerms = :searchTerms, audioClip = :audioClip',
       ReturnValues: 'ALL_NEW'
     };
 

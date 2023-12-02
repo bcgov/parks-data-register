@@ -4,6 +4,20 @@ const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
 
+const updateMandatoryFields = [
+  'effectiveDate',
+  'legalName',
+  'phoneticName',
+  'displayName',
+  'searchTerms',
+  'notes'
+];
+
+const repealedMandatoryFields = [
+  'effectiveDate',
+  'notes'
+];
+
 /**
  * AWS Lambda function for updating park name details.
  *
@@ -47,7 +61,14 @@ exports.handler = async (event, context) => {
     const user = event.requestContext?.authorizer?.userID;
 
     // Ensures all required fields are present in the payload.
-    validateRequest(body);
+    let checkFields = updateMandatoryFields;
+    if (updateType === 'repeal') {
+      checkFields = repealedMandatoryFields;
+    }
+    if (!validateRequest(body, checkFields)) {
+      console.log('i dont have him');
+      return sendResponse(400, [], 'Invalid payload.', `For updateType '${updateType}', the following fields must be provided: ${checkFields.join(', ')}`)
+    };
 
     if (!isAdmin) {
       return sendResponse(403, [], 'Unauthorized', 'Unauthorized');
@@ -61,20 +82,18 @@ exports.handler = async (event, context) => {
       throw `Protected area with identifier '${identifier}' not found.`
     }
 
-    // If the currentRecord status is not established, we shouldn't edit it.
-    if (currentRecord?.status !== ESTABLISHED_STATE) {
-      throw `Cannot edit protected area with status: ${currentRecord.status}`;
-    }
-
     // Checks the type of update and calls the corresponding function.
     if (updateType === 'minor') {
       // Don't trigger a legal name change
-      return await minorUpdate(user, body, currentTimeISO);
+      logger.info('Minor change');
+      return await minorUpdate(user, body, currentTimeISO, currentRecord);
     } else if (updateType === 'major') {
       // Legal Name Change update
+      logger.info('Major change');
       return await majorChange(user, body, currentTimeISO, currentRecord, ESTABLISHED_STATE);
     } else if (updateType === 'repeal') {
       // Repeal protected area
+      logger.info('Repeal change');
       return await majorChange(user, body, currentTimeISO, currentRecord, REPEALED_STATE);
     } else {
       // Returns an error response for an invalid updateType.
@@ -93,16 +112,20 @@ exports.handler = async (event, context) => {
  * Validates the request body.
  *
  * @param {Object} body - The request body.
+ * @param {String} updateType - The type of update to be performed.
  * @throws {Error} Throws an error if the payload is invalid.
  * @returns {void}
  */
-function validateRequest(body) {
-  // Checks if the 'effectiveDate' and 'legalName' properties are present in the payload.
-  // New status is assumed based on updateType
-  if (!body.effectiveDate || !body.legalName) {
-    // Throws an error if the payload is invalid.
-    throw new Error('Invalid payload.');
+function validateRequest(body, checkFields) {
+  // Check if mandatory fields were provided.
+
+  for (const field of checkFields) {
+    if (!body[field]) {
+      // Throws an error if the payload is invalid.
+      return false;
+    }
   }
+  return true;
 }
 
 /**
@@ -113,9 +136,15 @@ function validateRequest(body) {
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the response object.
  */
-async function minorUpdate(user, body, currentTimeISO) {
-  // Calls the 'updateRecord' function to update the record.
-  const attributes = await updateRecord(user, body, currentTimeISO, ESTABLISHED_STATE);
+async function minorUpdate(user, body, currentTimeISO, currentRecord) {
+  let attributes;
+  if (currentRecord.status === REPEALED_STATE) {
+    // Calls the 'updateRecord' function to update the repealed record.
+    attributes = await updateRecord(user, body, currentTimeISO, REPEALED_STATE, null, true);
+  } else {
+    // Calls the 'updateRecord' function to update the record.
+    attributes = await updateRecord(user, body, currentTimeISO, ESTABLISHED_STATE);
+  }
 
   // Returns a success response with the updated attributes.
   return sendResponse(200, attributes, 'Record updated');
@@ -130,6 +159,9 @@ async function minorUpdate(user, body, currentTimeISO) {
  * @returns {Promise<Object>} - A Promise that resolves to the response object.
  */
 async function majorChange(user, body, currentTimeISO, currentRecord, newStatus) {
+  if (currentRecord.status !== ESTABLISHED_STATE) {
+    return sendResponse(400, [], 'Protected area record cannot be edited.', `Cannot perform major update for records with status ${currentRecord.status}.`);
+  }
   // Creates a changelog item for the legal name change.
   const putTransaction = await createChangeLogItem(body, currentTimeISO, currentRecord, newStatus);
 
@@ -187,7 +219,21 @@ async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatu
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the updated attributes.
  */
-async function updateRecord(user, body, currentTimeISO, status, putTransaction = undefined) {
+async function updateRecord(user, body, currentTimeISO, status, putTransaction = undefined, repealOnly = false) {
+  let updatedAttributeValues = {
+    ':updateDate': { S: currentTimeISO },
+    ':lastModifiedBy': { S: user },
+    ':status': { S: status },
+  }
+  let updateExpression = ['SET updateDate = :updateDate, #status = :status, lastModifiedBy = :lastModifiedBy'];
+  let specificAttributeFields = updateMandatoryFields;
+  if (repealOnly) {
+    specificAttributeFields = repealedMandatoryFields;
+  }
+  for (const field of specificAttributeFields) {
+    updatedAttributeValues[`:${field}`] = { S: body[field] || '' };
+    updateExpression.push(`${field} = :${field}`);
+  }
   // Defines the parameters for updating the record.
   let updateParams = {
     TableName: TABLE_NAME,
@@ -195,22 +241,13 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
       pk: { S: body.orcs },
       sk: { S: 'Details' }
     },
-    ExpressionAttributeValues: {
-      ':updateDate': { S: currentTimeISO },
-      ':effectiveDate': { S: body.effectiveDate },
-      ':legalName': { S: body.legalName },
-      ':displayName': { S: body.displayName },
-      ':phoneticName': { S: body.phoneticName },
-      ':searchTerms': { S: body.searchTerms },
-      ':lastModifiedBy': { S: user },
-      ':status': { S: status },
-      ':notes': { S: body.notes }
-    },
+    ExpressionAttributeValues: updatedAttributeValues,
     ExpressionAttributeNames: { '#status': 'status' },
-    UpdateExpression:
-      'SET updateDate = :updateDate, #status = :status , lastModifiedBy = :lastModifiedBy, effectiveDate = :effectiveDate, legalName = :legalName, displayName = :displayName, phoneticName = :phoneticName, searchTerms = :searchTerms, notes = :notes',
+    UpdateExpression: updateExpression.join(', '),
     ReturnValues: 'ALL_NEW'
   };
+
+  logger.debug(`Record update params:`, updateParams);
 
   try {
     // Logs the update parameters for debugging purposes.
@@ -247,6 +284,7 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
       const { Attributes } = await dynamodb.updateItem(updateParams).promise();
 
       // Converts the DynamoDB attributes to a more usable format.
+      logger.debug('Update success:', AWS.DynamoDB.Converter.unmarshall(Attributes));
       return AWS.DynamoDB.Converter.unmarshall(Attributes);
     }
   } catch (error) {

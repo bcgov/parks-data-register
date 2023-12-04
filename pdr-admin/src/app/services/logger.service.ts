@@ -49,6 +49,8 @@ export class LoggerService {
         date: new Date().getTime() / 1000, // Epoch time
         message: msg,
       };
+
+      console.log(this.entryToString(logEntry));
     }
   }
 

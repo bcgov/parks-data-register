@@ -21,7 +21,7 @@ export class Utils {
     for (var key in putObj) {
       if (putObj.hasOwnProperty(key) && validAttributes.includes(key)) {
         // Ensure things we want to delete is set to null.
-        if (putObj[key] === null || this.isObjEmpty(putObj[key])) putObj[key] = '';
+        if (putObj[key] === null || this.isObjEmpty(putObj[key])) putObj[key] = null;
       } else {
         delete putObj[key];
       }

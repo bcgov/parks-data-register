@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-protected-area-manage',
@@ -13,6 +14,7 @@ export class ProtectedAreaManageComponent implements OnInit {
   @Input() id;
 
   private subscriptions = new Subscription();
+  private utils = new Utils();
 
   public currentData;
   public state = 'details';
@@ -32,6 +34,9 @@ export class ProtectedAreaManageComponent implements OnInit {
           this.protectedAreaService.fetchData(this.id);
         } else {
           this.currentData = res ? res : {};
+          if (this.currentData.updateDate) {
+            this.currentData.updateDate = this.utils.formatDateForDisplay(this.currentData.updateDate);
+          }
           this.ref.detectChanges();
         }
       })

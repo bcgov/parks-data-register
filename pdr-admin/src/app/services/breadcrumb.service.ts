@@ -64,6 +64,10 @@ export class BreadcrumbService {
             label = `${this.protectedArea?.displayName || '-'}`;
             altLabel = 'Details';
             break;
+          case 'PROTECTED_AREA_EDIT':
+            label =
+              `${routeUrl[routeUrl.length - 1]}`.charAt(0).toUpperCase() + `${routeUrl[routeUrl.length - 1]}`.slice(1);
+            break;
           // case 'FACILITY NAME':
           //   label = route.params['facilityId'];
           //   break;

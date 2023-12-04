@@ -73,12 +73,10 @@ export class ApiService implements OnDestroy {
     }
   }
 
-  put(pk, obj, queryParamsObject = null as any) {
+  put(pathArray, obj, queryParamsObject = null as any) {
     if (this.networkStatus) {
-      let queryString = this.generateQueryString(queryParamsObject);
-      return this.http
-        .put<any>(`${this.apiPath}/${pk}?${queryString}`, obj, { headers: this.headers })
-        .pipe(catchError(this.errorHandler));
+      const url = this.buildUrl(this.apiPath, pathArray, queryParamsObject);
+      return this.http.put<any>(`${url}`, obj, { headers: this.headers }).pipe(catchError(this.errorHandler));
     } else {
       throw 'Network Offline';
     }
@@ -126,5 +124,15 @@ export class ApiService implements OnDestroy {
       res.push(record._source);
     }
     return res;
+  }
+
+  private buildUrl(apiPath, pathArray, queryParamsObject) {
+    let url = apiPath;
+    pathArray.forEach((path) => {
+      url += `/${path}`;
+    });
+    url += `?${this.generateQueryString(queryParamsObject)}`;
+
+    return url;
   }
 }

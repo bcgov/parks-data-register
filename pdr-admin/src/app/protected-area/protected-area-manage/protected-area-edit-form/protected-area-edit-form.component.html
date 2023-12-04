@@ -1,0 +1,130 @@
+<section>
+  <h1 *ngIf="updateType === 'minor'">Make Minor edits</h1>
+  <h1 *ngIf="updateType === 'major'">Change legal name</h1>
+  <h2>Required data</h2>
+  <p *ngIf="updateType === 'major'">
+    After you enter a new legal name, the name currently in use and all its associated data will be automatically placed
+    under historical names.
+  </p>
+</section>
+
+<section>
+  <div class="row">
+    <div class="col">
+      <div class="d-flex">
+        <ngds-date-input
+          (displayChange)="onDatePickerInteract()"
+          [control]="form?.controls?.['effectiveDate']"
+          [label]="'Effective date'"
+          [subLabel]="
+            updateType === 'minor'
+              ? 'Change only if effective date was entered incorrectly.'
+              : 'The data the legal name change became effective.'
+          "
+          [placeholder]="'Choose date'"
+          [loadWhile]="loading"
+        >
+          <i ngdsInputPrepend class="text-muted mx-2 align-items-center bi bi-calendar-date"></i>
+        </ngds-date-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 col-xl-8">
+      <ngds-text-input
+        [control]="form?.controls?.['legalName']"
+        [label]="updateType === 'minor' ? 'Current legal name' : 'New legal name'"
+        [subLabel]="
+          updateType === 'minor'
+            ? 'Use only for minor updates, like typos. For legal name changes, use Change legal name.'
+            : 'The new legal name exactly as it appears on the OIC documents.'
+        "
+        [loadWhile]="loading"
+      >
+      </ngds-text-input>
+    </div>
+  </div>
+</section>
+
+<section class="mt-5">
+  <h2>Additional data</h2>
+
+  <div class="row">
+    <div class="col-12 col-xl-8">
+      <ngds-text-input
+        [control]="form?.controls?.['displayName']"
+        [label]="'Display name'"
+        [subLabel]="
+          'Leave blank unless the name that should be displayed on public-facing materials is different from the legal name.'
+        "
+        [loadWhile]="loading"
+      >
+      </ngds-text-input>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 col-xl-8">
+      <ngds-text-input class="text-input" [control]="form?.controls?.['phoneticName']" [label]="'Phonetic name'">
+      </ngds-text-input>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12 col-xl-8">
+      <ngds-text-input
+        [control]="form?.controls?.['audioClip']"
+        [label]="'Audio link'"
+        [subLabel]="'Enter the full link address, including https:// or similar.'"
+        [loadWhile]="loading"
+      >
+      </ngds-text-input>
+    </div>
+  </div>
+</section>
+
+<section class="mt-5">
+  <div class="d-flex justify-content-between">
+    <button type="button" class="btn btn-outline-primary action-buttons" (click)="cancel()" [disabled]="loading">
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary action-buttons"
+      data-bs-toggle="modal"
+      data-bs-target="#confirmSave"
+      [disabled]="form.pristine || form.invalid"
+      (click)="setModalData()"
+    >
+      Save changes
+    </button>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmSave" tabindex="-1" aria-labelledby="confirmSaveLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmSaveLabel">Review changes</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngFor="let item of modalObj | keyvalue">
+          <div class="mb-2">
+            <strong>
+              {{ attrDisplayNames[item.key] }}
+            </strong>
+            <div>
+              {{ item.value || "*Deleted*" }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" #confirmSaveClose class="btn btn-outline-primary" data-bs-dismiss="modal">Back</button>
+        <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

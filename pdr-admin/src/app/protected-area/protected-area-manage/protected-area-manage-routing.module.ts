@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProtectedAreaEditCurrentComponent } from './protected-area-edit-current/protected-area-edit-current.component';
-import { ProtectedAreaEditLegalComponent } from './protected-area-edit-legal/protected-area-edit-legal.component';
 import { ProtectedAreaEditRepealComponent } from './protected-area-edit-repeal/protected-area-edit-repeal.component';
 import { ProtectedAreaEditComponent } from './protected-area-edit/protected-area-edit.component';
 import { ProtectedAreaManageComponent } from './protected-area-manage.component';
+import { ProtectedAreaEditFormComponent } from './protected-area-edit-form/protected-area-edit-form.component';
 
 const routes: Routes = [
   {
@@ -22,17 +21,10 @@ const routes: Routes = [
         },
         children: [
           {
-            path: 'current',
-            component: ProtectedAreaEditCurrentComponent,
+            path: ':updateType',
+            component: ProtectedAreaEditFormComponent,
             data: {
-              breadcrumb: 'Current Name',
-            },
-          },
-          {
-            path: 'legal',
-            component: ProtectedAreaEditLegalComponent,
-            data: {
-              breadcrumb: 'Legal Name',
+              breadcrumb: 'PROTECTED_AREA_EDIT',
             },
           },
           {

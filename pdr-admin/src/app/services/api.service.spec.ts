@@ -84,7 +84,7 @@ describe('ApiService', () => {
 
   it('puts', async () => {
     // no params
-    service.put('putPk', { mockObj: 'mockObj' }).subscribe((res) => {
+    service.put(['putPk'], { mockObj: 'mockObj' }).subscribe((res) => {
       expect(res.param).toBeNull();
     });
     const emptyPut = httpTestingController.expectOne(
@@ -94,7 +94,7 @@ describe('ApiService', () => {
     emptyPut.flush({ param: null });
     // with params
     service
-      .put('putPk', { mockObj: 'mockObj' }, mockQueryParams)
+      .put(['putPk'], { mockObj: 'mockObj' }, mockQueryParams)
       .subscribe((res) => {
         expect(res.params).toBeDefined();
         expect(res.params.param1).toEqual(mockQueryParams.param1);

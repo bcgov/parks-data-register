@@ -66,7 +66,6 @@ exports.handler = async (event, context) => {
       checkFields = repealedMandatoryFields;
     }
     if (!validateRequest(body, checkFields)) {
-      console.log('i dont have him');
       return sendResponse(400, [], 'Invalid payload.', `For updateType '${updateType}', the following fields must be provided: ${checkFields.join(', ')}`)
     };
 
@@ -120,7 +119,7 @@ function validateRequest(body, checkFields) {
   // Check if mandatory fields were provided.
 
   for (const field of checkFields) {
-    if (!body[field]) {
+    if (!body.hasOwnProperty(field)) {
       // Throws an error if the payload is invalid.
       return false;
     }

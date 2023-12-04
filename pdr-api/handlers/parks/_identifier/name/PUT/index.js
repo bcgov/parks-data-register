@@ -18,6 +18,11 @@ const repealedMandatoryFields = [
   'notes'
 ];
 
+const nonNullableFields = [
+  'legalName',
+  'effectiveDate',
+]
+
 /**
  * AWS Lambda function for updating park name details.
  *
@@ -65,9 +70,11 @@ exports.handler = async (event, context) => {
     if (updateType === 'repeal') {
       checkFields = repealedMandatoryFields;
     }
-    if (!validateRequest(body, checkFields)) {
-      return sendResponse(400, [], 'Invalid payload.', `For updateType '${updateType}', the following fields must be provided: ${checkFields.join(', ')}`)
-    };
+    try {
+      validateRequest(body, checkFields, updateType);
+    } catch (error) {
+      return sendResponse(400, [], 'Invalid payload.', error);
+    }
 
     if (!isAdmin) {
       return sendResponse(403, [], 'Unauthorized', 'Unauthorized');
@@ -115,13 +122,21 @@ exports.handler = async (event, context) => {
  * @throws {Error} Throws an error if the payload is invalid.
  * @returns {void}
  */
-function validateRequest(body, checkFields) {
+function validateRequest(body, checkFields, updateType) {
   // Check if mandatory fields were provided.
-
   for (const field of checkFields) {
     if (!body.hasOwnProperty(field)) {
-      // Throws an error if the payload is invalid.
-      return false;
+      throw `For updateType '${updateType}', the following fields must be provided: ${checkFields.join(', ')}`;
+    }
+  }
+  // Check if indexable fields are non-null (we must provide a truthy value to indexable fields!)
+  // Designs call for allowable empty displayName field. Since this field is indexable, we must copy in the legalName value.
+  if (!body?.displayName) {
+    body.displayName = body.legalName;
+  }
+  for (const field of nonNullableFields) {
+    if (!body[field]) {
+      throw `For updateType '${updateType}', the following fields cannot be empty: ${nonNullableFields.join(', ')}`;
     }
   }
   return true;

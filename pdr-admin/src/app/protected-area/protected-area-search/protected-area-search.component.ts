@@ -77,8 +77,9 @@ export class ProtectedAreaSearchComponent implements OnInit {
     // TODO: When we have historical park names, we want to set HISTORICAL_PROTECTED_AREA here.
     this.router.navigate(['protected-areas', item.pk]);
   }
-
+  
   editItem(item) {
+    this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
     this.router.navigate(['protected-areas', item.pk, 'edit']);
   }
 

@@ -51,6 +51,8 @@ export class ProtectedAreaEditFormComponent {
         this.currentData = res ? res : {};
         // Populate form with data
         if (this.currentData && this.updateType === 'minor') {
+          // TODO: When API has proper conflict resolution, update this code
+          this.currentData['lastVersionDate'] = this.currentData.updateDate;
           // TODO: Prompt user is another change has been detected after init.
           this.initForm(this.form, this.currentData);
         }
@@ -105,7 +107,6 @@ export class ProtectedAreaEditFormComponent {
     // Business rule:
     // Latest change always trumps whatever is in the database
     // If you and another person is editing at the same time, the person who submits last gets their change reflected.
-
     const baseObj =
       this.updateType === 'major'
         ? {
@@ -119,7 +120,8 @@ export class ProtectedAreaEditFormComponent {
           }
         : this.currentData;
 
-    const mergedObj = { ...baseObj, ...this.modalObj };
+    let mergedObj = { ...baseObj, ...this.modalObj };
+
     await this.protectedAreaService.edit(this.currentData.pk, mergedObj, this.updateType);
     this.confirmSaveClose.nativeElement.click();
     this.router.navigate(['protected-areas', this.currentData.pk, 'edit']);

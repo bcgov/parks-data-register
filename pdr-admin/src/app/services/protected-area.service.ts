@@ -14,7 +14,16 @@ import { Utils } from '../utils/utils';
 })
 export class ProtectedAreaService {
   private utils = new Utils();
-  validAttributes = ['effectiveDate', 'legalName', 'phoneticName', 'displayName', 'searchTerms', 'audioClip', 'notes'];
+  validAttributes = [
+    'effectiveDate',
+    'legalName',
+    'phoneticName',
+    'displayName',
+    'searchTerms',
+    'audioClip',
+    'notes',
+    'lastVersionDate',
+  ];
 
   constructor(
     private dataService: DataService,

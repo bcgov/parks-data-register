@@ -2,7 +2,7 @@
   <section class="pb-3">
     <h3>Find a protected area</h3>
     <div class="row mb-3">
-      <div class="col">
+      <div class="col-12 col-md-10">
         <ngds-text-input
           class="form-id"
           [control]="form?.controls?.['text']"
@@ -12,33 +12,33 @@
           (keyup.enter)="submit()"
         ></ngds-text-input>
       </div>
-    </div>
-    <div class="row-cols-1 row-cols-md-2 row row-cols-lg-3 g-3">
-      <div class="col">
-        <ngds-picklist-input
-          [control]="form?.controls?.['status']"
-          [selectionListItems]="statusPicklistItems"
-          [label]="'Filter by protected area status'"
-          [placeholder]="'Any'"
-        >
-        </ngds-picklist-input>
+      <div class="col-12 col-md-2 d-flex align-items-end mt-4 mt-md-0">
+        <div class="flex-grow-1">
+          <div class="d-grid">
+            <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="loading || form.invalid">
+              <ng-container *ngIf="!loading">Search</ng-container>
+              <ng-container *ngIf="loading">
+                <div class="spinner-border spinner-border-sm" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </ng-container>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="row mt-4">
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col-12 col-md-4">
-        <div class="d-grid">
-          <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="loading || disableSearch">
-            <ng-container *ngIf="!loading">Search</ng-container>
-            <ng-container *ngIf="loading">
-              <div class="spinner-border spinner-border-sm" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </ng-container>
-          </button>
-        </div>
+      <div class="col-12 col-md-6">
+        <ngds-picklist-input
+          [control]="form?.controls?.['status']"
+          [selectionListItems]="statusPicklistItems"
+          [multiselect]="true"
+          [resetButton]="true"
+          [selectAllButton]="true"
+          [label]="'Filter by protected area status'"
+        >
+        </ngds-picklist-input>
       </div>
     </div>
   </section>
@@ -60,11 +60,15 @@
         <td class="pt-3 pb-3">
           <strong>{{ item.legalName }}</strong>
         </td>
-        <td class="pt-3 pb-3">{{ item.status }}</td>
+        <td class="pt-3 pb-3">{{ this.utils.upperCaseFirstChar(item.status) }}</td>
         <td class="action-column" colspan="1">
           <div class="d-flex">
             <i class="bi bi-eye me-4" (click)="viewItem(item)"></i>
-            <i class="bi bi-pen" (click)="editItem(item)"></i>
+            <i
+              class="bi bi-pen"
+              [ngClass]="{ 'text-muted pointer': item.status === 'historical' }"
+              (click)="editItem(item)"
+            ></i>
           </div>
         </td>
       </tr>

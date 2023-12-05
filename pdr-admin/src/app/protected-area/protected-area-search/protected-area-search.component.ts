@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SearchService } from 'src/app/services/search.service';
 import { Constants } from 'src/app/utils/constants';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-protected-area-search',
@@ -15,20 +16,21 @@ import { Constants } from 'src/app/utils/constants';
 export class ProtectedAreaSearchComponent implements OnInit {
   private subscriptions = new Subscription();
 
+  // TODO: This will be a switch for all searches. (protectedArea, sites, etc)
+  private searchType = 'protectedArea';
+
+  public utils = new Utils();
   loading = false;
-  disableSearch = true;
   data = [];
-  parkNames = [
-    'Garibaldi Provincial Park',
-    'Golden Ears Provincial Park',
-    'Joffre Lakes Provincial Park',
-    'Mount Seymour Provincial Park',
+  statusPicklistItems = [
+    { value: 'established', display: 'Established' },
+    { value: 'historical', display: 'Historical' },
+    { value: 'repealed', display: 'Repealed' },
+    { value: 'pending', display: 'Pending' },
   ];
-  typePicklistItems = ['Any', 'Protected area'];
-  statusPicklistItems = ['Any', 'Established', 'Repealed'];
   form = new UntypedFormGroup({
-    text: new UntypedFormControl(null),
-    type: new UntypedFormControl(this.typePicklistItems[0]),
+    text: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
+    type: new UntypedFormControl(null),
     status: new UntypedFormControl(this.statusPicklistItems[0]),
   });
 
@@ -53,22 +55,23 @@ export class ProtectedAreaSearchComponent implements OnInit {
         this.ref.detectChanges();
       })
     );
-
     this.subscriptions.add(
       this.form.valueChanges.subscribe((changes) => {
-        if (!changes.text && changes.type === 'Any' && changes.status === 'Any') {
-          this.disableSearch = true;
-        } else {
-          this.disableSearch = false;
-        }
         this.ref.detectChanges();
       })
     );
   }
 
   submit() {
-    if (!this.disableSearch) {
-      this.searchService.fetchData(this.form.value.text);
+    if (this.form.valid) {
+      this.form.controls['type'].setValue(this.searchType);
+      let getObj = { ...this.form.value };
+      if (getObj.status) {
+        getObj.status = getObj.status.toString();
+      } else {
+        delete getObj.status;
+      }
+      this.searchService.fetchData(getObj);
     }
   }
 
@@ -77,10 +80,12 @@ export class ProtectedAreaSearchComponent implements OnInit {
     // TODO: When we have historical park names, we want to set HISTORICAL_PROTECTED_AREA here.
     this.router.navigate(['protected-areas', item.pk]);
   }
-  
+
   editItem(item) {
-    this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
-    this.router.navigate(['protected-areas', item.pk, 'edit']);
+    if (item.status !== 'historical') {
+      this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
+      this.router.navigate(['protected-areas', item.pk, 'edit']);
+    }
   }
 
   ngOnDestroy() {

@@ -4,6 +4,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { Breadcrumb } from '../models/breadcrumb.model';
 import { ProtectedAreaService } from './protected-area.service';
+import { Utils } from '../utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ import { ProtectedAreaService } from './protected-area.service';
 export class BreadcrumbService {
   // Subject emitting the breadcrumb hierarchy
   private readonly _breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
+  private utils = new Utils();
   public protectedArea;
   public subscriptions = new Subscription();
 
@@ -65,8 +67,7 @@ export class BreadcrumbService {
             altLabel = 'Details';
             break;
           case 'PROTECTED_AREA_EDIT':
-            label =
-              `${routeUrl[routeUrl.length - 1]}`.charAt(0).toUpperCase() + `${routeUrl[routeUrl.length - 1]}`.slice(1);
+            label = this.utils.upperCaseFirstChar(routeUrl[routeUrl.length - 1]);
             break;
           // case 'FACILITY NAME':
           //   label = route.params['facilityId'];

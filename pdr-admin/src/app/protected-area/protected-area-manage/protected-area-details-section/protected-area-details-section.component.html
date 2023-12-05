@@ -1,4 +1,4 @@
-<ng-container *ngIf="data?.status !== 'Repealed'">
+<ng-container *ngIf="data?.status !== 'repealed'">
   <p>
     <strong>Effective date</strong
     ><small class="ms-2">
@@ -55,7 +55,7 @@
     </small>
   </p>
 </ng-container>
-<ng-container *ngIf="data?.status === 'Repealed'">
+<ng-container *ngIf="data?.status === 'historical'">
   <p>
     <strong>Repealed date</strong
     ><small>
@@ -63,7 +63,7 @@
         {{ data.repealedDate }}
       </ng-container>
       <ng-container *ngIf="!data || !data.repealedDate">
-        <span class="text-muted fst-italic">None</span>
+        <span class="text-muted fst-italic"> None</span>
       </ng-container>
     </small>
   </p>

@@ -118,9 +118,6 @@ export class ApiService implements OnDestroy {
   public getArrayFromSearchResults(data) {
     let res = [];
     for (const record of data.data.hits) {
-      // At the moment, all records have type Protected Area
-      // TODO: Actually set type attribute
-      record._source.type = 'Protected area';
       res.push(record._source);
     }
     return res;

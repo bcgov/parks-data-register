@@ -12,7 +12,8 @@ const item1 = {
   "phoneticName": "STRA",
   "displayName": "Strathcona Park",
   "searchTerms": "mount asdf",
-  "notes": "Some Notes"
+  "notes": "Some Notes",
+  "updateDate": 'date1'
 };
 
 const item2 = { ...item1 };
@@ -88,6 +89,7 @@ describe('Lambda Handler Tests', () => {
   test('minorUpdate should return a response with status code 403', async () => {
     const body = {
       "orcs": "41",
+      "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
       "status": "established",
@@ -118,6 +120,7 @@ describe('Lambda Handler Tests', () => {
   test('minorUpdate should return a response with status code 200', async () => {
     await insertItem(item1);
     const body = {
+      "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
       "phoneticName": "STRA",
@@ -148,6 +151,7 @@ describe('Lambda Handler Tests', () => {
   test('minorUpdate should return a response with status code missing things 400', async () => {
     const body = {
       "orcs": "41",
+      "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
       "status": "established",
@@ -175,6 +179,7 @@ describe('Lambda Handler Tests', () => {
   test('minorUpdate should fail because of type issues 400', async () => {
     const body = {
       "orcs": "3",
+      "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
       "status": 0, // This is wrong
@@ -206,6 +211,7 @@ describe('Lambda Handler Tests', () => {
     await insertItem(item1);
     const body = {
       "effectiveDate": "1911-03-01",
+      "lastVersionDate": "date1",
       "legalName": "Strathcona Park",
       "phoneticName": "STRA",
       "displayName": "Strathcona Park",
@@ -239,6 +245,7 @@ describe('Lambda Handler Tests', () => {
     await insertItem(item2);
     const body = {
       "effectiveDate": "1911-03-01",
+      "lastVersionDate": "date1",
       "legalName": "Strathcona Park",
       "status": "established",
       "phoneticName": "STRA",
@@ -269,6 +276,7 @@ describe('Lambda Handler Tests', () => {
   test('Invalid update type: 400', async () => {
     const body = {
       "orcs": "123",
+      "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
       "status": "established",
@@ -299,6 +307,7 @@ describe('Lambda Handler Tests', () => {
   test('Invalid status: 400', async () => {
     const body = {
       "orcs": "123",
+      "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
       "status": "aaa",
@@ -330,6 +339,7 @@ describe('Lambda Handler Tests', () => {
     await insertItem(item1);
     const body = {
       "orcs": "41",
+      "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park 2",
       "status": "established",
@@ -358,6 +368,77 @@ describe('Lambda Handler Tests', () => {
     const payload = JSON.parse(result.body);
     expect(payload.data.legalName).toBe('Strathcona Park 2');
     expect(payload.data.lastModifiedBy).toBe(IDIR_TEST_USER)
+    await removeItem(item1);
+  });
+
+  test('Payload does not include lastVersionDate, return 400', async () => {
+    await insertItem(item1);
+    const body = {
+      "orcs": "41",
+      "effectiveDate": "1911-03-01",
+      "legalName": "Strathcona Park 2",
+      "status": "established",
+      "phoneticName": "STRA",
+      "displayName": "Strathcona Park 2",
+      "searchTerms": "mount asdf",
+      "notes": "Some Notes 2"
+    };
+
+    const result = await handler({
+      body: JSON.stringify(body),
+      queryStringParameters: {
+        updateType: 'minor'
+      },
+      pathParameters: {
+        "identifier": "41"
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true,
+          userID: IDIR_TEST_USER
+        }
+      }
+    });
+    expect(result.statusCode).toBe(400);
+    const payload = JSON.parse(result.body);
+    expect(payload.error).toBe(`Missing required field 'lastVersionDate'`);
+    await removeItem(item1);
+  });
+
+  
+  test('Payload does not include displayName value, return 200', async () => {
+    await insertItem(item1);
+    const body = {
+      "orcs": "41",
+      "lastVersionDate": "date1",
+      "effectiveDate": "1911-03-01",
+      "legalName": "Strathcona Park 2",
+      "status": "established",
+      "phoneticName": "STRA",
+      "displayName": "",
+      "searchTerms": "mount asdf",
+      "notes": "Some Notes 2"
+    };
+
+    const result = await handler({
+      body: JSON.stringify(body),
+      queryStringParameters: {
+        updateType: 'minor'
+      },
+      pathParameters: {
+        "identifier": "41"
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true,
+          userID: IDIR_TEST_USER
+        }
+      }
+    });
+    expect(result.statusCode).toBe(200);
+    const payload = JSON.parse(result.body);
+    // Display name is overwritten with legalname value
+    expect(payload.data.displayName).toBe(`Strathcona Park 2`);
     await removeItem(item1);
   });
 });

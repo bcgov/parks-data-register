@@ -87,7 +87,7 @@ function buildQuery(isAdmin, queryStringParameters, query) {
   try {
     logger.info('Building query');
     for (let key of Object.keys(queryStringParameters)) {
-      const value = queryStringParameters[key];
+      const value = queryStringParameters[key].toLowerCase();
       // Remove text from terms, it is sent in another part of the query
       if (key != 'text') {
         // Multiple terms to be comma seperated eg. ?status=current,pending

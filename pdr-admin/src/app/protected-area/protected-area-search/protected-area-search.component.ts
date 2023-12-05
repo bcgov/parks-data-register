@@ -6,6 +6,7 @@ import { DataService } from 'src/app/services/data.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SearchService } from 'src/app/services/search.service';
 import { Constants } from 'src/app/utils/constants';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-protected-area-search',
@@ -15,20 +16,17 @@ import { Constants } from 'src/app/utils/constants';
 export class ProtectedAreaSearchComponent implements OnInit {
   private subscriptions = new Subscription();
 
+  // TODO: This will be a switch for all searches. (protectedArea, sites, etc)
+  private searchType = 'protectedArea';
+
+  public utils = new Utils();
   loading = false;
   disableSearch = true;
   data = [];
-  parkNames = [
-    'Garibaldi Provincial Park',
-    'Golden Ears Provincial Park',
-    'Joffre Lakes Provincial Park',
-    'Mount Seymour Provincial Park',
-  ];
-  typePicklistItems = ['Any', 'Protected area'];
-  statusPicklistItems = ['Any', 'Established', 'Repealed'];
+  statusPicklistItems = ['Any', 'Established', 'Historical'];
   form = new UntypedFormGroup({
     text: new UntypedFormControl(null),
-    type: new UntypedFormControl(this.typePicklistItems[0]),
+    type: new UntypedFormControl(null),
     status: new UntypedFormControl(this.statusPicklistItems[0]),
   });
 
@@ -68,7 +66,10 @@ export class ProtectedAreaSearchComponent implements OnInit {
 
   submit() {
     if (!this.disableSearch) {
-      this.searchService.fetchData(this.form.value.text);
+      this.form.controls['type'].setValue(this.searchType);
+
+      this.form.value.status.toLowerCase();
+      this.searchService.fetchData(this.form.value);
     }
   }
 
@@ -77,7 +78,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
     // TODO: When we have historical park names, we want to set HISTORICAL_PROTECTED_AREA here.
     this.router.navigate(['protected-areas', item.pk]);
   }
-  
+
   editItem(item) {
     this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
     this.router.navigate(['protected-areas', item.pk, 'edit']);

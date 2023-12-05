@@ -14,7 +14,7 @@ export class ProtectedAreaManageComponent implements OnInit {
   @Input() id;
 
   private subscriptions = new Subscription();
-  private utils = new Utils();
+  public utils = new Utils();
 
   public currentData;
   public state = 'details';

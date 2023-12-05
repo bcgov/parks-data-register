@@ -2,7 +2,7 @@
   <section class="pb-3">
     <h3>Find a protected area</h3>
     <div class="row mb-3">
-      <div class="col">
+      <div class="col-12 col-md-8">
         <ngds-text-input
           class="form-id"
           [control]="form?.controls?.['text']"
@@ -12,9 +12,7 @@
           (keyup.enter)="submit()"
         ></ngds-text-input>
       </div>
-    </div>
-    <div class="row-cols-1 row-cols-md-2 row row-cols-lg-3 g-3">
-      <div class="col">
+      <div class="col-12 col-md-4">
         <ngds-picklist-input
           [control]="form?.controls?.['status']"
           [selectionListItems]="statusPicklistItems"
@@ -60,7 +58,7 @@
         <td class="pt-3 pb-3">
           <strong>{{ item.legalName }}</strong>
         </td>
-        <td class="pt-3 pb-3">{{ item.status }}</td>
+        <td class="pt-3 pb-3">{{ this.utils.upperCaseFirstChar(item.status) }}</td>
         <td class="action-column" colspan="1">
           <div class="d-flex">
             <i class="bi bi-eye me-4" (click)="viewItem(item)"></i>

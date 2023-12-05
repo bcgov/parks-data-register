@@ -21,11 +21,10 @@ export class SearchService {
     private eventService: EventService
   ) {}
 
-  async fetchData(text) {
+  async fetchData(queryParams) {
     this.loadingService.addToFetchList(Constants.dataIds.SEARCH_RESULTS);
-    let queryParams = {};
-    if (text) {
-      queryParams['text'] = text;
+    if (queryParams.status !== 'Historical' && queryParams.status !== 'Established') {
+      delete queryParams.status;
     }
     // Calling API with status = null gives you current and historical
     try {

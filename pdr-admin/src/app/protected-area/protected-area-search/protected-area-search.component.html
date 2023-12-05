@@ -64,7 +64,11 @@
         <td class="action-column" colspan="1">
           <div class="d-flex">
             <i class="bi bi-eye me-4" (click)="viewItem(item)"></i>
-            <i class="bi bi-pen" (click)="editItem(item)"></i>
+            <i
+              class="bi bi-pen"
+              [ngClass]="{ 'text-muted pointer': item.status === 'historical' }"
+              (click)="editItem(item)"
+            ></i>
           </div>
         </td>
       </tr>

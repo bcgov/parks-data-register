@@ -5,7 +5,7 @@
         {{ currentData?.pk || "-" }} <span class="fw-normal">{{ currentData?.legalName || "-" }}</span>
       </h1>
       <button
-        *ngIf="state === 'details'"
+        *ngIf="state === 'details' && currentData.status !== 'historical'"
         type="button"
         class="btn btn-outline-primary my-3 my-sm-0"
         (click)="navigate('edit')"

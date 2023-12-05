@@ -82,8 +82,10 @@ export class ProtectedAreaSearchComponent implements OnInit {
   }
 
   editItem(item) {
-    this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
-    this.router.navigate(['protected-areas', item.pk, 'edit']);
+    if (item.status !== 'historical') {
+      this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
+      this.router.navigate(['protected-areas', item.pk, 'edit']);
+    }
   }
 
   ngOnDestroy() {

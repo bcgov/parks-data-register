@@ -35,7 +35,7 @@ export class ProtectedAreaManageComponent implements OnInit {
         } else {
           this.currentData = res ? res : {};
           if (this.currentData.updateDate) {
-            this.currentData.updateDate = this.utils.formatDateForDisplay(this.currentData.updateDate);
+            this.currentData.updateDateDisplay = this.utils.formatDateForDisplay(this.currentData.updateDate);
           }
           this.ref.detectChanges();
         }

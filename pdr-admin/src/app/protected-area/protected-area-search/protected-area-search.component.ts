@@ -23,7 +23,11 @@ export class ProtectedAreaSearchComponent implements OnInit {
   loading = false;
   disableSearch = true;
   data = [];
-  statusPicklistItems = ['Any', 'Established', 'Historical'];
+  statusPicklistItems = [
+    { value: 'any', display: 'Any' },
+    { value: 'established', display: 'Established' },
+    { value: 'historical', display: 'Historical' },
+  ];
   form = new UntypedFormGroup({
     text: new UntypedFormControl(null),
     type: new UntypedFormControl(null),
@@ -67,8 +71,6 @@ export class ProtectedAreaSearchComponent implements OnInit {
   submit() {
     if (!this.disableSearch) {
       this.form.controls['type'].setValue(this.searchType);
-
-      this.form.value.status.toLowerCase();
       this.searchService.fetchData(this.form.value);
     }
   }

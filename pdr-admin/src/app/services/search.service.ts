@@ -23,9 +23,6 @@ export class SearchService {
 
   async fetchData(queryParams) {
     this.loadingService.addToFetchList(Constants.dataIds.SEARCH_RESULTS);
-    if (queryParams.status !== 'Historical' && queryParams.status !== 'Established') {
-      delete queryParams.status;
-    }
     // Calling API with status = null gives you current and historical
     try {
       const res = await lastValueFrom(this.apiService.get('search', queryParams));

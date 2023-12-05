@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
@@ -21,15 +21,15 @@ export class ProtectedAreaSearchComponent implements OnInit {
 
   public utils = new Utils();
   loading = false;
-  disableSearch = true;
   data = [];
   statusPicklistItems = [
-    { value: 'any', display: 'Any' },
     { value: 'established', display: 'Established' },
     { value: 'historical', display: 'Historical' },
+    { value: 'repealed', display: 'Repealed' },
+    { value: 'pending', display: 'Pending' },
   ];
   form = new UntypedFormGroup({
-    text: new UntypedFormControl(null),
+    text: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
     type: new UntypedFormControl(null),
     status: new UntypedFormControl(this.statusPicklistItems[0]),
   });
@@ -55,23 +55,23 @@ export class ProtectedAreaSearchComponent implements OnInit {
         this.ref.detectChanges();
       })
     );
-
     this.subscriptions.add(
       this.form.valueChanges.subscribe((changes) => {
-        if (!changes.text && changes.type === 'Any' && changes.status === 'Any') {
-          this.disableSearch = true;
-        } else {
-          this.disableSearch = false;
-        }
         this.ref.detectChanges();
       })
     );
   }
 
   submit() {
-    if (!this.disableSearch) {
+    if (this.form.valid) {
       this.form.controls['type'].setValue(this.searchType);
-      this.searchService.fetchData(this.form.value);
+      let getObj = { ...this.form.value };
+      if (getObj.status) {
+        getObj.status = getObj.status.toString();
+      } else {
+        delete getObj.status;
+      }
+      this.searchService.fetchData(getObj);
     }
   }
 

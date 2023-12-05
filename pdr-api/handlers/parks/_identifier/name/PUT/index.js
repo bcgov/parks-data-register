@@ -88,6 +88,11 @@ exports.handler = async (event, context) => {
       throw `Protected area with identifier '${identifier}' not found.`
     }
 
+    // If no updateDate provided with record, we can't verify the version.
+    if (!body?.lastVersionDate) {
+      throw `Missing required field 'lastVersionDate'`;
+    }
+
     // Checks the type of update and calls the corresponding function.
     if (updateType === 'minor') {
       // Don't trigger a legal name change
@@ -238,6 +243,7 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
     ':updateDate': { S: currentTimeISO },
     ':lastModifiedBy': { S: user },
     ':status': { S: status },
+    ':lastVersionDate': { S: body.lastVersionDate}
   }
   let updateExpression = ['SET updateDate = :updateDate, #status = :status, lastModifiedBy = :lastModifiedBy'];
   let specificAttributeFields = updateMandatoryFields;
@@ -258,6 +264,7 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
     ExpressionAttributeValues: updatedAttributeValues,
     ExpressionAttributeNames: { '#status': 'status' },
     UpdateExpression: updateExpression.join(', '),
+    ConditionExpression: 'updateDate = :lastVersionDate',
     ReturnValues: 'ALL_NEW'
   };
 
@@ -304,6 +311,10 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
   } catch (error) {
     // Logs any errors that occur during the update operation.
     logger.error(error);
+    if (error?.code === 'ConditionalCheckFailedException') {
+      // You must provide the updateDate property from the existing record so versioning can be assured
+      throw `Version mismatch. Confirm you are updating the most recent version of the record and try again.`;
+    }
 
     // Propagates the error to the calling function.
     throw error;

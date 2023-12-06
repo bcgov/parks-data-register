@@ -42,4 +42,19 @@ export class Utils {
   public upperCaseFirstChar(string) {
     return `${string}`.charAt(0).toUpperCase() + `${string}`.slice(1);
   }
+
+  public setLastVersionDate(item) {
+    // TODO: When API has proper conflict resolution, update this code
+    if (item.updateDate) {
+      item.lastVersionDate = item.updateDate;
+    }
+    return item;
+  }
+
+  public setDisplayDate(item, attr) {
+    if (item[attr]) {
+      item[attr + 'Display'] = this.formatDateForDisplay(item[attr]);
+    }
+    return item;
+  }
 }

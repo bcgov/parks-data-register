@@ -6,6 +6,8 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 import { Utils } from 'src/app/utils/utils';
 import { ViewChild } from '@angular/core';
+import { Constants } from 'src/app/utils/constants';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-protected-area-edit-form',
@@ -28,7 +30,10 @@ export class ProtectedAreaEditFormComponent {
 
   public currentData;
   public loading = true;
+  // Used for submiting change
   public modalObj = {};
+  // Used for populating modal
+  public modalObjArray = [];
   public attrDisplayNames = {
     effectiveDate: 'Effective date',
     legalName: 'New legal name',
@@ -37,6 +42,9 @@ export class ProtectedAreaEditFormComponent {
     audioClip: 'Audio link',
     searchTerms: 'Search terms',
   };
+
+  public tz = Constants.timeZoneIANA;
+  public now = DateTime.now().setZone(this.tz);
 
   constructor(
     private router: Router,
@@ -51,8 +59,6 @@ export class ProtectedAreaEditFormComponent {
         this.currentData = res ? res : {};
         // Populate form with data
         if (this.currentData && this.updateType === 'minor') {
-          // TODO: When API has proper conflict resolution, update this code
-          this.currentData['lastVersionDate'] = this.currentData.updateDate;
           // TODO: Prompt user is another change has been detected after init.
           this.initForm(this.form, this.currentData);
         }
@@ -96,10 +102,17 @@ export class ProtectedAreaEditFormComponent {
   }
 
   setModalData() {
+    this.modalObjArray = [];
+    this.modalObj = {};
     const changedProps = this.utils.getChangedProperties(this.form);
     changedProps.forEach((prop) => {
       this.modalObj[prop] = this.form.get(prop).value;
+      this.modalObjArray.push({
+        label: this.attrDisplayNames[prop],
+        value: this.form.get(prop).value,
+      });
     });
+
     this.ref.detectChanges();
   }
 
@@ -117,14 +130,16 @@ export class ProtectedAreaEditFormComponent {
             searchTerms: '',
             notes: '',
             audioClip: '',
+            lastVersionDate: this.currentData.lastVersionDate,
           }
         : this.currentData;
 
     let mergedObj = { ...baseObj, ...this.modalObj };
 
     await this.protectedAreaService.edit(this.currentData.pk, mergedObj, this.updateType);
+    this.protectedAreaService.fetchData(this.currentData.pk);
     this.confirmSaveClose.nativeElement.click();
-    this.router.navigate(['protected-areas', this.currentData.pk, 'edit']);
+    this.router.navigate(['protected-areas', this.currentData.pk]);
   }
 
   ngOnDestroy() {

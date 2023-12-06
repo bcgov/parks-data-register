@@ -52,7 +52,6 @@ export class Utils {
   }
 
   public setDisplayDate(item, attr) {
-    // TODO: When API has proper conflict resolution, update this code
     if (item[attr]) {
       item[attr + 'Display'] = this.formatDateForDisplay(item[attr]);
     }

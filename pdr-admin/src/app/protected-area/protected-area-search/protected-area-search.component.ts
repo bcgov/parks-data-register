@@ -2,10 +2,9 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { DataService } from 'src/app/services/data.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 import { SearchService } from 'src/app/services/search.service';
-import { Constants } from 'src/app/utils/constants';
 import { Utils } from 'src/app/utils/utils';
 
 @Component({
@@ -37,7 +36,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
   constructor(
     private router: Router,
     private searchService: SearchService,
-    private dataService: DataService,
+    private protectedAreaService: ProtectedAreaService,
     private loadingService: LoadingService,
     private ref: ChangeDetectorRef
   ) {}
@@ -76,15 +75,23 @@ export class ProtectedAreaSearchComponent implements OnInit {
   }
 
   viewItem(item) {
-    this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
-    // TODO: When we have historical park names, we want to set HISTORICAL_PROTECTED_AREA here.
-    this.router.navigate(['protected-areas', item.pk]);
+    if (item.type === 'protectedArea') {
+      this.protectedAreaService.fetchData(item.pk);
+      // TODO: When we have historical park names, we want to set HISTORICAL_PROTECTED_AREA here.
+      this.router.navigate(['protected-areas', item.pk]);
+    }
   }
 
   editItem(item) {
     if (item.status !== 'historical') {
-      this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, item);
-      this.router.navigate(['protected-areas', item.pk, 'edit']);
+      if (item.type === 'protectedArea') {
+        this.protectedAreaService.fetchData(item.pk);
+        if (item.status === 'repealed') {
+          this.router.navigate(['protected-areas', item.pk, 'edit-repealed']);
+        } else {
+          this.router.navigate(['protected-areas', item.pk, 'edit']);
+        }
+      }
     }
   }
 

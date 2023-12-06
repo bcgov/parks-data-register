@@ -7,11 +7,14 @@ import { LoadingService } from './loading.service';
 import { LoggerService } from './logger.service';
 import { ToastService, ToastTypes } from './toast.service';
 import { EventKeywords, EventObject, EventService } from './event.service';
+import { Utils } from '../utils/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SearchService {
+  private utils = new Utils();
+
   constructor(
     private dataService: DataService,
     private apiService: ApiService,
@@ -27,6 +30,9 @@ export class SearchService {
     try {
       const res = await lastValueFrom(this.apiService.get('search', queryParams));
       const data = this.apiService.getArrayFromSearchResults(res);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = this.utils.setLastVersionDate(data[i]);
+      }
       this.dataService.setItemValue(Constants.dataIds.SEARCH_RESULTS, data);
     } catch (e) {
       this.loggerService.error(e);

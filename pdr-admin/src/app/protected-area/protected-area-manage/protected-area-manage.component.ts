@@ -60,9 +60,13 @@ export class ProtectedAreaManageComponent implements OnInit {
 
   navigate(path) {
     let route = ['protected-areas', this.id];
-    if (path) {
+    // Business rule: if record is repealed we skip directly to minor edit.
+    if (path === 'edit' && this.currentData.status === 'repealed') {
+      route.push('edit-repealed');
+    } else if (path) {
       route.push(path);
     }
+
     this.state = path;
     this.router.navigate(route);
     this.ref.detectChanges();

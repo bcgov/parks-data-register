@@ -1,13 +1,30 @@
-<div class="alert alert-danger" role="alert">This page is a work in progress!</div>
-
 <section class="mb-4">
   <h2>Set status to repealed</h2>
 </section>
 
 <section class="w-100 mb-4">
   <div>
-    This will change the status from Current to Reealed. The name currently in use will become a historical name. This
-    should only be done after an OIC has been issued to repeal this protected area. This action cannot be undone.
+    This will change the status from Active to Repealed. This should only be done after an OIC has been issued to repeal
+    this protected area. This action cannot be undone.
+  </div>
+</section>
+
+<section class="mb-5">
+  <div class="row">
+    <div class="col">
+      <div class="d-flex">
+        <ngds-date-input
+          (displayChange)="onDatePickerInteract()"
+          [control]="form?.controls?.['effectiveDate']"
+          [label]="'Repealed date'"
+          [subLabel]="'The date the protected area was repealed.'"
+          [placeholder]="'Choose date'"
+          [loadWhile]="loading"
+        >
+          <i ngdsInputPrepend class="text-muted mx-2 align-items-center bi bi-calendar-date"></i>
+        </ngds-date-input>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -16,6 +33,47 @@
     <button type="button" class="btn btn-outline-primary action-buttons" (click)="cancel()" [disabled]="loading">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary action-buttons" disabled>Set status to repealed</button>
+    <button
+      type="button"
+      class="btn btn-primary action-buttons"
+      data-bs-toggle="modal"
+      data-bs-target="#confirmSave"
+      [disabled]="loading || form.pristine || form.invalid"
+      (click)="setModalData()"
+    >
+      Set status to repealed
+    </button>
   </div>
 </section>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmSave" tabindex="-1" aria-labelledby="confirmSaveLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmSaveLabel">Review changes</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <strong> Status </strong>
+          <div>Repealed</div>
+        </div>
+        <ng-container *ngFor="let item of modalObj | keyvalue">
+          <div class="mb-2">
+            <strong>
+              {{ attrDisplayNames[item.key] }}
+            </strong>
+            <div>
+              {{ item.value || "*Deleted*" }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" #confirmSaveClose class="btn btn-outline-primary" data-bs-dismiss="modal">Back</button>
+        <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

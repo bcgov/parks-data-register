@@ -51,8 +51,6 @@ export class ProtectedAreaEditFormComponent {
         this.currentData = res ? res : {};
         // Populate form with data
         if (this.currentData && this.updateType === 'minor') {
-          // TODO: When API has proper conflict resolution, update this code
-          this.currentData['lastVersionDate'] = this.currentData.updateDate;
           // TODO: Prompt user is another change has been detected after init.
           this.initForm(this.form, this.currentData);
         }
@@ -123,8 +121,9 @@ export class ProtectedAreaEditFormComponent {
     let mergedObj = { ...baseObj, ...this.modalObj };
 
     await this.protectedAreaService.edit(this.currentData.pk, mergedObj, this.updateType);
+    this.protectedAreaService.fetchData(this.currentData.pk);
     this.confirmSaveClose.nativeElement.click();
-    this.router.navigate(['protected-areas', this.currentData.pk, 'edit']);
+    this.router.navigate(['protected-areas', this.currentData.pk]);
   }
 
   ngOnDestroy() {

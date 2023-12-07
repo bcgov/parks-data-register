@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Mark Lisé",
     "DateCreated": "Aug 10, 2023, 08:57 AM",
-    "DateLastModified": "Nov 29, 2023, 08:50 AM",
+    "DateLastModified": "Dec 06, 2023, 03:34 PM",
     "Description": "Data model for the BC Parks Name Register.",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -80,6 +80,10 @@
         },
         {
           "AttributeName": "newStatus",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "displayId",
           "AttributeType": "S"
         }
       ],
@@ -171,7 +175,7 @@
       "TableData": [
         {
           "pk": {
-            "S": "0001"
+            "S": "1"
           },
           "sk": {
             "S": "Details"
@@ -202,11 +206,14 @@
           },
           "type": {
             "S": "protectedArea"
+          },
+          "displayId": {
+            "S": "0001"
           }
         },
         {
           "pk": {
-            "S": "0001"
+            "S": "1"
           },
           "sk": {
             "S": "2019-08-10T16:15:50.868Z"
@@ -240,11 +247,14 @@
           },
           "newStatus": {
             "S": "established"
+          },
+          "displayId": {
+            "S": "0001"
           }
         },
         {
           "pk": {
-            "S": "0363"
+            "S": "363"
           },
           "sk": {
             "S": "Details"
@@ -275,11 +285,14 @@
           },
           "type": {
             "S": "protectedArea"
+          },
+          "displayId": {
+            "S": "0363"
           }
         },
         {
           "pk": {
-            "S": "0001"
+            "S": "1"
           },
           "sk": {
             "S": "2020-08-10T16:15:50.868Z"
@@ -313,6 +326,9 @@
           },
           "newStatus": {
             "S": "established"
+          },
+          "displayId": {
+            "S": "0001"
           }
         },
         {
@@ -351,6 +367,9 @@
           },
           "type": {
             "S": "protectedArea"
+          },
+          "displayId": {
+            "S": "9876"
           }
         },
         {
@@ -389,6 +408,9 @@
           },
           "newStatus": {
             "S": "repealed"
+          },
+          "displayId": {
+            "S": "9876"
           }
         }
       ],

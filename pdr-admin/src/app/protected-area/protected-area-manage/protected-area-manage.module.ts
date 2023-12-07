@@ -9,6 +9,7 @@ import { ProtectedAreaManageComponent } from './protected-area-manage.component'
 import { ProtectedAreaManageRoutingModule } from './protected-area-manage-routing.module';
 import { ProtectedAreaEditFormComponent } from './protected-area-edit-form/protected-area-edit-form.component';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,6 @@ import { RouterModule } from '@angular/router';
     ProtectedAreaManageComponent,
     ProtectedAreaEditFormComponent,
   ],
-  imports: [CommonModule, RouterModule, ProtectedAreaManageRoutingModule, NgdsFormsModule],
+  imports: [CommonModule, RouterModule, ProtectedAreaManageRoutingModule, NgdsFormsModule, FormsModule],
 })
 export class ProtectedAreaManageModule {}

@@ -23,7 +23,6 @@ export class ProtectedAreaEditFormComponent {
   public form = new UntypedFormGroup({
     effectiveDate: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
     legalName: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
-    displayName: new UntypedFormControl(null, { nonNullable: true }),
     phoneticName: new UntypedFormControl(null, { nonNullable: true }),
     audioClip: new UntypedFormControl(null, { nonNullable: true }),
   });
@@ -45,6 +44,8 @@ export class ProtectedAreaEditFormComponent {
 
   public tz = Constants.timeZoneIANA;
   public now = DateTime.now().setZone(this.tz);
+
+  hideDisplayName = true;
 
   constructor(
     private router: Router,
@@ -81,11 +82,21 @@ export class ProtectedAreaEditFormComponent {
   }
 
   initForm(form, data) {
+    if (data.displayName && data.displayName !== data.legalName) {
+      this.hideDisplayName = false;
+      this.form.addControl(
+        'displayName',
+        new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] })
+      );
+    }
+
     Object.keys(form.controls).forEach((element) => {
       // Allows us to reset to state on page load.
       form.controls[element].defaultValue = data[element] ? data[element] : null;
       form.reset();
     });
+
+    this.form.markAsPristine();
   }
 
   onDatePickerInteract() {
@@ -104,6 +115,7 @@ export class ProtectedAreaEditFormComponent {
   setModalData() {
     this.modalObjArray = [];
     this.modalObj = {};
+
     const changedProps = this.utils.getChangedProperties(this.form);
     changedProps.forEach((prop) => {
       this.modalObj[prop] = this.form.get(prop).value;
@@ -117,16 +129,15 @@ export class ProtectedAreaEditFormComponent {
   }
 
   async submit() {
-    // Business rule:
-    // Latest change always trumps whatever is in the database
-    // If you and another person is editing at the same time, the person who submits last gets their change reflected.
+    // API Requirement:
+    // We need to pass lastVersionDate (which is updateDate)
+    // We also need to pass in all fields regardless if we are changing them or not
     const baseObj =
       this.updateType === 'major'
         ? {
             effectiveDate: '',
             legalName: '',
             phoneticName: '',
-            displayName: '',
             searchTerms: '',
             notes: '',
             audioClip: '',
@@ -136,10 +147,32 @@ export class ProtectedAreaEditFormComponent {
 
     let mergedObj = { ...baseObj, ...this.modalObj };
 
+    // We want display name to be same as legal name
+    // API will set this if displayName is null
+    if (this.hideDisplayName) {
+      mergedObj.displayName = null;
+    }
+
     await this.protectedAreaService.edit(this.currentData.pk, mergedObj, this.updateType);
     this.protectedAreaService.fetchData(this.currentData.pk);
     this.confirmSaveClose.nativeElement.click();
     this.router.navigate(['protected-areas', this.currentData.pk]);
+  }
+
+  toggleDisplayNameForm() {
+    if (this.hideDisplayName) {
+      // Toggle off
+      // Remove form control
+      this.form.removeControl('displayName');
+    } else {
+      // Toggle on
+      this.form.addControl(
+        'displayName',
+        new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] })
+      );
+    }
+
+    this.ref.detectChanges();
   }
 
   ngOnDestroy() {

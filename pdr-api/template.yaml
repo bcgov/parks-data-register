@@ -44,6 +44,9 @@ Parameters:
   OpenSearchMainIndex:
     Type: String
     Default: 'main-index'
+  EBSIops:
+    Type: String
+    Default: 1000
   SecurityGroupId:
     Type: String
     Default: 'sg-0fc22027b778c9405'
@@ -142,7 +145,7 @@ Resources:
           MasterUserARN: !GetAtt StreamRole.Arn
       EBSOptions:
         EBSEnabled: true
-        Iops: '3000'
+        Iops: !Ref EBSIops
         VolumeSize: '10'
         Throughput: '125'
         VolumeType: 'gp3'

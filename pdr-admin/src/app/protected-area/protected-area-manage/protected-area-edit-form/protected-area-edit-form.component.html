@@ -47,12 +47,20 @@
       </ngds-text-input>
     </div>
   </div>
-</section>
 
-<section class="mt-5">
-  <h2>Additional data</h2>
+  <div class="form-check mt-4">
+    <label class="form-check-label">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        [(ngModel)]="hideDisplayName"
+        (change)="toggleDisplayNameForm()"
+        [ngModelOptions]="{ standalone: true }"
+      />Legal name is the same as Display name</label
+    >
+  </div>
 
-  <div class="row">
+  <div class="row mt-4" *ngIf="!hideDisplayName">
     <div class="col-12 col-xl-8">
       <ngds-text-input
         [control]="form?.controls?.['displayName']"
@@ -65,8 +73,12 @@
       </ngds-text-input>
     </div>
   </div>
+</section>
 
-  <div class="row mt-4">
+<section class="mt-5">
+  <h2>Additional data</h2>
+
+  <div class="row">
     <div class="col-12 col-xl-8">
       <ngds-text-input class="text-input" [control]="form?.controls?.['phoneticName']" [label]="'Phonetic name'">
       </ngds-text-input>

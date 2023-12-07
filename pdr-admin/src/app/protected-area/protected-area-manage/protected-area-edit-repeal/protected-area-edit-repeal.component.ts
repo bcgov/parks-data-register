@@ -84,9 +84,9 @@ export class ProtectedAreaEditRepealComponent {
   }
 
   async submit() {
-    // Business rule:
-    // Latest change always trumps whatever is in the database
-    // If you and another person is editing at the same time, the person who submits last gets their change reflected.
+    // API Requirement:
+    // We need to pass lastVersionDate (which is updateDate)
+    // We also need to pass in all fields regardless if we are changing them or not
     const mergedObj = { ...this.currentData, ...this.modalObj };
 
     await this.protectedAreaService.repeal(this.currentData.pk, mergedObj);

@@ -6,4 +6,6 @@ export class Constants {
     PROTECTED_AREA_PUT: 'protected-area-put',
     HISTORICAL_PROTECTED_AREA: 'historical-protected-area',
   };
+
+  public static readonly timeZoneIANA = 'America/Vancouver';
 }

@@ -2,7 +2,7 @@
   <section class="pb-3">
     <h3>Find a protected area</h3>
     <div class="row mb-3">
-      <div class="col-12 col-md-10">
+      <div class="col">
         <ngds-text-input
           class="form-id"
           [control]="form?.controls?.['text']"
@@ -10,35 +10,34 @@
           [resetButton]="true"
           [placeholder]="'Enter any search term'"
           (keyup.enter)="submit()"
-        ></ngds-text-input>
-      </div>
-      <div class="col-12 col-md-2 d-flex align-items-end mt-4 mt-md-0">
-        <div class="flex-grow-1">
-          <div class="d-grid">
-            <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="loading || form.invalid">
-              <ng-container *ngIf="!loading">Search</ng-container>
-              <ng-container *ngIf="loading">
-                <div class="spinner-border spinner-border-sm" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-              </ng-container>
-            </button>
-          </div>
-        </div>
+        >
+          <button ngdsInputAppend class="btn btn-primary" (click)="submit()" [disabled]="loading || form.invalid">
+            <ng-container *ngIf="!loading"> <i class="bi bi-search me-2"></i>Search</ng-container>
+            <ng-container *ngIf="loading">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </ng-container>
+          </button>
+        </ngds-text-input>
       </div>
     </div>
 
     <div class="row mt-4">
       <div class="col-12 col-md-6">
-        <ngds-picklist-input
-          [control]="form?.controls?.['status']"
-          [selectionListItems]="statusPicklistItems"
-          [multiselect]="true"
-          [resetButton]="true"
-          [selectAllButton]="true"
-          [label]="'Filter by protected area status'"
-        >
-        </ngds-picklist-input>
+        <strong>Status Filters</strong>
+        <div class="row">
+          <div class="col-auto">
+            <ngds-toggle-input [control]="form?.controls?.['establishedToggle']" [label]="'Established'">
+            </ngds-toggle-input>
+          </div>
+          <div class="col-auto">
+            <ngds-toggle-input [control]="form?.controls?.['repealedToggle']" [label]="'Repealed'"> </ngds-toggle-input>
+          </div>
+          <div class="col-auto">
+            <ngds-toggle-input [control]="form?.controls?.['pendingToggle']" [label]="'Pending'"></ngds-toggle-input>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -64,11 +63,7 @@
         <td class="action-column" colspan="1">
           <div class="d-flex">
             <i class="bi bi-eye me-4" (click)="viewItem(item)"></i>
-            <i
-              class="bi bi-pen"
-              [ngClass]="{ 'text-muted pointer': item.status === 'historical' }"
-              (click)="editItem(item)"
-            ></i>
+            <i class="bi bi-pen" (click)="editItem(item)"></i>
           </div>
         </td>
       </tr>

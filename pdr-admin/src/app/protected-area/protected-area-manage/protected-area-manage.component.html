@@ -5,7 +5,7 @@
         {{ currentData?.pk || "-" }} <span class="fw-normal">{{ currentData?.legalName || "-" }}</span>
       </h1>
       <button
-        *ngIf="state === 'details' && currentData?.status !== 'historical'"
+        *ngIf="state === 'details'"
         type="button"
         class="btn btn-outline-primary my-3 my-sm-0"
         (click)="navigate('edit')"
@@ -25,6 +25,9 @@
       <div class="me-4 fs-5"><strong>Type</strong> Protected Area</div>
       <div class="me-4 fs-5">
         <strong>Status</strong> {{ this.utils.upperCaseFirstChar(currentData?.status) || "-" }}
+      </div>
+      <div *ngIf="currentData?.status === 'repealed'" class="me-4 fs-5">
+        <strong>Repealed date</strong> {{ currentData?.effectiveDateDisplay || "-" }}
       </div>
       <div class="me-4 fs-5"><strong>Last updated</strong> {{ currentData?.updateDateDisplay || "-" }}</div>
     </div>

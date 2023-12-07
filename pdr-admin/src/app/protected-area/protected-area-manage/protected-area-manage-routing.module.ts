@@ -14,6 +14,14 @@ const routes: Routes = [
     },
     children: [
       {
+        path: 'edit-repealed',
+        component: ProtectedAreaEditFormComponent,
+        data: {
+          breadcrumb: 'Edit Repealed',
+          updateType: 'minor',
+        },
+      },
+      {
         path: 'edit',
         component: ProtectedAreaEditComponent,
         data: {
@@ -21,17 +29,17 @@ const routes: Routes = [
         },
         children: [
           {
-            path: ':updateType',
-            component: ProtectedAreaEditFormComponent,
-            data: {
-              breadcrumb: 'PROTECTED_AREA_EDIT',
-            },
-          },
-          {
             path: 'repeal',
             component: ProtectedAreaEditRepealComponent,
             data: {
               breadcrumb: 'Repeal',
+            },
+          },
+          {
+            path: ':updateType',
+            component: ProtectedAreaEditFormComponent,
+            data: {
+              breadcrumb: 'PROTECTED_AREA_EDIT',
             },
           },
         ],

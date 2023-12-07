@@ -2,7 +2,7 @@
   <section class="pb-4 mb-4 border-bottom">
     <div class="d-flex justify-content-between flex-wrap mb-1">
       <h1 class="mb-0">
-        {{ currentData?.pk || "-" }} <span class="fw-normal">{{ currentData?.legalName || "-" }}</span>
+        {{ currentData?.displayId || "-" }} <span class="fw-normal">{{ currentData?.legalName || "-" }}</span>
       </h1>
       <button
         *ngIf="state === 'details'"

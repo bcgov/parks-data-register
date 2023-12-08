@@ -323,7 +323,7 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
     }
     if (error?.code === 'ConditionalCheckFailedException') {
       // Check for ConditionalCheckFailedException with single item update.
-      this.conditionalErrorFlag = true;
+      conditionalErrorFlag = true;
     }
     if (conditionalErrorFlag) {
       // You must provide the updateDate property from the existing record so versioning can be assured

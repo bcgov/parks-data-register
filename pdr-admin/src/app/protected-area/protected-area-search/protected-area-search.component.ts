@@ -126,7 +126,6 @@ export class ProtectedAreaSearchComponent implements OnInit {
       return obj;
     }
     for (const toggle of this.toggleList) {
-      console.log('toggle:', toggle);
       if (statuses.indexOf(toggle) > -1) {
         obj[`${toggle}Toggle`] = true;
       }

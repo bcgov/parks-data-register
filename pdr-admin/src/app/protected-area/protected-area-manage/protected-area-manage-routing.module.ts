@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, mapToCanActivate, mapToCanDeactivate } from '@angular/router';
 import { ProtectedAreaEditRepealComponent } from './protected-area-edit-repeal/protected-area-edit-repeal.component';
 import { ProtectedAreaEditComponent } from './protected-area-edit/protected-area-edit.component';
 import { ProtectedAreaManageComponent } from './protected-area-manage.component';
 import { ProtectedAreaEditFormComponent } from './protected-area-edit-form/protected-area-edit-form.component';
+import { UnsavedChangesGuard } from 'src/app/guards/unsaved-changes-guard';
 
 const routes: Routes = [
   {
@@ -31,6 +32,7 @@ const routes: Routes = [
           {
             path: 'repeal',
             component: ProtectedAreaEditRepealComponent,
+            canDeactivate: mapToCanDeactivate([UnsavedChangesGuard]),
             data: {
               breadcrumb: 'Repeal',
             },
@@ -38,6 +40,7 @@ const routes: Routes = [
           {
             path: ':updateType',
             component: ProtectedAreaEditFormComponent,
+            canDeactivate: mapToCanDeactivate([UnsavedChangesGuard]),
             data: {
               breadcrumb: 'PROTECTED_AREA_EDIT',
             },

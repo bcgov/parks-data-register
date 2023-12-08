@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, ViewChild } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 import { Constants } from 'src/app/utils/constants';
 import { Utils } from 'src/app/utils/utils';
 import { DateTime } from 'luxon';
+import { ReloadConfirmationDialogueService } from 'src/app/services/reload-confirmation-dialogue.service';
 
 @Component({
   selector: 'app-protected-area-edit-repeal',
@@ -39,11 +40,14 @@ export class ProtectedAreaEditRepealComponent {
     notes: new UntypedFormControl(null, { nonNullable: true }),
   });
 
+  public submitting = false;
+
   constructor(
     private router: Router,
     private protectedAreaService: ProtectedAreaService,
     private loadingService: LoadingService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private reloadConfirmationDialogueService: ReloadConfirmationDialogueService
   ) {}
 
   ngOnInit(): void {
@@ -93,6 +97,16 @@ export class ProtectedAreaEditRepealComponent {
     this.protectedAreaService.fetchData(this.currentData.pk);
     this.confirmSaveClose.nativeElement.click();
     this.router.navigate(['protected-areas', this.currentData.pk]);
+  }
+
+  hasUnsavedChanges() {
+    return !this.form.pristine && !this.submitting;
+  }
+
+  // Set up the event listner
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent) {
+    this.reloadConfirmationDialogueService.beforeUnload(this, 'hasUnsavedChanges', event);
   }
 
   ngOnDestroy() {

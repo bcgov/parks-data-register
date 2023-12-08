@@ -21,7 +21,9 @@ export class DataService {
   }
 
   setItemValue(id, value): void {
-    this.checkIfDataExists(id) ? null : this.initItem(id);
+    if (!this.checkIfDataExists(id)) {
+      this.initItem(id);
+    }
     this.data[id].next(value);
   }
 
@@ -52,12 +54,16 @@ export class DataService {
   }
 
   public watchItem(id) {
-    this.checkIfDataExists(id) ? null : this.initItem(id);
+    if (!this.checkIfDataExists(id)) {
+      this.initItem(id);
+    }
     return this.data[id];
   }
 
   public getItemValue(id) {
-    this.checkIfDataExists(id) ? null : this.initItem(id);
+    if (!this.checkIfDataExists(id)) {
+      this.initItem(id);
+    }
     return this.data[id].value;
   }
 
@@ -80,21 +86,28 @@ export class DataService {
     const now = Date.now();
     const expiry = this.data[id]?.value?.expiry
     if (expiry && now > expiry) {
+      // cache expired
       return false;
     }
     return true;
   }
 
   getCachedValue(id) {
-    this.checkIfDataExists(id) ? null : this.initCacheItem(id);
+    if (!this.checkIfDataExists(id)) {
+      this.initCacheItem(id);
+    }
     if (this.checkIfCacheValid(id)) {
+      // cache is valid
       return this.data[id].value?.data;
     }
+    // cache is invalid (expired)
     return null;
   }
 
   setCacheValue(id, value, timeout = null) {
-    this.checkIfDataExists(id) ? null : this.initCacheItem(id);
+    if (!this.checkIfDataExists(id)) {
+      this.initCacheItem(id);
+    }
     let cache = {
       data: value,
       expiry: null

@@ -46,6 +46,7 @@ export class ProtectedAreaEditFormComponent {
   public now = DateTime.now().setZone(this.tz);
 
   hideDisplayName = true;
+  displayNameEdited = false;
 
   constructor(
     private router: Router,
@@ -117,6 +118,14 @@ export class ProtectedAreaEditFormComponent {
     this.modalObjArray = [];
     this.modalObj = {};
 
+    if (this.hideDisplayName && this.displayNameEdited) {
+      this.form.addControl(
+        'displayName',
+        new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] })
+      );
+      this.form.controls['displayName'].markAsDirty();
+    }
+
     const changedProps = this.utils.getChangedProperties(this.form);
     changedProps.forEach((prop) => {
       this.modalObj[prop] = this.form.get(prop).value;
@@ -165,6 +174,8 @@ export class ProtectedAreaEditFormComponent {
       // Toggle off
       // Remove form control
       this.form.removeControl('displayName');
+      this.form.markAsDirty();
+      this.displayNameEdited = true;
     } else {
       // Toggle on
       this.form.addControl(

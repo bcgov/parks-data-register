@@ -131,15 +131,18 @@
             <strong>
               {{ item.label }}
             </strong>
-            <div>
+            <div *ngIf="item.label !== 'Display name'">
               {{ item.value || "*Deleted*" }}
+            </div>
+            <div *ngIf="item.label === 'Display name'">
+              {{ item.value || "*Set as legal name*" }}
             </div>
           </div>
         </ng-container>
       </div>
       <div class="modal-footer">
         <button type="button" #confirmSaveClose class="btn btn-outline-primary" data-bs-dismiss="modal">Back</button>
-        <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+        <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="loading">Save changes</button>
       </div>
     </div>
   </div>

@@ -243,7 +243,7 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
     ':updateDate': { S: currentTimeISO },
     ':lastModifiedBy': { S: user },
     ':status': { S: status },
-    ':lastVersionDate': { S: body.lastVersionDate}
+    ':lastVersionDate': { S: body.lastVersionDate }
   }
   let updateExpression = ['SET updateDate = :updateDate, #status = :status, lastModifiedBy = :lastModifiedBy'];
   let specificAttributeFields = updateMandatoryFields;
@@ -311,7 +311,22 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
   } catch (error) {
     // Logs any errors that occur during the update operation.
     logger.error(error);
+    let conditionalErrorFlag = false;
+    if (error?.CancellationReasons) {
+      // Check for ConditionalCheckFailed with transactional update.
+      conditionalErrorFlag = error.CancellationReasons.find((item) => {
+        console.log('item:', item);
+        if (item?.Code === 'ConditionalCheckFailed') {
+          return true;
+        }
+        return false;
+      })
+    }
     if (error?.code === 'ConditionalCheckFailedException') {
+      // Check for ConditionalCheckFailedException with single item update.
+      this.conditionalErrorFlag = true;
+    }
+    if (conditionalErrorFlag) {
       // You must provide the updateDate property from the existing record so versioning can be assured
       throw `Version mismatch. Confirm you are updating the most recent version of the record and try again.`;
     }

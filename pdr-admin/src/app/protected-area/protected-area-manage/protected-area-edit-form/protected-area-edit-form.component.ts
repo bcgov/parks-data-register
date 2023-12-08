@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -8,6 +8,7 @@ import { Utils } from 'src/app/utils/utils';
 import { ViewChild } from '@angular/core';
 import { Constants } from 'src/app/utils/constants';
 import { DateTime } from 'luxon';
+import { ReloadConfirmationDialogueService } from 'src/app/services/reload-confirmation-dialogue.service';
 
 @Component({
   selector: 'app-protected-area-edit-form',
@@ -44,6 +45,7 @@ export class ProtectedAreaEditFormComponent {
 
   public tz = Constants.timeZoneIANA;
   public now = DateTime.now().setZone(this.tz);
+  public submitting = false;
 
   hideDisplayName = true;
   displayNameEdited = false;
@@ -52,7 +54,8 @@ export class ProtectedAreaEditFormComponent {
     private router: Router,
     private protectedAreaService: ProtectedAreaService,
     private loadingService: LoadingService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private reloadConfirmationDialogueService: ReloadConfirmationDialogueService
   ) {}
 
   ngOnInit(): void {
@@ -119,10 +122,7 @@ export class ProtectedAreaEditFormComponent {
     this.modalObj = {};
 
     if (this.hideDisplayName && this.displayNameEdited) {
-      this.form.addControl(
-        'displayName',
-        new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] })
-      );
+      this.form.addControl('displayName', new UntypedFormControl(null, { nonNullable: true }));
       this.form.controls['displayName'].markAsDirty();
     }
 
@@ -139,6 +139,7 @@ export class ProtectedAreaEditFormComponent {
   }
 
   async submit() {
+    this.submitting = true;
     // API Requirement:
     // We need to pass lastVersionDate (which is updateDate)
     // We also need to pass in all fields regardless if we are changing them or not
@@ -185,6 +186,16 @@ export class ProtectedAreaEditFormComponent {
     }
 
     this.ref.detectChanges();
+  }
+
+  hasUnsavedChanges() {
+    return !this.form.pristine && !this.submitting;
+  }
+
+  // Set up the event listner
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent) {
+    this.reloadConfirmationDialogueService.beforeUnload(this, 'hasUnsavedChanges', event);
   }
 
   ngOnDestroy() {

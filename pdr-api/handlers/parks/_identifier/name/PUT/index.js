@@ -315,7 +315,6 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
     if (error?.CancellationReasons) {
       // Check for ConditionalCheckFailed with transactional update.
       conditionalErrorFlag = error.CancellationReasons.find((item) => {
-        console.log('item:', item);
         if (item?.Code === 'ConditionalCheckFailed') {
           return true;
         }

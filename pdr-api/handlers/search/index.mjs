@@ -32,7 +32,7 @@ export const handler = async (event, context) => {
     const queryParams = event.queryStringParameters;
 
     if (!queryParams?.text) {
-      logger.err(`Bad Request - Invalid Params:${queryParams}`);
+      logger.error(`Bad Request - Invalid Params:${JSON.stringify(queryParams)}`);
       return sendResponse(400, {}, 'Bad Request', 'Invalid Params', context);
     }
 

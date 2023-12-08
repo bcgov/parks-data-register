@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+interface cacheData {
+  expiry: Date;
+  data: any;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -63,4 +68,42 @@ export class DataService {
   checkIfDataExists(id) {
     return this.data[id] ? true : false;
   }
+
+  initCacheItem(id): void {
+    this.data[id] = new BehaviorSubject<cacheData>({
+      expiry: null,
+      data: null
+    });
+  }
+
+  checkIfCacheValid(id) {
+    const now = Date.now();
+    const expiry = this.data[id]?.value?.expiry
+    if (expiry && now > expiry) {
+      return false;
+    }
+    return true;
+  }
+
+  getCachedValue(id) {
+    this.checkIfDataExists(id) ? null : this.initCacheItem(id);
+    if (this.checkIfCacheValid(id)) {
+      return this.data[id].value?.data;
+    }
+    return null;
+  }
+
+  setCacheValue(id, value, timeout = null) {
+    this.checkIfDataExists(id) ? null : this.initCacheItem(id);
+    let cache = {
+      data: value,
+      expiry: null
+    }
+    if (timeout) {
+      // set cache expiry
+      cache.expiry = Date.now() + (timeout*1000)
+    }
+    this.data[id].next(cache);
+  }
+
 }

@@ -24,7 +24,7 @@ export class SearchService {
     private eventService: EventService
   ) {}
 
-  async fetchData(queryParams) {
+  async fetchData(queryParams, cacheUrl = null) {
     this.loadingService.addToFetchList(Constants.dataIds.SEARCH_RESULTS);
     // Calling API with status = null gives you current and historical
     try {
@@ -34,6 +34,10 @@ export class SearchService {
         data[i] = this.utils.setLastVersionDate(data[i]);
       }
       this.dataService.setItemValue(Constants.dataIds.SEARCH_RESULTS, data);
+      if (cacheUrl) {
+        this.dataService.setCacheValue(cacheUrl, data, 300);
+        this.loggerService.debug(`Cache update ${cacheUrl}`);
+      }
     } catch (e) {
       this.loggerService.error(e);
       this.toastService.addMessage(`Something went wrong. Please try again.`, ``, ToastTypes.ERROR);
@@ -47,5 +51,13 @@ export class SearchService {
   }
   clearSearchResults() {
     return this.dataService.clearItemValue(Constants.dataIds.SEARCH_RESULTS);
+  }
+
+  checkCache(url){
+    return this.dataService.getCachedValue(url);
+  }
+
+  setSearchResults(data) {
+    this.dataService.setItemValue(Constants.dataIds.SEARCH_RESULTS, data);
   }
 }

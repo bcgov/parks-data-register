@@ -27,9 +27,17 @@ exports.handler = async function (event, context) {
     let auditRecordsToCreate = [];
     for (const record of event?.Records) {
       const eventName = record.eventName;
-      const newImage = record.dynamodb.NewImage;
-      const oldImage = record.dynamodb.OldImage;
-      const creationTime = new Date(record.dynamodb.ApproximateCreationDateTime).toISOString();
+      let newImage = record.dynamodb.NewImage;
+      let oldImage = record.dynamodb.OldImage;
+
+      // Prune the notes field from search
+      delete newImage.notes;
+      delete oldImage.notes;
+
+      let createDate = new Date(0);
+      createDate.setUTCSeconds(record.dynamodb.ApproximateCreationDateTime);
+      const creationTime = createDate.toISOString();
+
       const gsipk = record.dynamodb.Keys.pk;
       const gsisk = record.dynamodb.Keys.sk;
       const user = newImage?.lastModifiedBy?.S || "system";
@@ -51,7 +59,7 @@ exports.handler = async function (event, context) {
 
       logger.debug(`auditImage:${JSON.stringify(auditImage)}`);
 
-      switch(record.eventName) {
+      switch (record.eventName) {
         case 'MODIFY':
         case 'INSERT': {
           // Add/update index.
@@ -61,7 +69,7 @@ exports.handler = async function (event, context) {
             body: AWS.DynamoDB.Converter.unmarshall(newImage),
             refresh: true
           };
-          logger.debug(JSON.stringify(data))
+          logger.debug(JSON.stringify(data));
           await openSearchClient.index(data);
         } break;
         case 'REMOVE': {
@@ -70,7 +78,7 @@ exports.handler = async function (event, context) {
             id: openSearchId,
             index: OPENSEARCH_MAIN_INDEX
           };
-          logger.debug(JSON.stringify(data))
+          logger.debug(JSON.stringify(data));
           await openSearchClient.delete(data);
         }
       }
@@ -80,8 +88,9 @@ exports.handler = async function (event, context) {
 
     // Write it all out to the Audit table
     logger.info(`Writing batch data`);
-    await batchWriteData(auditRecordsToCreate, 25, AUDIT_TABLE_NAME)
+    await batchWriteData(auditRecordsToCreate, 25, AUDIT_TABLE_NAME);
   } catch (e) {
+    console.log(e);
     logger.error(JSON.stringify(e));
   }
 };

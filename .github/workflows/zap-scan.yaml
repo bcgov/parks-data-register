@@ -1,7 +1,7 @@
 name: ZAP Scanner
 on:
   workflow_run:
-    workflows: ["Deploy Dev"]
+    workflows: ["Deploy PDR-API Dev"]
     types:
       - completed
 

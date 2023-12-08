@@ -3,8 +3,10 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoadingService } from 'src/app/services/loading.service';
+import { LoggerService } from 'src/app/services/logger.service';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 import { SearchService } from 'src/app/services/search.service';
+import { UrlService } from 'src/app/services/url.service';
 import { Utils } from 'src/app/utils/utils';
 
 @Component({
@@ -18,15 +20,17 @@ export class ProtectedAreaSearchComponent implements OnInit {
   // TODO: This will be a switch for all searches. (protectedArea, sites, etc)
   private searchType = 'protectedArea';
 
+  public toggleList = ['established', 'repealed', 'pending'];
+
   public utils = new Utils();
   loading = false;
   data = [];
   form = new UntypedFormGroup({
     text: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
     type: new UntypedFormControl(null),
-    establishedToggle: new UntypedFormControl(null),
-    pendingToggle: new UntypedFormControl(null),
-    repealedToggle: new UntypedFormControl(null),
+    establishedToggle: new UntypedFormControl(false),
+    pendingToggle: new UntypedFormControl(false),
+    repealedToggle: new UntypedFormControl(false),
   });
 
   constructor(
@@ -34,8 +38,10 @@ export class ProtectedAreaSearchComponent implements OnInit {
     private searchService: SearchService,
     private protectedAreaService: ProtectedAreaService,
     private loadingService: LoadingService,
-    private ref: ChangeDetectorRef
-  ) {}
+    private ref: ChangeDetectorRef,
+    private urlService: UrlService,
+    private logger: LoggerService
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -55,29 +61,76 @@ export class ProtectedAreaSearchComponent implements OnInit {
         this.ref.detectChanges();
       })
     );
+    this.checkForQueryParams();
   }
 
-  submit() {
-    if (this.form.valid) {
-      this.form.controls['type'].setValue(this.searchType);
-      let getObj = { ...this.form.value };
-      getObj = this.getStatusFilters(getObj);
-      this.searchService.fetchData(getObj);
+  checkForQueryParams() {
+    // Get query params and set form values accordingly
+    let params = { ...this.urlService.getQueryParams() };
+    if (Object.keys(params).length) {
+      params = this.setStatusFilters(params);
+      for (const param in params) {
+        if (this.form.controls[param]){
+          this.form.controls[param].setValue(params[param]);
+        }
+      }
+      // Check cache.
+      const url = this.urlService.getRoute();
+      const cache = this.searchService.checkCache(url);
+      if (cache) {
+        // Cache hit.
+        this.logger.debug(`Cache hit: ${url}`)
+        this.searchService.setSearchResults(cache);
+      } else {
+        this.logger.debug(`Cache miss or expiry: ${url}`);
+        this.submit(false);
+      }
     }
   }
 
-  toggleList = ['established', 'repealed', 'pending'];
-  getStatusFilters(obj) {
+  async submit(updateQueryParams = true) {
+    if (this.form.valid) {
+      this.form.controls['type'].setValue(this.searchType);
+      // If none of the status toggles are true, this is equivalent to all of them being true.
+      // This will create divergent behaviour between the URL and the actual search payload. 
+      const searchObj = this.getStatusFilters({ ...this.form.value });
+      const urlObj = this.getStatusFilters({ ...this.form.value }, false);
+      if (updateQueryParams) {
+        // update url query params
+        delete urlObj.type;
+        // await this change before
+        await this.urlService.setQueryParams(urlObj)
+      }
+      this.searchService.fetchData(searchObj, this.urlService.getRoute());
+    }
+  }
+
+  getStatusFilters(obj, persistToggles = true) {
     let filters = [];
 
     this.toggleList.forEach((toggle) => {
-      if (obj[`${toggle}Toggle`]) {
+      if (obj[`${toggle}Toggle`] === true) {
         filters.push(toggle);
       }
       delete obj[`${toggle}Toggle`];
     });
 
-    obj.status = filters.length > 0 ? filters.toString() : this.toggleList.toString();
+    obj.status = filters.length > 0 ? filters.toString() :
+      persistToggles ? this.toggleList.toString() : '';
+    return obj;
+  }
+
+  setStatusFilters(obj) {
+    const statuses = obj?.status?.split(',');
+    if (!statuses) {
+      return obj;
+    }
+    for (const toggle of this.toggleList) {
+      if (statuses.indexOf(toggle) > -1) {
+        obj[`${toggle}Toggle`] = true;
+      }
+    }
+    delete obj?.status
     return obj;
   }
 

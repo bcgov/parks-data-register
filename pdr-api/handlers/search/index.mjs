@@ -31,10 +31,14 @@ export const handler = async (event, context) => {
     // Extract query parameters from the event
     const queryParams = event.queryStringParameters;
 
-    if (!queryParams?.text) {
+    const userQuery = queryParams?.text;
+    if (!userQuery) {
       logger.error(`Bad Request - Invalid Params:${JSON.stringify(queryParams)}`);
       return sendResponse(400, {}, 'Bad Request', 'Invalid Params', context);
     }
+
+    // Generate escaped text
+    const escapedQuery = escapeOpenSearchQuery(userQuery);
 
     // Check if the user is an admin
     const isAdmin = JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
@@ -46,7 +50,7 @@ export const handler = async (event, context) => {
           must: [
             {
               query_string: {
-                query: queryParams?.text
+                query: escapedQuery
               }
             }
           ]
@@ -81,6 +85,15 @@ export const handler = async (event, context) => {
   }
 };
 
+function escapeOpenSearchQuery(input) {
+  // Define a regular expression pattern for reserved characters
+  const pattern = /([-&|!(){}[\]^"~*?:\/+])/g;
+
+  // Use the replace method with a callback function to handle replacements
+  const escapedQuery = input.replace(pattern, (match, p1) => `\\${p1}`);
+
+  return escapedQuery;
+}
 
 // Build the search query
 function buildQuery(isAdmin, queryStringParameters, query) {
@@ -113,7 +126,7 @@ function buildQuery(isAdmin, queryStringParameters, query) {
     logger.debug('Query:', JSON.stringify(query));
     return query;
 
-  } catch (err){
+  } catch (err) {
     logger.error(JSON.stringify(err)); // Log the error
 
     // Send an error response

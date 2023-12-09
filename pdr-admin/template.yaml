@@ -52,26 +52,26 @@ Resources:
         Comment: CloudFront access identity
 
   CloudFrontAPICachePolicy:
-      Type: AWS::CloudFront::CachePolicy
-      Properties:
-        CachePolicyConfig:
-          Comment: "Custom CloudFront Caching Policy to allow the Authorization header through to the Origins."
-          DefaultTTL: 3600
-          MaxTTL: 86400
-          MinTTL: 1
-          Name: !Sub ${ApiGatewayId}-CFCachePolicy
-          ParametersInCacheKeyAndForwardedToOrigin:
-            CookiesConfig:
-              CookieBehavior: none
-            EnableAcceptEncodingBrotli: false
-            EnableAcceptEncodingGzip: false
-            HeadersConfig:
-              HeaderBehavior: whitelist
-              Headers:
-                - Authorization
-                - X-Api-Key
-            QueryStringsConfig:
-              QueryStringBehavior: all
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Comment: "Custom CloudFront Caching Policy to allow the Authorization header through to the Origins."
+        DefaultTTL: 1
+        MaxTTL: 1
+        MinTTL: 1
+        Name: !Sub ${ApiGatewayId}-CFCachePolicy
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: none
+          EnableAcceptEncodingBrotli: false
+          EnableAcceptEncodingGzip: false
+          HeadersConfig:
+            HeaderBehavior: whitelist
+            Headers:
+              - Authorization
+              - X-Api-Key
+          QueryStringsConfig:
+            QueryStringBehavior: all
 
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
@@ -143,6 +143,8 @@ Resources:
             CachePolicyId: !Ref CloudFrontAPICachePolicy
             TargetOriginId: !Sub ${ApiGatewayId}
             ViewerProtocolPolicy: redirect-to-https
+            # Simple CORS
+            ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
           - PathPattern: !Sub ${BaseHref}*
             Compress: true
             AllowedMethods:
@@ -153,6 +155,8 @@ Resources:
             CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
             TargetOriginId: !Ref DistS3Bucket
             ViewerProtocolPolicy: redirect-to-https
+            # Simple CORS
+            ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
         Logging:
           Bucket: !GetAtt LogsS3Bucket.DomainName
           IncludeCookies: false

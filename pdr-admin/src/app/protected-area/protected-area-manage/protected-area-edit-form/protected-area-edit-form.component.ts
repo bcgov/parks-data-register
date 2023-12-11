@@ -26,6 +26,7 @@ export class ProtectedAreaEditFormComponent {
     legalName: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
     phoneticName: new UntypedFormControl(null, { nonNullable: true }),
     audioClip: new UntypedFormControl(null, { nonNullable: true }),
+    searchTerms: new UntypedFormControl(null, { nonNullable: true }),
   });
 
   public currentData;

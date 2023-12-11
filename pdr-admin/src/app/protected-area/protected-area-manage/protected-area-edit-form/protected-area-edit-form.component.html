@@ -97,6 +97,18 @@
       </ngds-text-input>
     </div>
   </div>
+  <div class="row mt-4">
+    <div class="col-12 col-xl-8">
+      <ngds-text-input 
+        [control]="form?.controls?.['searchTerms']" 
+        [label]="'Search Terms'" 
+        [subLabel]="
+          'Add names people might search for that are not already included in the data (e.g., English transcriptions of Indigenous names, unofficial names).'
+        " 
+        [loadWhile]="loading">
+      </ngds-text-input>
+    </div>
+  </div>
 </section>
 
 <section class="mt-5">

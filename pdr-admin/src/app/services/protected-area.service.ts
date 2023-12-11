@@ -121,4 +121,9 @@ export class ProtectedAreaService {
 
     return protectedArea;
   }
+
+  clearCurrentProtectedArea() {
+    this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, null);
+    this.dataService.setItemValue(Constants.dataIds.HISTORICAL_PROTECTED_AREA, null);
+  }
 }

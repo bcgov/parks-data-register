@@ -74,6 +74,7 @@ export class ProtectedAreaManageComponent implements OnInit {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.protectedAreaService.clearCurrentProtectedArea();
     this.ref.detectChanges();
   }
 }

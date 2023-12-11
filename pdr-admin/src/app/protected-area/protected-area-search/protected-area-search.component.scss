@@ -1,8 +1,14 @@
 @import "@digitalspace/bcparks-bootstrap-theme/dist/scss/variables";
 
+$table-stripe-dark: #f2f2f2;
+
 .white-divider {
   background-color: white;
   height: 3px;
+}
+
+.table-stripe-dark {
+  background-color: $table-stripe-dark;
 }
 
 .audio-column {

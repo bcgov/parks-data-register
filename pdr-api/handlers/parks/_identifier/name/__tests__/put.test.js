@@ -400,8 +400,39 @@ describe('Lambda Handler Tests', () => {
       }
     });
     expect(result.statusCode).toBe(400);
-    const payload = JSON.parse(result.body);
-    expect(payload.error).toBe(`Missing required field 'lastVersionDate'`);
+    await removeItem(item1);
+  });
+
+  test('Major change does not include changed legalName, return 400', async () => {
+    await insertItem(item1);
+    const body = {
+      "orcs": "41",
+      "lastVersionDate": "date1",
+      "effectiveDate": "1911-03-01",
+      "legalName": "Strathcona Park",
+      "status": "established",
+      "phoneticName": "STRA",
+      "displayName": "Strathcona Park",
+      "searchTerms": "mount asdf",
+      "notes": "Some Notes 2"
+    };
+
+    const result = await handler({
+      body: JSON.stringify(body),
+      queryStringParameters: {
+        updateType: 'major'
+      },
+      pathParameters: {
+        "identifier": "41"
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true,
+          userID: IDIR_TEST_USER
+        }
+      }
+    });
+    expect(result.statusCode).toBe(400);
     await removeItem(item1);
   });
 

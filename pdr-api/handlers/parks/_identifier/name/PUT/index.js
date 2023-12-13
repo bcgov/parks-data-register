@@ -97,15 +97,15 @@ exports.handler = async (event, context) => {
     if (updateType === 'minor') {
       // Don't trigger a legal name change
       logger.info('Minor change');
-      return await minorUpdate(user, body, currentTimeISO, currentRecord);
+      return await minorUpdate(user, body, currentTimeISO, currentRecord, updateType);
     } else if (updateType === 'major') {
       // Legal Name Change update
       logger.info('Major change');
-      return await majorChange(user, body, currentTimeISO, currentRecord, ESTABLISHED_STATE);
+      return await majorChange(user, body, currentTimeISO, currentRecord, ESTABLISHED_STATE, updateType);
     } else if (updateType === 'repeal') {
       // Repeal protected area
       logger.info('Repeal change');
-      return await majorChange(user, body, currentTimeISO, currentRecord, REPEALED_STATE);
+      return await majorChange(user, body, currentTimeISO, currentRecord, REPEALED_STATE, updateType);
     } else {
       // Returns an error response for an invalid updateType.
       return sendResponse(400, [], 'Error invalid updateType', 'Error', context);
@@ -155,14 +155,14 @@ function validateRequest(body, checkFields, updateType) {
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the response object.
  */
-async function minorUpdate(user, body, currentTimeISO, currentRecord) {
+async function minorUpdate(user, body, currentTimeISO, currentRecord, updateType) {
   let attributes;
   if (currentRecord.status === REPEALED_STATE) {
     // Calls the 'updateRecord' function to update the repealed record.
-    attributes = await updateRecord(user, body, currentTimeISO, REPEALED_STATE, null, true);
+    attributes = await updateRecord(user, body, currentTimeISO, REPEALED_STATE, updateType, null, true);
   } else {
     // Calls the 'updateRecord' function to update the record.
-    attributes = await updateRecord(user, body, currentTimeISO, ESTABLISHED_STATE);
+    attributes = await updateRecord(user, body, currentTimeISO, ESTABLISHED_STATE, updateType);
   }
 
   // Returns a success response with the updated attributes.
@@ -177,7 +177,8 @@ async function minorUpdate(user, body, currentTimeISO, currentRecord) {
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the response object.
  */
-async function majorChange(user, body, currentTimeISO, currentRecord, newStatus) {
+async function majorChange(user, body, currentTimeISO, currentRecord, newStatus, updateType) {
+  // Cannot do a major change if not the correct status
   if (currentRecord.status !== ESTABLISHED_STATE) {
     return sendResponse(400, [], 'Protected area record cannot be edited.', `Cannot perform major update for records with status ${currentRecord.status}.`);
   }
@@ -185,7 +186,7 @@ async function majorChange(user, body, currentTimeISO, currentRecord, newStatus)
   const putTransaction = await createChangeLogItem(body, currentTimeISO, currentRecord, newStatus);
 
   // Calls the 'updateRecord' function to update the record.
-  const attributes = await updateRecord(user, body, currentTimeISO, newStatus, putTransaction);
+  const attributes = await updateRecord(user, body, currentTimeISO, newStatus, updateType, putTransaction );
 
   let context = 'Legal Name Change.';
   if (newStatus === REPEALED_STATE) {
@@ -238,7 +239,7 @@ async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatu
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the updated attributes.
  */
-async function updateRecord(user, body, currentTimeISO, status, putTransaction = undefined, repealOnly = false) {
+async function updateRecord(user, body, currentTimeISO, status, updateType, putTransaction = undefined, repealOnly = false) {
   let updatedAttributeValues = {
     ':updateDate': { S: currentTimeISO },
     ':lastModifiedBy': { S: user },
@@ -267,6 +268,12 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
     ConditionExpression: 'updateDate = :lastVersionDate',
     ReturnValues: 'ALL_NEW'
   };
+
+  // If major change (not repealed), deny if legalName is the same
+  if (updateType === 'major') {
+    updateParams.ExpressionAttributeValues[':oldLegalName'] = { S: body.legalName },
+    updateParams.ConditionExpression += ' AND legalName <> :oldLegalName'
+  }
 
   logger.debug(`Record update params:`, updateParams);
 
@@ -327,7 +334,7 @@ async function updateRecord(user, body, currentTimeISO, status, putTransaction =
     }
     if (conditionalErrorFlag) {
       // You must provide the updateDate property from the existing record so versioning can be assured
-      throw `Version mismatch. Confirm you are updating the most recent version of the record and try again.`;
+      throw `Field mismatch: If performing a major change, confirm you are providing a new, different legal name. Confirm you are updating the most recent version of the record and try again.`;
     }
 
     // Propagates the error to the calling function.

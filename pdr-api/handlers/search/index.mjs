@@ -7,7 +7,7 @@ import { Client } from '@opensearch-project/opensearch';
 import { AwsSigv4Signer } from '@opensearch-project/opensearch/aws';
 import { sendResponse, logger } from '/opt/base.js';
 
-const client = new Client({
+let client = new Client({
   ...AwsSigv4Signer({
     region: 'ca-central-1',
     service: 'es',
@@ -18,6 +18,16 @@ const client = new Client({
   }),
   node: OPENSEARCH_DOMAIN_ENDPOINT // OpenSearch domain URL
 });
+
+// For offline development
+if (process.env.IS_OFFLINE === 'true') {
+  client = new Client({
+    node: OPENSEARCH_DOMAIN_ENDPOINT,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  })
+}
 
 // Lambda function entry point
 export const handler = async (event, context) => {

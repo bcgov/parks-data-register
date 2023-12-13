@@ -116,6 +116,76 @@ The `/opt` directory is only available at runtime within the SAM docker containe
 
 The configuration above tells Jest to look for layer resources in the build folder. We tell Jest to look here instead of the `/layer` folder because all the layer's dependencies are available within the build folder via symlink after running `sam build`. 
 
+## Local OpenSearch server
+OpenSearch can be hosted locally for ease of development. This README will explain how to set up a local OpenSearch instance on a Linux VM. For other installation options, refer to the OpenSearch documentation.
+
+  * OpenSearch - [Install and Upgrade](https://opensearch.org/docs/latest/install-and-configure/index/)
+
+This example uses the OpenSearch [tarball](https://opensearch.org/docs/latest/install-and-configure/install-opensearch/tar/) installation.
+
+### Set up OpenSearch
+
+Download and install the `.tar` and follow the OpenSearch recommendations to disable memory paging and increase the number of memory maps available. Additionally, open up `opensearch.yml`.
+
+```bash
+ vi /path/to/opensearch-2.11.1/config/opensearch.yml
+```
+
+Add the following line:
+
+```yaml
+network.host: 0.0.0.0
+discovery.type: single-node
+```
+
+For local development ease, security can be [disabled](https://opensearch.org/docs/latest/security/configuration/disable/). Remove all `plugins.security.*` lines in `opensearch.yml`.
+
+You should be able to run the OpenSearch startup script.
+
+```
+./opensearch-tar-install.sh
+```
+
+Open a new terminal and check to see if the OpenSearch server is working. OpenSearch runs on port 9200 by default.
+
+```bash
+curl -X GET http://localhost:9200
+```
+
+Or
+
+```bash
+curl -X GET http://<OPENSEARCH-SERVER-IP>:9200
+```
+
+If you are running OpenSearch on a separate VM. 
+
+### Populating and querying the local OpenSearch instance
+
+Edit `env.js` to include the following variables. Replace the variables with the correct variables for your local instance. 
+
+```json
+"OPENSEARCH_DOMAIN_ENDPOINT": "http://192.168.1.111:9200",
+"OPENSEARCH_MAIN_INDEX": "main-index"
+```
+
+Get a data dump from an AWS DynamoDB source of your choice.
+
+```bash
+aws dynamodb scan --table-name <tableName> scan > dump.json
+```
+
+Navigate to `/tools` and run `opensearchRestore.js` to populate the local OpenSearch server.
+
+```bash
+node opensearchRestore.js
+```
+
+Check the `docs.count` of the index:
+
+```bash
+curl -XGET "http://localhost:9200/_cat/indices?v
+```
 
 # Deployment Pipeline
 

@@ -1,0 +1,10 @@
+{
+  "Parameters": {
+    "TABLE_NAME": "NameRegister",
+    "IS_OFFLINE": true,
+    "AWS_REGION": "local-env",
+    "DYNAMODB_ENDPOINT_URL": "http://172.17.0.1:8000",
+    "OPENSEARCH_DOMAIN_ENDPOINT": "http://localhost:9200",
+    "OPENSEARCH_MAIN_INDEX": "main-index"
+  }
+}

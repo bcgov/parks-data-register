@@ -86,6 +86,10 @@
     }
   ],
   "TableName": "NameRegister",
+  "StreamSpecification": {
+    "StreamEnabled": true,
+    "StreamViewType": "NEW_AND_OLD_IMAGES"
+  },
   "ProvisionedThroughput": {
     "ReadCapacityUnits": 1,
     "WriteCapacityUnits": 1

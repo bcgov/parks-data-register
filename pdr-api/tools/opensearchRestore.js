@@ -53,6 +53,7 @@ async function restoreOpenSearch() {
     updateConsoleProgress(startTime, "Importing", 1, data.Items.length, data.Items.length);
     finishConsoleUpdates();
   } catch (err) {
+    console.log("Error populating OpenSearch.");
     throw err;
   }
 }

@@ -31,8 +31,8 @@ exports.handler = async function (event, context) {
       let oldImage = record.dynamodb.OldImage;
 
       // Prune the notes field from search
-      delete newImage.notes;
-      delete oldImage.notes;
+      delete newImage?.notes;
+      delete oldImage?.notes;
 
       let createDate = new Date(0);
       createDate.setUTCSeconds(record.dynamodb.ApproximateCreationDateTime);

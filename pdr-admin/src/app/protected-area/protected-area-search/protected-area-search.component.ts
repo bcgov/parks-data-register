@@ -51,13 +51,13 @@ export class ProtectedAreaSearchComponent implements OnInit {
   ngOnInit(): void {
     this.subscriptions.add(
       this.searchService.watchSearchResults().subscribe((res) => {
-        this.data = res ? res : [];
+        this.data = res || [];
         this.ref.detectChanges();
       })
     );
     this.subscriptions.add(
       this.searchService.watchSearchParams().subscribe((res) => {
-        this.searchParams = res ? res : [];
+        this.searchParams = res || [];
         this.ref.detectChanges();
       })
     );

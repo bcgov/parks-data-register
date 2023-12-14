@@ -131,7 +131,7 @@ function buildQuery(isAdmin, queryStringParameters, query) {
     for (let key of Object.keys(queryStringParameters)) {
       const value = queryStringParameters[key].toLowerCase();
       // Remove nonKeyableTerms from params, they are sent in another part of the query
-      if (nonKeyableTerms.indexOf(value) > -1) {
+      if (nonKeyableTerms.indexOf(key) === -1) {
         // Multiple terms to be comma seperated eg. ?status=current,pending
         const terms = value.split(',');
         query.query.bool.must.push({

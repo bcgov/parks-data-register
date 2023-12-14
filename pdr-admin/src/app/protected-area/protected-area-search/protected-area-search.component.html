@@ -72,4 +72,14 @@
   <div *ngIf="data.length === 0" class="table-stripe-dark py-3 ps-2 border-bottom">
     No results. Try a new search.
   </div>
+  <div *ngIf="!searchParams.lastPage && data.length > 0" class="d-flex justify-content-center py-3">
+    <button class="btn btn-outline-secondary" [disabled]="loading" (click)="loadMore()">
+      <div *ngIf="!loading">
+        Load More
+      </div>
+      <div *ngIf="loading" class="spinner-border spinner-border-sm mx-4" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+  </div>
 </div>

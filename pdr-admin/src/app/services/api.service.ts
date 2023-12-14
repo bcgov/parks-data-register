@@ -16,7 +16,7 @@ export class ApiService implements OnDestroy {
   apiPath: string;
   env: 'local' | 'dev' | 'test' | 'prod';
 
-  constructor(private http: HttpClient, private configService: ConfigService) {}
+  constructor(private http: HttpClient, private configService: ConfigService) { }
 
   // Provide a getter for others to check current state.
   get isNetworkOffline() {
@@ -33,8 +33,12 @@ export class ApiService implements OnDestroy {
 
   init() {
     // If config is setting api, override.
-    if (this.configService.config['API_LOCATION'] && this.configService.config['API_PATH']) {
-      this.apiPath = this.configService.config['API_LOCATION'] + this.configService.config['API_PATH'];
+    if (this.configService.config['API_LOCATION']) {
+      if (this.configService.config['API_PATH']) {
+        this.apiPath = this.configService.config['API_LOCATION'] + this.configService.config['API_PATH'];
+      } else {
+        this.apiPath = this.configService.config['API_LOCATION'];
+      }
     } else {
       this.apiPath = window.location.origin + '/api';
     }

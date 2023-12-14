@@ -33,6 +33,11 @@ export class ProtectedAreaSearchComponent implements OnInit {
     repealedToggle: new UntypedFormControl(false),
   });
 
+  public searchParams = {
+    lastResultIndex: null,
+    lastPage: true
+  }
+
   constructor(
     private router: Router,
     private searchService: SearchService,
@@ -46,7 +51,13 @@ export class ProtectedAreaSearchComponent implements OnInit {
   ngOnInit(): void {
     this.subscriptions.add(
       this.searchService.watchSearchResults().subscribe((res) => {
-        this.data = res ? res : [];
+        this.data = res || [];
+        this.ref.detectChanges();
+      })
+    );
+    this.subscriptions.add(
+      this.searchService.watchSearchParams().subscribe((res) => {
+        this.searchParams = res || [];
         this.ref.detectChanges();
       })
     );
@@ -70,7 +81,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
     if (Object.keys(params).length) {
       params = this.setStatusFilters(params);
       for (const param in params) {
-        if (this.form.controls[param]){
+        if (this.form.controls[param]) {
           this.form.controls[param].setValue(params[param]);
         }
       }
@@ -88,7 +99,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
     }
   }
 
-  async submit(updateQueryParams = true) {
+  async submit(updateQueryParams = true, startFrom = 0) {
     if (this.form.valid) {
       this.form.controls['type'].setValue(this.searchType);
       // If none of the status toggles are true, this is equivalent to all of them being true.
@@ -101,7 +112,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
         // await this change before
         await this.urlService.setQueryParams(urlObj)
       }
-      this.searchService.fetchData(searchObj, this.urlService.getRoute());
+      this.searchService.fetchData(searchObj, this.urlService.getRoute(), startFrom);
     }
   }
 
@@ -151,6 +162,10 @@ export class ProtectedAreaSearchComponent implements OnInit {
         this.router.navigate(['protected-areas', item.pk, 'edit']);
       }
     }
+  }
+
+  loadMore() {
+    this.submit(false, this.searchParams.lastResultIndex);
   }
 
   ngOnDestroy() {

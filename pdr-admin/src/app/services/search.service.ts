@@ -15,7 +15,7 @@ import { Utils } from '../utils/utils';
 export class SearchService {
   private utils = new Utils();
 
-  public pageSize = 6;
+  public pageSize = 20;
 
   constructor(
     private dataService: DataService,

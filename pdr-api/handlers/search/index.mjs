@@ -1,6 +1,14 @@
 // Import necessary libraries and modules
 const OPENSEARCH_DOMAIN_ENDPOINT = process.env.OPENSEARCH_DOMAIN_ENDPOINT;
 const OPENSEARCH_MAIN_INDEX = process.env.OPENSEARCH_MAIN_INDEX;
+const DEFAULT_RESULT_SIZE = 10;
+const MAX_RESULT_SIZE = 100;
+// Query parameters that should not be used as keyable search terms
+const nonKeyableTerms = [
+  'text',
+  'startFrom',
+  'limit'
+]
 
 import { defaultProvider } from '@aws-sdk/credential-provider-node'; // V3 SDK.
 import { Client } from '@opensearch-project/opensearch';
@@ -47,6 +55,15 @@ export const handler = async (event, context) => {
       return sendResponse(400, {}, 'Bad Request', 'Invalid Params', context);
     }
 
+    let requestedLimit = queryParams?.limit || DEFAULT_RESULT_SIZE;
+    if (requestedLimit < 1) {
+      requestedLimit = 1;
+    }
+    if (requestedLimit > MAX_RESULT_SIZE) {
+      requestedLimit = MAX_RESULT_SIZE
+    }
+    const limit = requestedLimit;
+
     // Generate escaped text
     const escapedQuery = escapeOpenSearchQuery(userQuery);
 
@@ -74,6 +91,8 @@ export const handler = async (event, context) => {
     // Send the query to the OpenSearch cluster
     let response = await client.search({
       index: OPENSEARCH_MAIN_INDEX, // Index to search
+      size: limit,
+      from: Number(queryParams.startFrom) || 0,
       body: query
     });
     logger.debug(JSON.stringify(response)); // Log the response
@@ -81,7 +100,7 @@ export const handler = async (event, context) => {
     // Redact the "notes" field if the user is not an admin
     if (!isAdmin) {
       for (let i = 0; i < response.body.hits.total.value; i++) {
-        delete response.body.hits.hits[i]._source.notes;
+        delete response.body.hits.hits[i]?._source?.notes;
       }
     }
 
@@ -111,8 +130,8 @@ function buildQuery(isAdmin, queryStringParameters, query) {
     logger.info('Building query');
     for (let key of Object.keys(queryStringParameters)) {
       const value = queryStringParameters[key].toLowerCase();
-      // Remove text from terms, it is sent in another part of the query
-      if (key != 'text') {
+      // Remove nonKeyableTerms from params, they are sent in another part of the query
+      if (nonKeyableTerms.indexOf(value) > -1) {
         // Multiple terms to be comma seperated eg. ?status=current,pending
         const terms = value.split(',');
         query.query.bool.must.push({

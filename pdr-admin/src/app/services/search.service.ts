@@ -24,7 +24,7 @@ export class SearchService {
     private loggerService: LoggerService,
     private toastService: ToastService,
     private eventService: EventService
-  ) { }
+  ) {}
 
   async fetchData(queryParams, cacheUrl = null, startFrom = 0) {
     this.loadingService.addToFetchList(Constants.dataIds.SEARCH_RESULTS);
@@ -36,7 +36,7 @@ export class SearchService {
       let lastPage = true;
       queryParams['limit'] = this.pageSize + 1;
       const res = await lastValueFrom(this.apiService.get('search', queryParams));
-      const data = this.apiService.getArrayFromSearchResults(res);
+      let data = this.apiService.getArrayFromSearchResults(res);
       if (data.length >= this.pageSize + 1) {
         // We know theres more pages of results because we were able to bring in more than the page size.
         // Remove the last result
@@ -50,16 +50,16 @@ export class SearchService {
       const searchParams = {
         lastPage: lastPage,
         lastResultIndex: lastResultIndex,
-        lastQuery: queryParams
-      }
-      if (startFrom) {
-        // we want to append to the previous results
-        this.dataService.appendItemValue(Constants.dataIds.SEARCH_RESULTS, data);
-      } else {
-        // we want to overwrite the previous results
-        this.dataService.setItemValue(Constants.dataIds.SEARCH_RESULTS, data);
-      }
-      this.dataService.setItemValue(Constants.dataIds.SEARCH_PARAMS, searchParams);
+        lastQuery: queryParams,
+      };
+
+      // Get previous results array if it exists and concat new data to the end of it
+      if (this.dataService.getItemValue(Constants.dataIds.SEARCH_RESULTS)?.data)
+        data = this.dataService.getItemValue(Constants.dataIds.SEARCH_RESULTS).data.concat(data);
+      this.dataService.setItemValue(Constants.dataIds.SEARCH_RESULTS, {
+        data: data,
+        searchParams: searchParams,
+      });
       if (cacheUrl) {
         this.dataService.setCacheValue(cacheUrl, this.dataService.getItemValue(Constants.dataIds.SEARCH_RESULTS), 300);
         this.loggerService.debug(`Cache update ${cacheUrl}`);
@@ -74,10 +74,6 @@ export class SearchService {
 
   watchSearchResults() {
     return this.dataService.watchItem(Constants.dataIds.SEARCH_RESULTS);
-  }
-
-  watchSearchParams() {
-    return this.dataService.watchItem(Constants.dataIds.SEARCH_PARAMS);
   }
 
   clearSearchResults() {

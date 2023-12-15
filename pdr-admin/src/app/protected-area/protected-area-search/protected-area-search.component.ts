@@ -35,8 +35,8 @@ export class ProtectedAreaSearchComponent implements OnInit {
 
   public searchParams = {
     lastResultIndex: null,
-    lastPage: true
-  }
+    lastPage: true,
+  };
 
   constructor(
     private router: Router,
@@ -46,18 +46,19 @@ export class ProtectedAreaSearchComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private urlService: UrlService,
     private logger: LoggerService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.add(
       this.searchService.watchSearchResults().subscribe((res) => {
-        this.data = res || [];
-        this.ref.detectChanges();
-      })
-    );
-    this.subscriptions.add(
-      this.searchService.watchSearchParams().subscribe((res) => {
-        this.searchParams = res || [];
+        this.data = res && res.data ? res.data : [];
+        this.searchParams =
+          res && res.searchParams
+            ? res.searchParams
+            : {
+                lastResultIndex: null,
+                lastPage: true,
+              };
         this.ref.detectChanges();
       })
     );
@@ -90,7 +91,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
       const cache = this.searchService.checkCache(url);
       if (cache) {
         // Cache hit.
-        this.logger.debug(`Cache hit: ${url}`)
+        this.logger.debug(`Cache hit: ${url}`);
         this.searchService.setSearchResults(cache);
       } else {
         this.logger.debug(`Cache miss or expiry: ${url}`);
@@ -103,14 +104,14 @@ export class ProtectedAreaSearchComponent implements OnInit {
     if (this.form.valid) {
       this.form.controls['type'].setValue(this.searchType);
       // If none of the status toggles are true, this is equivalent to all of them being true.
-      // This will create divergent behaviour between the URL and the actual search payload. 
+      // This will create divergent behaviour between the URL and the actual search payload.
       const searchObj = this.getStatusFilters({ ...this.form.value });
       const urlObj = this.getStatusFilters({ ...this.form.value }, false);
       if (updateQueryParams) {
         // update url query params
         delete urlObj.type;
         // await this change before
-        await this.urlService.setQueryParams(urlObj)
+        await this.urlService.setQueryParams(urlObj);
       }
       this.searchService.fetchData(searchObj, this.urlService.getRoute(), startFrom);
     }
@@ -126,8 +127,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
       delete obj[`${toggle}Toggle`];
     });
 
-    obj.status = filters.length > 0 ? filters.toString() :
-      persistToggles ? this.toggleList.toString() : '';
+    obj.status = filters.length > 0 ? filters.toString() : persistToggles ? this.toggleList.toString() : '';
     return obj;
   }
 
@@ -141,7 +141,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
         obj[`${toggle}Toggle`] = true;
       }
     }
-    delete obj?.status
+    delete obj?.status;
     return obj;
   }
 

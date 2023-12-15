@@ -88,15 +88,8 @@ describe('Lambda Handler Tests', () => {
 
   test('minorUpdate should return a response with status code 403', async () => {
     const body = {
-      "orcs": "41",
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
-      "legalName": "Strathcona Park",
-      "status": "established",
-      "phoneticName": "STRA",
-      "displayName": "Strathcona Park",
-      "searchTerms": "mount asdf",
-      "notes": "Some Notes"
     };
 
     const result = await handler({
@@ -154,7 +147,6 @@ describe('Lambda Handler Tests', () => {
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
-      "status": "established",
       "searchTerms": "mount asdf"
     };
 
@@ -182,7 +174,6 @@ describe('Lambda Handler Tests', () => {
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
-      "status": 0, // This is wrong
       "phoneticName": "STRA",
       "displayName": "Strathcona Park",
       "searchTerms": "mount asdf",
@@ -366,6 +357,7 @@ describe('Lambda Handler Tests', () => {
     });
     expect(result.statusCode).toBe(200);
     const payload = JSON.parse(result.body);
+    console.log('payload.data:', payload.data);
     expect(payload.data.legalName).toBe('Strathcona Park 2');
     expect(payload.data.lastModifiedBy).toBe(IDIR_TEST_USER)
     await removeItem(item1);
@@ -436,7 +428,7 @@ describe('Lambda Handler Tests', () => {
     await removeItem(item1);
   });
 
-  
+
   test('Payload does not include displayName value, return 200', async () => {
     await insertItem(item1);
     const body = {
@@ -471,5 +463,128 @@ describe('Lambda Handler Tests', () => {
     // Display name is overwritten with legalname value
     expect(payload.data.displayName).toBe(`Strathcona Park 2`);
     await removeItem(item1);
+  });
+
+  test('Expected behaviour on field absence', async () => {
+    const requests = [
+      {
+        body: {
+          "effectiveDate": "1911-03-01",
+        },
+        updateType: 'minor',
+        expectCode: 400
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+        },
+        updateType: 'minor',
+        expectCode: 200
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+        },
+        updateType: 'major',
+        expectCode: 400
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "wrongField": ""
+        },
+        updateType: 'minor',
+        expectCode: 200
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "legalName": "name change",
+          "wrongField": ""
+        },
+        updateType: 'major',
+        expectCode: 200
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "wrongField": "badvalue"
+        },
+        updateType: 'minor',
+        expectCode: 200
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "legalName": "new name",
+          "wrongField": "badvalue"
+        },
+        updateType: 'major',
+        expectCode: 200
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "legalName": "",
+        },
+        updateType: 'major',
+        expectCode: 400
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "legalName": "",
+        },
+        updateType: 'repeal',
+        expectCode: 200
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "legalName": "",
+        },
+        updateType: 'minor',
+        expectCode: 400
+      },
+      {
+        body: {
+          "lastVersionDate": "date1",
+          "effectiveDate": "1911-03-01",
+          "legalName": "Name",
+          "displayName": ""
+        },
+        updateType: 'minor',
+        expectCode: 200
+      },
+    ];
+    for (const request of requests) {
+      await insertItem(item1);
+      const result = await handler({
+        body: JSON.stringify(request.body),
+        queryStringParameters: {
+          updateType: request.updateType
+        },
+        pathParameters: {
+          "identifier": "41"
+        },
+        requestContext: {
+          authorizer: {
+            isAdmin: true,
+            userID: IDIR_TEST_USER
+          }
+        }
+      })
+      expect(result.statusCode).toBe(request.expectCode);
+      await removeItem(item1);
+    }
   });
 });

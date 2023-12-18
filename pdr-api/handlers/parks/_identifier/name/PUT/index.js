@@ -4,23 +4,18 @@ const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
 
-const updateMandatoryFields = [
+const mandatoryFields = [
   'effectiveDate',
+  'lastVersionDate'
+];
+
+const optionalFields = [
   'legalName',
-  'phoneticName',
   'displayName',
+  'phoneticName',
   'searchTerms',
-  'notes'
-];
-
-const repealedMandatoryFields = [
-  'effectiveDate',
-  'notes'
-];
-
-const nonNullableFields = [
-  'legalName',
-  'effectiveDate',
+  'notes',
+  'audioClip'
 ]
 
 /**
@@ -52,9 +47,6 @@ exports.handler = async (event, context) => {
     // Parses the request body as JSON.
     let body = JSON.parse(event.body);
 
-    // Force set the body.orcs based on the path parameters
-    body.orcs = `${identifier}`;
-
     // Gets the current date and time in the Pacific Time Zone.
     const currentPSTDateTime = DateTime.now().setZone(TIMEZONE);
 
@@ -66,9 +58,9 @@ exports.handler = async (event, context) => {
     const user = event.requestContext?.authorizer?.userID;
 
     // Ensures all required fields are present in the payload.
-    let checkFields = updateMandatoryFields;
-    if (updateType === 'repeal') {
-      checkFields = repealedMandatoryFields;
+    let checkFields = [ ...mandatoryFields ];
+    if (updateType === 'major') {
+      checkFields.push('legalName');
     }
     try {
       validateRequest(body, checkFields, updateType);
@@ -80,32 +72,27 @@ exports.handler = async (event, context) => {
       return sendResponse(403, [], 'Unauthorized', 'Unauthorized');
     }
 
-    // Retrieves the current record based on the 'orcs' identifier.
-    const currentRecord = await getOne(body.orcs, 'Details');
+    // Retrieves the current record based on the identifier.
+    const currentRecord = await getOne(identifier, 'Details');
 
     // If no currentRecord exists, we shouldn't perform any actions.
     if (!currentRecord?.pk) {
       throw `Protected area with identifier '${identifier}' not found.`
     }
 
-    // If no updateDate provided with record, we can't verify the version.
-    if (!body?.lastVersionDate) {
-      throw `Missing required field 'lastVersionDate'`;
-    }
-
     // Checks the type of update and calls the corresponding function.
     if (updateType === 'minor') {
       // Don't trigger a legal name change
       logger.info('Minor change');
-      return await minorUpdate(user, body, currentTimeISO, currentRecord, updateType);
+      return await minorUpdate(identifier, user, body, currentTimeISO, currentRecord, updateType);
     } else if (updateType === 'major') {
       // Legal Name Change update
       logger.info('Major change');
-      return await majorChange(user, body, currentTimeISO, currentRecord, ESTABLISHED_STATE, updateType);
+      return await majorChange(identifier, user, body, currentTimeISO, currentRecord, ESTABLISHED_STATE, updateType);
     } else if (updateType === 'repeal') {
       // Repeal protected area
       logger.info('Repeal change');
-      return await majorChange(user, body, currentTimeISO, currentRecord, REPEALED_STATE, updateType);
+      return await majorChange(identifier, user, body, currentTimeISO, currentRecord, REPEALED_STATE, updateType);
     } else {
       // Returns an error response for an invalid updateType.
       return sendResponse(400, [], 'Error invalid updateType', 'Error', context);
@@ -128,20 +115,30 @@ exports.handler = async (event, context) => {
  * @returns {void}
  */
 function validateRequest(body, checkFields, updateType) {
+  // If repealing, trim all optional fields
+  for (const field of Object.keys(body))
+    if (updateType === 'repeal' && checkFields.indexOf(field) === -1) {
+      delete body[field];
+    }
   // Check if mandatory fields were provided.
   for (const field of checkFields) {
-    if (!body.hasOwnProperty(field)) {
+    if (!body.hasOwnProperty(field) || !body[field]) {
       throw `For updateType '${updateType}', the following fields must be provided: ${checkFields.join(', ')}`;
     }
   }
   // Check if indexable fields are non-null (we must provide a truthy value to indexable fields!)
-  // Designs call for allowable empty displayName field. Since this field is indexable, we must copy in the legalName value.
-  if (!body?.displayName) {
-    body.displayName = body.legalName;
+  if (body.hasOwnProperty('legalName') && !body?.legalName) {
+    // cannot have empty legal name field.
+    throw `Field 'legalName' cannot be empty.`;
   }
-  for (const field of nonNullableFields) {
-    if (!body[field]) {
-      throw `For updateType '${updateType}', the following fields cannot be empty: ${nonNullableFields.join(', ')}`;
+  if (body.hasOwnProperty('displayName') && !body?.displayName) {
+    // cannot have empty display name field.
+    if (body?.legalName) {
+      // Designs call for allowable empty displayName field. Since this field is indexable, we must copy in the legalName value (if provided).
+      body.displayName = body.legalName;
+    } else {
+      // If no legalName provided, delete the field.
+      delete body.displayName;
     }
   }
   return true;
@@ -155,14 +152,14 @@ function validateRequest(body, checkFields, updateType) {
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the response object.
  */
-async function minorUpdate(user, body, currentTimeISO, currentRecord, updateType) {
+async function minorUpdate(identifier, user, body, currentTimeISO, currentRecord, updateType) {
   let attributes;
   if (currentRecord.status === REPEALED_STATE) {
     // Calls the 'updateRecord' function to update the repealed record.
-    attributes = await updateRecord(user, body, currentTimeISO, REPEALED_STATE, updateType, null, true);
+    attributes = await updateRecord(identifier, user, body, currentTimeISO, REPEALED_STATE, updateType, null, true);
   } else {
     // Calls the 'updateRecord' function to update the record.
-    attributes = await updateRecord(user, body, currentTimeISO, ESTABLISHED_STATE, updateType);
+    attributes = await updateRecord(identifier, user, body, currentTimeISO, ESTABLISHED_STATE, updateType);
   }
 
   // Returns a success response with the updated attributes.
@@ -177,7 +174,7 @@ async function minorUpdate(user, body, currentTimeISO, currentRecord, updateType
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the response object.
  */
-async function majorChange(user, body, currentTimeISO, currentRecord, newStatus, updateType) {
+async function majorChange(identifier, user, body, currentTimeISO, currentRecord, newStatus, updateType) {
   // Cannot do a major change if not the correct status
   if (currentRecord.status !== ESTABLISHED_STATE) {
     return sendResponse(400, [], 'Protected area record cannot be edited.', `Cannot perform major update for records with status ${currentRecord.status}.`);
@@ -186,7 +183,7 @@ async function majorChange(user, body, currentTimeISO, currentRecord, newStatus,
   const putTransaction = await createChangeLogItem(body, currentTimeISO, currentRecord, newStatus);
 
   // Calls the 'updateRecord' function to update the record.
-  const attributes = await updateRecord(user, body, currentTimeISO, newStatus, updateType, putTransaction );
+  const attributes = await updateRecord(identifier, user, body, currentTimeISO, newStatus, updateType, putTransaction);
 
   let context = 'Legal Name Change.';
   if (newStatus === REPEALED_STATE) {
@@ -218,7 +215,7 @@ async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatu
   // This will copy the incomign legal, effective, and status as a 'new' item to ensure
   // we record the switch from->to regardless whether 1 or more attributes are changing as
   // part of this majorChange update.
-  changelogRecord['newLegalName'] = { 'S': body.legalName };
+  changelogRecord['newLegalName'] = { 'S': body?.legalName || currentRecord.legalName };
   changelogRecord['newEffectiveDate'] = { 'S': body.effectiveDate };
   changelogRecord['newStatus'] = { 'S': newStatus };
   changelogRecord['status'] = { 'S': HISTORICAL_STATE };
@@ -239,27 +236,28 @@ async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatu
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<Object>} - A Promise that resolves to the updated attributes.
  */
-async function updateRecord(user, body, currentTimeISO, status, updateType, putTransaction = undefined, repealOnly = false) {
+async function updateRecord(identifier, user, body, currentTimeISO, status, updateType, putTransaction = undefined, repealOnly = false) {
   let updatedAttributeValues = {
     ':updateDate': { S: currentTimeISO },
     ':lastModifiedBy': { S: user },
     ':status': { S: status },
-    ':lastVersionDate': { S: body.lastVersionDate }
+    ':lastVersionDate': { S: body.lastVersionDate },
+    ':effectiveDate': { S: body.effectiveDate }
   }
-  let updateExpression = ['SET updateDate = :updateDate, #status = :status, lastModifiedBy = :lastModifiedBy'];
-  let specificAttributeFields = updateMandatoryFields;
-  if (repealOnly) {
-    specificAttributeFields = repealedMandatoryFields;
-  }
-  for (const field of specificAttributeFields) {
-    updatedAttributeValues[`:${field}`] = { S: body[field] || '' };
-    updateExpression.push(`${field} = :${field}`);
+  let updateExpression = ['SET updateDate = :updateDate, #status = :status, lastModifiedBy = :lastModifiedBy, effectiveDate = :effectiveDate'];
+  if (!repealOnly) {
+    for (const field of optionalFields) {
+      if (body.hasOwnProperty(field)) {
+        updatedAttributeValues[`:${field}`] = { S: body[field] || '' };
+        updateExpression.push(`${field} = :${field}`);
+      }
+    }
   }
   // Defines the parameters for updating the record.
   let updateParams = {
     TableName: TABLE_NAME,
     Key: {
-      pk: { S: body.orcs },
+      pk: { S: identifier },
       sk: { S: 'Details' }
     },
     ExpressionAttributeValues: updatedAttributeValues,
@@ -271,7 +269,7 @@ async function updateRecord(user, body, currentTimeISO, status, updateType, putT
 
   // If major change (not repealed), deny if legalName is the same
   if (updateType === 'major') {
-    updateParams.ExpressionAttributeValues[':oldLegalName'] = { S: body.legalName },
+    updateParams.ExpressionAttributeValues[':oldLegalName'] = { S: body.legalName };
     updateParams.ConditionExpression += ' AND legalName <> :oldLegalName'
   }
 
@@ -294,19 +292,20 @@ async function updateRecord(user, body, currentTimeISO, status, updateType, putT
       }).promise();
 
       // Return the object we would have inserted.
-      return {
-        pk: body.orcs,
+      let returnItem = {
+        pk: identifier,
         sk: 'Details',
         updateDate: currentTimeISO,
         effectiveDate: body.effectiveDate,
-        legalName: body.legalName,
-        displayName: body.displayName,
-        phoneticName: body.phoneticName,
-        searchTerms: body.searchTerms,
         lastModifiedBy: user,
-        status: status,
-        notes: body.note
+        status: status
       }
+      for (const field of optionalFields) {
+        if (body.hasOwnProperty(field)) {
+          returnItem[field] = body[field];
+        }
+      }
+      return returnItem;
     } else {
       // Executes the update operation and retrieves the updated attributes.
       const { Attributes } = await dynamodb.updateItem(updateParams).promise();

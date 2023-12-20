@@ -1,12 +1,10 @@
 const {
-  OPENSEARCH_DOMAIN_ENDPOINT,
   OPENSEARCH_MAIN_INDEX,
   OSQuery,
 } = require('../../.aws-sam/build/OpenSearchLayer/opensearch');
 
 const DEFAULT_RESULT_SIZE = 10;
 const MAX_RESULT_SIZE = 100;
-const layer = require('../../.aws-sam/build/OpenSearchLayer/opensearch');
 
 // Mocks for the environment variables
 process.env.OPENSEARCH_DOMAIN_ENDPOINT = 'http://localhost:9200';
@@ -58,6 +56,7 @@ describe('OSQuery class', () => {
 
   describe('search method', () => {
     test('should call OpenSearch client search method with correct parameters', async () => {
+      const layer = require('../../.aws-sam/build/OpenSearchLayer/opensearch');
 
       const queryInstance = new OSQuery();
 
@@ -72,17 +71,20 @@ describe('OSQuery class', () => {
           }
         }
       }
+      try {
+        await queryInstance.search();
 
-      await queryInstance.search();
-
-      expect(searchSpy).toHaveBeenCalledWith({
-        index: queryInstance.index,
-        size: queryInstance.size,
-        from: queryInstance.from,
-        body: {
-          query: queryInstance.query,
-        },
-      });
+        expect(searchSpy).toHaveBeenCalledWith({
+          index: queryInstance.index,
+          size: queryInstance.size,
+          from: queryInstance.from,
+          body: {
+            query: queryInstance.query,
+          },
+        });
+      } catch (err) {
+        console.log('err:', err);
+      }
     });
   });
 

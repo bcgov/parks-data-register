@@ -24,7 +24,8 @@
     ],
     "moduleNameMapper": {
       "^/opt/dynamodb": "<rootDir>/.aws-sam/build/DynamoDBLayer/dynamodb",
-      "^/opt/base": "<rootDir>/.aws-sam/build/BaseLayer/base"
+      "^/opt/base": "<rootDir>/.aws-sam/build/BaseLayer/base",
+      "^/opt/opensearch": "<rootDir>/.aws-sam/build/OpenSearchLayer/opensearch"
     }
   },
   "dependencies": {

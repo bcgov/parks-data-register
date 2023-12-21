@@ -199,6 +199,19 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
+  OpenSearchLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: opensearch
+      Description: Parks Data Register OpenSearch Utilities Layer
+      ContentUri: layers/opensearch/
+      CompatibleRuntimes:
+        - nodejs18.x
+      LicenseInfo: 'Apache-2.0'
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: makefile
+
   ### LAMBDA FUNCTIONS ###
 
   SearchFunction:
@@ -215,6 +228,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref DynamoDBLayer
+        - !Ref OpenSearchLayer
       Role: !GetAtt StreamRole.Arn
       Runtime: nodejs18.x
       Architectures:

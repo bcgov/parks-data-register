@@ -187,6 +187,38 @@ Check the `docs.count` of the index:
 curl -XGET "http://localhost:9200/_cat/indices?v
 ```
 
+## Local OpenSearch Dashboards
+
+[OpenSearch Dashboards](https://opensearch.org/docs/latest/install-and-configure/install-dashboards/index/) is a UI that can be used to visualize and inspect your local OpenSearch server. For developers using Windows, you can follow the linked instructions, download the .zip and extract to a directory of your choice. Once you have extracted the .zip and set up all your PATH variables, navigate to the installation folder and open the Dashboards config yaml.
+
+```bash
+/path/to/opensearch-dashboards/config/opensearch_dashboards.yml
+```
+
+Unless you want to make special changes to your service, you can comment out the entirety of `opensearch_dashboards.yml`. Add the following:
+
+```yaml
+server.port: 5601
+server.host: "localhost"
+server.name: "opensearch-dashboards"
+opensearch.hosts: ["http://<OPENSEARCH-SERVER-IP>:9200"]
+```
+Where `<OPENSEARCH-SERVER-IP>` is the address of your running OpenSearch server.
+
+Next, the Dashboards security plugin must be disabled so you do not need to log in to your local server. Open up a command prompt with administrative privileges and navigate to your opensearch-dashboards folder. Run the following to uninstall the security plugin:
+
+```bash
+.\bin\opensearch-dashboards-plugin remove securityDashboards
+```
+
+Start your Dashboards server by running the file.
+
+```
+.\bin\opensearch-dashboards
+```
+
+Your server should become available at `http://localhost:5601`. It may take a few minutes to start.
+
 # Deployment Pipeline
 
 ## Github Actions

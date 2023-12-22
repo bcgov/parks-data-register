@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "5027d9f1-b4d2-4c08-bdab-a9f29a5af674",
+		"_postman_id": "3029006c-0151-464c-a2dc-b94d16e0281f",
 		"name": "Parks Data Register",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "14509064",
-		"_collection_link": "https://bcparks-dup.postman.co/workspace/BCParks-Day-Use-Pass~c6a232b9-cbde-4bc3-aa2c-906ab8c015e7/collection/14509064-5027d9f1-b4d2-4c08-bdab-a9f29a5af674?action=share&source=collection_link&creator=14509064"
+		"_collection_link": "https://bcparks-dup.postman.co/workspace/BCParks-Day-Use-Pass~c6a232b9-cbde-4bc3-aa2c-906ab8c015e7/collection/14509064-3029006c-0151-464c-a2dc-b94d16e0281f?action=share&source=collection_link&creator=14509064"
 	},
 	"item": [
 		{
@@ -50,7 +50,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{vanity_url}}/search?text=park&status=established,historical",
+									"raw": "{{vanity_url}}/search?text=park",
 									"host": [
 										"{{vanity_url}}"
 									],
@@ -59,16 +59,32 @@
 									],
 									"query": [
 										{
+											"key": "type",
+											"value": "protectedArea",
+											"disabled": true
+										},
+										{
+											"key": "startFrom",
+											"value": "4",
+											"disabled": true
+										},
+										{
 											"key": "text",
 											"value": "park"
 										},
 										{
-											"key": "status",
-											"value": "established,historical"
+											"key": "limit",
+											"value": "4",
+											"disabled": true
 										},
 										{
-											"key": "type",
-											"value": "protectedArea",
+											"key": "status",
+											"value": "historical",
+											"disabled": true
+										},
+										{
+											"key": "sortField",
+											"value": "effectiveDate",
 											"disabled": true
 										}
 									]
@@ -173,7 +189,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRAbthcormba2\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"raw": "{\r\n    \"effectiveDate\": \"2023-12-01\",\r\n    \"lastVersionDate\": \"2023-12-22T19:09:19.551Z\",\r\n    \"legalName\": \"Strathcona new name\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -219,7 +235,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"raw": "{\r\n    \"lastVersionDate\": \"2023-12-22T19:12:44.725Z\",\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"legalName\": \"Strathcona Park 2\",\r\n    \"displayName\": \"Strathcona \",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Strathcona legal name change\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -265,7 +281,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"legalName\": \"Strathcona Park\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"lastVersionDate\": \"2023-12-22T19:13:33.966Z\",\r\n    \"legalName\": \"Strathcona Park repealed!\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -299,6 +315,69 @@
 									"response": []
 								}
 							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Changelog",
+			"item": [
+				{
+					"name": "Search",
+					"item": [
+						{
+							"name": "Changelog Search",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{vanity_url}}/changelog/search?changeType=legalNameChanged,statusChanged&sortField=updateDate&sortOrder=desc",
+									"host": [
+										"{{vanity_url}}"
+									],
+									"path": [
+										"changelog",
+										"search"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "protectedArea",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "established",
+											"disabled": true
+										},
+										{
+											"key": "text",
+											"value": "park",
+											"disabled": true
+										},
+										{
+											"key": "changeType",
+											"value": "legalNameChanged,statusChanged"
+										},
+										{
+											"key": "sortField",
+											"value": "updateDate"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}

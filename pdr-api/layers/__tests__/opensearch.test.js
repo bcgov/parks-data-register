@@ -126,13 +126,13 @@ describe('OSQuery class', () => {
     });
   });
 
-  describe('addMatchTermsRule method', () => {
+  describe('addMustMatchTermsRule method', () => {
     test('should call addTermsRule correctly', async () => {
       const queryInstance = new OSQuery();
       const terms = { field: 'value' };
       const terms2 = { field2: 'value2', field3: 'value3' };
 
-      queryInstance.addMatchTermsRule(terms, true);
+      queryInstance.addMustMatchTermsRule(terms, true);
 
       expect(queryInstance.query).toEqual({
         bool: {
@@ -144,7 +144,7 @@ describe('OSQuery class', () => {
         },
       });
 
-      queryInstance.addMatchTermsRule(terms2, true);
+      queryInstance.addMustMatchTermsRule(terms2, true);
 
       expect(queryInstance.query).toEqual({
         bool: {
@@ -170,13 +170,13 @@ describe('OSQuery class', () => {
     });
   });
 
-  describe('addIgnoreTermsRule method', () => {
+  describe('addMustNotMatchTermsRule method', () => {
     test('should call addTermsRule correctly with ignore=true and exactMatch=false', async () => {
       const queryInstance = new OSQuery();
       const terms = { field: 'value' };
       const terms2 = { field2: 'value2', field3: 'value3' };
 
-      queryInstance.addIgnoreTermsRule(terms);
+      queryInstance.addMustNotMatchTermsRule(terms);
 
       expect(queryInstance.query).toEqual({
         bool: {
@@ -188,7 +188,7 @@ describe('OSQuery class', () => {
         },
       });
 
-      queryInstance.addIgnoreTermsRule(terms2);
+      queryInstance.addMustNotMatchTermsRule(terms2);
 
       expect(queryInstance.query).toEqual({
         bool: {
@@ -211,6 +211,50 @@ describe('OSQuery class', () => {
           ],
         },
       });
+    });
+  });
+});
+
+describe('addShouldMatchTermsRule method', () => {
+  test('should call addTermsRule correctly with ignore=true and exactMatch=false', async () => {
+    const queryInstance = new OSQuery();
+    const terms = { field: 'value' };
+    const terms2 = { field2: 'value2', field3: 'value3' };
+
+    queryInstance.addShouldMatchTermsRule(terms);
+
+    expect(queryInstance.query).toEqual({
+      bool: {
+        should: [{
+          match: {
+            field: 'value',
+          },
+        }],
+      },
+    });
+
+    queryInstance.addShouldMatchTermsRule(terms2);
+
+    expect(queryInstance.query).toEqual({
+      bool: {
+        should: [
+          {
+            match: {
+              field: 'value',
+            },
+          },
+          {
+            match: {
+              field2: 'value2',
+            },
+          },
+          {
+            match: {
+              field3: 'value3',
+            },
+          },
+        ],
+      },
     });
   });
 });

@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Mark Lisé",
     "DateCreated": "Aug 10, 2023, 08:57 AM",
-    "DateLastModified": "Dec 06, 2023, 03:34 PM",
+    "DateLastModified": "Dec 22, 2023, 11:16 AM",
     "Description": "Data model for the BC Parks Name Register.",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -85,6 +85,14 @@
         {
           "AttributeName": "displayId",
           "AttributeType": "S"
+        },
+        {
+          "AttributeName": "legalNameChanged",
+          "AttributeType": "BOOL"
+        },
+        {
+          "AttributeName": "statusChanged",
+          "AttributeType": "BOOL"
         }
       ],
       "TableFacets": [
@@ -250,6 +258,12 @@
           },
           "displayId": {
             "S": "0001"
+          },
+          "legalNameChanged": {
+            "BOOL": true
+          },
+          "statusChanged": {
+            "BOOL": false
           }
         },
         {
@@ -329,6 +343,12 @@
           },
           "displayId": {
             "S": "0001"
+          },
+          "legalNameChanged": {
+            "BOOL": true
+          },
+          "statusChanged": {
+            "BOOL": false
           }
         },
         {
@@ -411,6 +431,12 @@
           },
           "displayId": {
             "S": "9876"
+          },
+          "legalNameChanged": {
+            "BOOL": true
+          },
+          "statusChanged": {
+            "BOOL": true
           }
         }
       ],

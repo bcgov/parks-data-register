@@ -219,6 +219,17 @@ async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatu
   changelogRecord['newEffectiveDate'] = { 'S': body.effectiveDate };
   changelogRecord['newStatus'] = { 'S': newStatus };
   changelogRecord['status'] = { 'S': HISTORICAL_STATE };
+  let legalNameChanged = false;
+  let statusChanged = false;
+  // Mark whether the status and legalName will change for filtering purposes:
+  if (body?.legalName && body?.legalName !== currentRecord.legalName) {
+    legalNameChanged = true;
+  }
+  if (newStatus !== currentRecord.status) {
+    statusChanged = true;
+  }
+  changelogRecord['legalNameChanged'] = { BOOL: legalNameChanged };
+  changelogRecord['statusChanged'] = { BOOL: statusChanged };
 
   return {
     Put: {

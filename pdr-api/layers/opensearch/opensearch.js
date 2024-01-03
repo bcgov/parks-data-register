@@ -68,7 +68,7 @@ class OSQuery {
      * The sort object for sorting the results.
      * @type {Object}
      */
-    this.sort = {};
+    this.sort = this.initSortQuery();
 
     /**
      * The index to search.
@@ -87,7 +87,6 @@ class OSQuery {
     this.from = from || 0;
     this.sortField = sortField || null;
     this.sortOrder = sortOrder || OPENSEARCH_DEFAULT_SORT_ORDER;
-    this.sort = this.initSortQuery();
     this.request = null;
   }
 
@@ -98,6 +97,10 @@ class OSQuery {
    * @returns {Promise<Object>} A Promise that resolves to the search result.
    */
   async search() {
+    // Match at least 1 OR condition
+    if (this.query?.bool?.should) {
+      this.query.bool['minimum_should_match'] = 1;
+    }
     this.request = {
       index: this.index,
       size: this.size,
@@ -106,6 +109,7 @@ class OSQuery {
         query: this.query,
       }
     }
+    // Add sort to body if provided
     if (this.sort) {
       this.request.body['sort'] = this.sort;
     }
@@ -144,23 +148,33 @@ class OSQuery {
   }
 
   /**
-   * Adds match terms rule to the OpenSearch query.
+   * Adds must match terms rule to the OpenSearch query (logical `AND`).
    *
    * @param {Array} terms - An array of terms to match in the query.
    * @param {Boolean} exactMatch - If true, term must match exactly to return a hit. Default false. 
    */
-  addMatchTermsRule(terms, exactMatch = false) {
-    addTermsRule(this.query, terms, false, exactMatch)
+  addMustMatchTermsRule(terms, exactMatch = false) {
+    addTermsRule(this.query, terms, 'must', exactMatch)
   }
 
   /**
-   * Adds ignore terms rule to the OpenSearch query.
+   * Adds must not match terms rule to the OpenSearch query (logical `NOT`).
    *
    * @param {Array} terms - An array of terms to exclude from the query.
    * @param {Boolean} exactMatch - If true, term must match exactly to ignore a hit. Default false. 
    */
-  addIgnoreTermsRule(terms, exactMatch = false) {
-    addTermsRule(this.query, terms, true, exactMatch)
+  addMustNotMatchTermsRule(terms, exactMatch = false) {
+    addTermsRule(this.query, terms, 'must_not', exactMatch)
+  }
+
+  /**
+ * Adds should match terms rule to the OpenSearch query (logical `OR`).
+ *
+ * @param {Array} terms - An array of terms to exclude from the query.
+ * @param {Boolean} exactMatch - If true, term must match exactly to ignore a hit. Default false. 
+ */
+  addShouldMatchTermsRule(terms, exactMatch = false) {
+    addTermsRule(this.query, terms, 'should', exactMatch)
   }
 
   /**
@@ -187,17 +201,26 @@ class OSQuery {
  * @param {boolean} [ignore=false] - If true, adds terms as "must_not" in the query; otherwise, adds as "must".
  * @param {boolean} [exactMatch=true] - If true, uses "terms" in the match; otherwise, uses "match".
  */
-function addTermsRule(query, terms, ignore = false, exactMatch = true) {
-  const must = ignore ? 'must_not' : 'must';
-  const match = exactMatch ? 'terms' : 'match';
+function addTermsRule(query, terms, clause = 'must', exactMatch = true) {
+  let match = exactMatch ? 'terms' : 'match';
   for (const term of Object.keys(terms)) {
-    let value = terms[term].toLowerCase();
-    if (exactMatch) {
-      value = value.split(',')
+    let value = terms[term];
+    // determine value type
+    switch (typeof terms[term]) {
+      case 'boolean':
+        match = 'terms';
+        value = [value];
+        break;
+      default:
+        value = value.toLowerCase();
+        if (exactMatch) {
+          value = value.split(',')
+        }
+        break;
     }
     setNestedValue(
       query,
-      ['bool', must],
+      ['bool', clause],
       {
         [match]: {
           [term]: value

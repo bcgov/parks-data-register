@@ -21,7 +21,7 @@ exports.handler = async function (event, context) {
     }
 
     // Check if the user is an admin
-    const isAdmin = JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
+    const isAdmin = event?.requestContext?.authorizer?.isAdmin || false;
 
     // Construct the search query
     let query = new OSQuery(OPENSEARCH_MAIN_INDEX, queryParams?.limit, queryParams?.startFrom);
@@ -34,10 +34,10 @@ exports.handler = async function (event, context) {
         delete termQuery[term];
       }
     }
-    query.addMatchTermsRule(termQuery, true);
+    query.addMustMatchTermsRule(termQuery, true);
     // Admin permissions
     if (!isAdmin) {
-      query.addIgnoreTermsRule({ status: 'pending' })
+      query.addMustNotMatchTermsRule({ status: 'pending' })
     }
 
     // Send the query to the OpenSearch cluster

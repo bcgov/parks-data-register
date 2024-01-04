@@ -1,13 +1,11 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { LoadingService } from '../services/loading.service';
 import { LoggerService } from '../services/logger.service';
-import { ProtectedAreaService } from '../services/protected-area.service';
-import { SearchService } from '../services/search.service';
 import { UrlService } from '../services/url.service';
 import { Utils } from '../utils/utils';
+import { ChangelogService } from '../services/changelog.service';
 
 @Component({
   selector: 'app-change-log',
@@ -17,19 +15,15 @@ import { Utils } from '../utils/utils';
 export class ChangeLogComponent {
   private subscriptions = new Subscription();
 
-  // TODO: This will be a switch for all searches. (protectedArea, sites, etc)
-  private searchType = 'protectedArea';
-
-  public toggleList = ['established', 'repealed', 'pending'];
+  public changeTypeList = ['legalNameChanged', 'statusChanged'];
 
   public utils = new Utils();
   loading = false;
   data = [];
   form = new UntypedFormGroup({
-    text: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
-    type: new UntypedFormControl(null),
-    legalNameToggle: new UntypedFormControl(false),
-    statusToggle: new UntypedFormControl(false),
+    text: new UntypedFormControl(null),
+    legalNameChanged: new UntypedFormControl(false),
+    statusChanged: new UntypedFormControl(false),
   });
 
   public searchParams = {
@@ -38,26 +32,22 @@ export class ChangeLogComponent {
   };
 
   constructor(
-    private router: Router,
-    private searchService: SearchService,
-    private protectedAreaService: ProtectedAreaService,
+    private changelogService: ChangelogService,
     private loadingService: LoadingService,
     private ref: ChangeDetectorRef,
     private urlService: UrlService,
     private logger: LoggerService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(
-      this.searchService.watchSearchResults().subscribe((res) => {
-        this.data = res && res.data ? res.data : [];
+      this.changelogService.watchChangelogResults().subscribe((res) => {
+        this.data = res?.data || [];
         this.searchParams =
-          res && res.searchParams
-            ? res.searchParams
-            : {
-                lastResultIndex: null,
-                lastPage: true,
-              };
+          res?.searchParams || {
+            lastResultIndex: null,
+            lastPage: true,
+          };
         this.ref.detectChanges();
       })
     );
@@ -77,9 +67,11 @@ export class ChangeLogComponent {
 
   checkForQueryParams() {
     // Get query params and set form values accordingly
+    // We've been instructed to load the latest results on page load
+    // even if no filters applied (see https://github.com/bcgov/parks-data-register/issues/31)
     let params = { ...this.urlService.getQueryParams() };
     if (Object.keys(params).length) {
-      params = this.setStatusFilters(params);
+      params = this.setChangelogFilters(params);
       for (const param in params) {
         if (this.form.controls[param]) {
           this.form.controls[param].setValue(params[param]);
@@ -87,80 +79,98 @@ export class ChangeLogComponent {
       }
       // Check cache.
       const url = this.urlService.getRoute();
-      const cache = this.searchService.checkCache(url);
+      const cache = this.urlService.checkCache(url);
       if (cache) {
         // Cache hit.
         this.logger.debug(`Cache hit: ${url}`);
-        this.searchService.setSearchResults(cache);
+        this.changelogService.setSearchResults(cache);
       } else {
         this.logger.debug(`Cache miss or expiry: ${url}`);
         this.submit(false);
       }
+    } else {
+      this.submit();
     }
+
+  }
+
+  getChangeTypeString(item) {
+    if (item?.statusChanged) {
+      return 'Status';
+    }
+    if (item?.legalNameChanged) {
+      return 'Legal Name';
+    }
+    return '-';
+  }
+
+  getOldFieldString(item) {
+    if (item?.statusChanged) {
+      // hard-coded for now because this is the only value it can be
+      return 'established';
+    }
+    if (item?.legalNameChanged) {
+      return item?.legalName || '-';
+    }
+    return '-'
+  }
+
+  getNewFieldString(item) {
+    if (item?.statusChanged) {
+      return item?.newStatus || '-';
+    }
+    if (item?.legalNameChanged) {
+      return item?.newLegalName || '-';
+    }
+    return '-'
   }
 
   async submit(updateQueryParams = true, startFrom = 0) {
+    if (!startFrom) {
+      this.changelogService.clearChangelogResults();
+    }
     if (this.form.valid) {
-      this.form.controls['type'].setValue(this.searchType);
+      let searchObj = {
+        startFrom: startFrom,
+        sortField: 'updateDate',
+        sortOrder: 'desc'
+      }
       // If none of the status toggles are true, this is equivalent to all of them being true.
       // This will create divergent behaviour between the URL and the actual search payload.
-      const searchObj = this.getStatusFilters({ ...this.form.value });
-      const urlObj = this.getStatusFilters({ ...this.form.value }, false);
+      if (this.form.controls['text'].value) {
+        searchObj['text'] = this.form.controls['text'].value;
+      }
+      this.getChangelogFilters(searchObj);
+      const urlObj = { ...searchObj };
       if (updateQueryParams) {
-        // update url query params
-        delete urlObj.type;
         // await this change before
         await this.urlService.setQueryParams(urlObj);
       }
-      this.searchService.fetchData(searchObj, this.urlService.getRoute(), startFrom);
+      this.changelogService.fetchData(searchObj, this.urlService.getRoute(), startFrom);
     }
   }
 
-  getStatusFilters(obj, persistToggles = true) {
+  getChangelogFilters(searchObj) {
     let filters = [];
-
-    this.toggleList.forEach((toggle) => {
-      if (obj[`${toggle}Toggle`] === true) {
-        filters.push(toggle);
+    for (const filter of this.changeTypeList)
+      if (this.form.controls[filter].value) {
+        filters.push(filter);
       }
-      delete obj[`${toggle}Toggle`];
-    });
-
-    obj.status = filters.length > 0 ? filters.toString() : persistToggles ? this.toggleList.toString() : '';
-    return obj;
-  }
-
-  setStatusFilters(obj) {
-    const statuses = obj?.status?.split(',');
-    if (!statuses) {
-      return obj;
-    }
-    for (const toggle of this.toggleList) {
-      if (statuses.indexOf(toggle) > -1) {
-        obj[`${toggle}Toggle`] = true;
-      }
-    }
-    delete obj?.status;
-    return obj;
-  }
-
-  viewItem(item) {
-    if (item.type === 'protectedArea') {
-      this.protectedAreaService.fetchData(item.pk);
-      // TODO: When we have historical park names, we want to set HISTORICAL_PROTECTED_AREA here.
-      this.router.navigate(['protected-areas', item.pk]);
+    if (filters.length) {
+      searchObj['changeType'] = filters.join(",");
     }
   }
 
-  editItem(item) {
-    if (item.type === 'protectedArea') {
-      this.protectedAreaService.fetchData(item.pk);
-      if (item.status === 'repealed') {
-        this.router.navigate(['protected-areas', item.pk, 'edit-repealed']);
-      } else {
-        this.router.navigate(['protected-areas', item.pk, 'edit']);
+  setChangelogFilters(params) {
+    if (params?.changeType) {
+      const filters = params.changeType.split(",");
+      for (const filter of filters) {
+        if (this.changeTypeList.indexOf(filter) > -1) {
+          params[filter] = true;
+        }
       }
     }
+    return params;
   }
 
   loadMore() {
@@ -169,6 +179,6 @@ export class ChangeLogComponent {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.searchService.clearSearchResults();
+    this.changelogService.clearChangelogResults();
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ export class UrlService implements OnDestroy {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dataService: DataService
   ) {
     this.route.queryParams.subscribe((changes) => {
       this.queryParams.next(changes);
@@ -58,6 +60,10 @@ export class UrlService implements OnDestroy {
       replaceUrl: true
     })
 
+  }
+
+  checkCache(url) {
+    return this.dataService.getCachedValue(url);
   }
 
   ngOnDestroy() {

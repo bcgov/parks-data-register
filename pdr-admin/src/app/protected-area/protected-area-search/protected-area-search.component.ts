@@ -88,7 +88,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
       }
       // Check cache.
       const url = this.urlService.getRoute();
-      const cache = this.searchService.checkCache(url);
+      const cache = this.urlService.checkCache(url);
       if (cache) {
         // Cache hit.
         this.logger.debug(`Cache hit: ${url}`);

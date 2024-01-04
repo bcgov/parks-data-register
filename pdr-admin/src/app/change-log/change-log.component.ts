@@ -42,14 +42,12 @@ export class ChangeLogComponent {
   ngOnInit(): void {
     this.subscriptions.add(
       this.changelogService.watchChangelogResults().subscribe((res) => {
-        this.data = res && res.data ? res.data : [];
+        this.data = res?.data || [];
         this.searchParams =
-          res && res.searchParams
-            ? res.searchParams
-            : {
-              lastResultIndex: null,
-              lastPage: true,
-            };
+          res?.searchParams || {
+            lastResultIndex: null,
+            lastPage: true,
+          };
         this.ref.detectChanges();
       })
     );
@@ -144,7 +142,6 @@ export class ChangeLogComponent {
       }
       this.getChangelogFilters(searchObj);
       const urlObj = { ...searchObj };
-      // const urlObj = this.getStatusFilters({ ...this.form.value }, false);
       if (updateQueryParams) {
         // await this change before
         await this.urlService.setQueryParams(urlObj);

@@ -63,13 +63,6 @@ class OSQuery {
      * @type {Object}
      */
     this.query = {};
-
-    /**
-     * The sort object for sorting the results.
-     * @type {Object}
-     */
-    this.sort = this.initSortQuery();
-
     /**
      * The index to search.
      * @type {string}
@@ -87,7 +80,13 @@ class OSQuery {
     this.from = from || 0;
     this.sortField = sortField || null;
     this.sortOrder = sortOrder || OPENSEARCH_DEFAULT_SORT_ORDER;
+        /**
+     * The sort object for sorting the results.
+     * @type {Object}
+     */
+    this.sort = null;
     this.request = null;
+    this.initSortQuery();
   }
 
   /**
@@ -118,15 +117,9 @@ class OSQuery {
 
   initSortQuery() {
     if (this.sortField) {
-      this.sort = [
-        {
-          [this.sortField]: {
-            order: this.sortOrder
-          }
-        }
-      ]
+      this.addSortRule(this.sortField, this.sortOrder);
     } else {
-      return null;
+      this.sort = null;
     }
   }
 

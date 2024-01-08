@@ -1,1 +1,87 @@
-<div class="container-fluid">Coming soon</div>
+<div class="container-fluid bg-info p-4">
+  <section class="pb-3">
+    <h3>Find changes to legal names and status</h3>
+    <div class="row mb-3">
+      <div class="col">
+        <ngds-text-input
+          class="form-id"
+          [control]="form?.controls?.['text']"
+          [label]="'Search'"
+          [resetButton]="true"
+          [placeholder]="'Enter any search term'"
+          (keyup.enter)="submit()"
+          [loadWhile]="loading"
+        >
+          <button ngdsInputAppend class="btn btn-primary" (click)="submit()" [disabled]="form.invalid">
+            <ng-container *ngIf="!loading"> <i class="bi bi-search me-2"></i>Search</ng-container>
+            <ng-container *ngIf="loading">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </ng-container>
+          </button>
+        </ngds-text-input>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12 col-md-6">
+        <strong>Filters</strong>
+        <div class="row">
+          <div class="col-auto">
+            <ngds-toggle-input [control]="form?.controls?.['legalNameChanged']" [label]="'Legal Name'" [loadWhile]="loading">
+            </ngds-toggle-input>
+          </div>
+          <div class="col-auto">
+            <ngds-toggle-input [control]="form?.controls?.['statusChanged']" [label]="'Status'" [loadWhile]="loading"> </ngds-toggle-input>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="container-fluid p-4">
+  <h3>Search results</h3>
+  <table class="table table-striped mb-0" aria-label="Name search results">
+    <thead>
+      <tr>
+        <th scope="col" colspan="1">DATE OF CHANGE</th>
+        <th scope="col" colspan="1">ID</th>
+        <th scope="col" colspan="1">FIELD CHANGED</th>
+        <th scope="col">PREVIOUS VALUE</th>
+        <th scope="col">UPDATED VALUE</th>
+        <th scope="col" colspan="1">CHANGED BY</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data">
+        <th class="py-3" scope="row" colspan="1">{{ item?.updateDate | date}}</th>
+        <td class="py-3">
+          <strong>{{ item?.displayId }}</strong>
+        </td>
+        <td class="py-3">{{ getChangeTypeString(item) }}</td>
+        <td class="py-3">{{ getOldFieldString(item) }}</td>
+        <td class="py-3">{{ getNewFieldString(item) }}</td>
+        <td class="py-3">{{ item?.lastModifiedBy || '-' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="data.length === 0" class="table-stripe-dark py-3 ps-2 border-bottom d-flex justify-content-center">
+    <div *ngIf="!loading">
+      No results. Try a new search.
+    </div>
+    <div *ngIf="loading">
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!searchParams.lastPage && data.length > 0" class="d-flex justify-content-center py-3">
+    <button class="btn btn-outline-secondary" [disabled]="loading" (click)="loadMore()">
+      <div *ngIf="!loading">Load More</div>
+      <div *ngIf="loading" class="spinner-border spinner-border-sm mx-4" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+  </div>
+</div>

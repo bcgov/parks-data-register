@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { DataService } from './data.service';
 import { LoggerService } from './logger.service';
 import { ApiService } from './api.service';
 
@@ -11,7 +10,7 @@ export class AutoFetchService {
   public timeIntevalSeconds = 5 * 60;
   public fetchQueue = [];
 
-  constructor(private dataService: DataService, private loggerService: LoggerService, private apiService: ApiService) {}
+  constructor(private loggerService: LoggerService, private apiService: ApiService) {}
 
   async run() {
     this.runFetches(this.fetchQueue);

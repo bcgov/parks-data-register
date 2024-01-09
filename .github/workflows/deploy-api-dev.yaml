@@ -30,9 +30,9 @@ jobs:
 
       - shell: bash
         env:
-          SECRET_URL: ${{ secrets.rocketchatURL }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $SECRET_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Dev", "value": "started", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Dev", "value": "started", "short": true}]}]}'
 
       ### Setup AWS SAM
       - name: Setup AWS SAM
@@ -78,7 +78,7 @@ jobs:
 
       - shell: bash
         env:
-          SECRET_URL: ${{ secrets.rocketchatURL }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $SECRET_URL --data '{"text":"Data Register","emoji": ":white_check_mark:", "attachments":[{"title": "Github Action", "color": "#49be25", "fields": [{"title": "Deploy Dev", "value": "complete", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register - Deploy API Dev"}'
       

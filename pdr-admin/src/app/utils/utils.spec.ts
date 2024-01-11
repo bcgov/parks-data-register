@@ -22,7 +22,7 @@ describe('Utils', () => {
   });
 
   it('should format date for display: success', () => {
-    const date = new Date(1989, 3, 5);
+    const date = new Date("1989-04-05T12:00:00.000+08:00");
     const res = utils.formatDateForDisplay(date);
     expect(res).toEqual('April 04, 1989');
   });
@@ -65,7 +65,7 @@ describe('Utils', () => {
   });
 
   it('should set display date', () => {
-    const obj = { hotdog: new Date(1989, 3, 5) };
+    const obj = { hotdog: new Date("1989-04-05T12:00:00.000+08:00") };
     const res = utils.setDisplayDate(obj, 'hotdog');
     expect(res.hotdogDisplay).toEqual('April 04, 1989');
   });

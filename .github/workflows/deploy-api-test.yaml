@@ -36,9 +36,9 @@ jobs:
 
       - shell: bash
         env:
-          SECRET_URL: ${{ secrets.rocketchatURL }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $SECRET_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy API Test", "value": "started", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy API Test", "value": "started", "short": true}]}]}'
 
       ### Tag not found
       - name: Tag not found
@@ -91,6 +91,6 @@ jobs:
 
       - shell: bash
         env:
-          SECRET_URL: ${{ secrets.rocketchatURL }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $SECRET_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy API Test", "value": "complete", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register - Deploy API Test"}'

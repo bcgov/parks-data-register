@@ -33,7 +33,7 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Admin Prod", "value": "started", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register Deploy Admin Prod"}'
 
       ### Install if no cache exists ###
       - name: Setup node
@@ -127,4 +127,4 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register - Deploy Admin Prod"}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register - Deploy Admin Prod Complete"}'

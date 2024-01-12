@@ -100,7 +100,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
     }
   }
 
-  async submit(updateQueryParams = true, startFrom = 0) {
+  async submit(updateQueryParams = true, startFrom = 0, clearExisting = true) {
     if (this.form.valid) {
       this.form.controls['type'].setValue(this.searchType);
       // If none of the status toggles are true, this is equivalent to all of them being true.
@@ -112,6 +112,9 @@ export class ProtectedAreaSearchComponent implements OnInit {
         delete urlObj.type;
         // await this change before
         await this.urlService.setQueryParams(urlObj);
+      }
+      if (clearExisting) {
+        this.searchService.clearSearchResults();
       }
       this.searchService.fetchData(searchObj, this.urlService.getRoute(), startFrom);
     }
@@ -165,7 +168,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
   }
 
   loadMore() {
-    this.submit(false, this.searchParams.lastResultIndex);
+    this.submit(false, this.searchParams.lastResultIndex, false);
   }
 
   ngOnDestroy() {

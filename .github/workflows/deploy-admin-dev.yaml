@@ -126,4 +126,4 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy Admin Dev", "value": "complete", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register Deploy Admin Dev Complete"}'

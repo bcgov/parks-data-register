@@ -38,7 +38,7 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register","emoji": ":warning:", "attachments":[{"title": "Github Action", "color": "#E5cd69", "fields": [{"title": "Deploy API Test", "value": "started", "short": true}]}]}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register Deploy API Test"}'
 
       ### Tag not found
       - name: Tag not found
@@ -93,4 +93,4 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register - Deploy API Test"}'
+          curl -X POST -H 'Content-Type: application/json' $WEBHOOK_URL --data '{"text":"Data Register - Deploy API Test Complete"}'

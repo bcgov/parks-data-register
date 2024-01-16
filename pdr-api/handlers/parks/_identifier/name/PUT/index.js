@@ -180,7 +180,7 @@ async function majorChange(identifier, user, body, currentTimeISO, currentRecord
     return sendResponse(400, [], 'Protected area record cannot be edited.', `Cannot perform major update for records with status ${currentRecord.status}.`);
   }
   // Creates a changelog item for the legal name change.
-  const putTransaction = await createChangeLogItem(body, currentTimeISO, currentRecord, newStatus);
+  const putTransaction = await createChangeLogItem(body, user, currentTimeISO, currentRecord, newStatus);
 
   // Calls the 'updateRecord' function to update the record.
   const attributes = await updateRecord(identifier, user, body, currentTimeISO, newStatus, updateType, putTransaction);
@@ -202,7 +202,7 @@ async function majorChange(identifier, user, body, currentTimeISO, currentRecord
  * @param {string} currentTimeISO - The current time in ISO format.
  * @returns {Promise<void>} - A Promise that resolves when the changelog item is created.
  */
-async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatus) {
+async function createChangeLogItem(body, user, currentTimeISO, currentRecord, newStatus) {
   // Logs the creation of a changelog item.
   logger.info('Creating changelog item');
 
@@ -211,6 +211,8 @@ async function createChangeLogItem(body, currentTimeISO, currentRecord, newStatu
 
   // Sets the 'sk' property of the changelog record to the current time in ISO format.
   changelogRecord['sk'] = { 'S': currentTimeISO };
+  changelogRecord['updateDate'] = {'S': currentTimeISO };
+  changelogRecord['user'] = { 'S': user };
 
   // This will copy the incomign legal, effective, and status as a 'new' item to ensure
   // we record the switch from->to regardless whether 1 or more attributes are changing as

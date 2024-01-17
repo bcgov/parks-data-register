@@ -122,6 +122,12 @@ jobs:
           aws s3 rm s3://$S3_BUCKET/ --recursive --exclude "*" --include "latest/admin/*"
           aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/latest/admin
 
+      - name: Invalidate CloudFront
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          DISTRIBUTION: ${{ secrets.DISTRIBUTION }}
+          PATHS: "/*"
+
       - shell: bash
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}

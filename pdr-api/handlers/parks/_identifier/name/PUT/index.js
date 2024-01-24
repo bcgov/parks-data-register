@@ -212,7 +212,7 @@ async function createChangeLogItem(body, user, currentTimeISO, currentRecord, ne
   // Sets the 'sk' property of the changelog record to the current time in ISO format.
   changelogRecord['sk'] = { 'S': currentTimeISO };
   changelogRecord['updateDate'] = {'S': currentTimeISO };
-  changelogRecord['user'] = { 'S': user };
+  changelogRecord['lastModifiedBy'] = { 'S': user };
 
   // This will copy the incomign legal, effective, and status as a 'new' item to ensure
   // we record the switch from->to regardless whether 1 or more attributes are changing as

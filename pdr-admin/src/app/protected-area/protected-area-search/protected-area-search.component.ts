@@ -9,7 +9,7 @@ import { SearchService } from 'src/app/services/search.service';
 import { UrlService } from 'src/app/services/url.service';
 import { Utils } from 'src/app/utils/utils';
 
-declare var bootstrap: any
+declare let bootstrap: any
 
 @Component({
   selector: 'app-protected-area-search',
@@ -84,7 +84,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
 
   initializeToolTips() {
     setTimeout(() => {
-      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
       tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
       });

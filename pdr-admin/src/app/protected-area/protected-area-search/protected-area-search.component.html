@@ -62,8 +62,8 @@
         <td class="py-3">{{ this.utils.upperCaseFirstChar(item.status) }}</td>
         <td class="action-column" colspan="1">
           <div class="d-flex">
-            <i class="bi bi-eye me-4" (click)="viewItem(item)"></i>
-            <i class="bi bi-pen-fill" (click)="editItem(item)"></i>
+            <i class="bi bi-eye me-4" (click)="viewItem(item)" data-bs-toggle="tooltip" data-bs-placement="top" title="View record" ></i>
+            <i class="bi bi-pen-fill" (click)="editItem(item)" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit record" ></i>
           </div>
         </td>
       </tr>

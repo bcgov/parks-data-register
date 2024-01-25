@@ -1258,13 +1258,13 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@digitalspace/bcparks-bootstrap-theme@^1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@digitalspace/bcparks-bootstrap-theme/-/bcparks-bootstrap-theme-1.3.2.tgz#14fa0bd8b4a4dd90c2d3f1bca5256ad5db6fdd16"
-  integrity sha512-xZ8SnHmn+M/tgljPj6k/o9D8f4FHfSjfiehdzkCXT0Av5k1IhufPCKZu+gw0J5kmg3sPynaqF2NTxI0n1LzyHA==
+"@digitalspace/bcparks-bootstrap-theme@^1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@digitalspace/bcparks-bootstrap-theme/-/bcparks-bootstrap-theme-1.3.5.tgz#eeaa9eaefa2a365285256fe267a18b654aec2003"
+  integrity sha512-jVRdBYFIIztndNrEYEwTzXku64ToDeFcQq3LkAHu72OQuzmhk+aNP117QPJEyrwcerR6dpgozkDvq4kObirISQ==
   dependencies:
     "@popperjs/core" "^2.11.8"
-    bootstrap "^5.3.1"
+    bootstrap "^5.3.2"
     jquery "^3.6.0"
 
 "@digitalspace/ngds-forms@^0.0.91":
@@ -1786,7 +1786,7 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@popperjs/core@^2.11.8":
+"@popperjs/core@^2.11.8", "@popperjs/core@^2.9.2":
   version "2.11.8"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
@@ -1899,6 +1899,13 @@
   integrity sha512-z9fJ5Im06zvUL548KvYNecEVlA7cVDkGUi6kZusb04mpyEFKCIZJvloCcmpmLaIahDpOQGHaHmG6imtPMmPXGQ==
   dependencies:
     "@types/node" "*"
+
+"@types/bootstrap@^5.2.10":
+  version "5.2.10"
+  resolved "https://registry.yarnpkg.com/@types/bootstrap/-/bootstrap-5.2.10.tgz#58506463bccc6602bc051487ad8d3a6458f94c6c"
+  integrity sha512-F2X+cd6551tep0MvVZ6nM8v7XgGN/twpdNDjqS1TUM7YFNEtQYWk+dKAnH+T1gr6QgCoGMPl487xw/9hXooa2g==
+  dependencies:
+    "@popperjs/core" "^2.9.2"
 
 "@types/connect-history-api-fallback@^1.3.5":
   version "1.5.3"
@@ -2594,7 +2601,7 @@ bootstrap-icons@^1.10.5:
   resolved "https://registry.yarnpkg.com/bootstrap-icons/-/bootstrap-icons-1.11.1.tgz#79e32494871d8c98e9d14f4bcdc278cee9b1dafd"
   integrity sha512-F0DDp7nKUX+x/QtpfRZ+XHFya60ng9nfdpdS59vDDfs4Uhuxp7zym/QavMsu/xx51txkoM9eVmpE7D08N35blw==
 
-bootstrap@^5.3.1, bootstrap@^5.3.2:
+bootstrap@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.2.tgz#97226583f27aae93b2b28ab23f4c114757ff16ae"
   integrity sha512-D32nmNWiQHo94BKHLmOrdjlL05q1c8oxbtBphQFb9Z5to6eGRDCm0QgeaZ4zFBHzfg2++rqa2JkqCcxDy0sH0g==

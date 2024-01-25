@@ -9,6 +9,8 @@ import { SearchService } from 'src/app/services/search.service';
 import { UrlService } from 'src/app/services/url.service';
 import { Utils } from 'src/app/utils/utils';
 
+declare let bootstrap: any
+
 @Component({
   selector: 'app-protected-area-search',
   templateUrl: './protected-area-search.component.html',
@@ -59,21 +61,34 @@ export class ProtectedAreaSearchComponent implements OnInit {
                 lastResultIndex: null,
                 lastPage: true,
               };
+        this.initializeToolTips();
         this.ref.detectChanges();
       })
     );
     this.subscriptions.add(
       this.loadingService.getLoadingStatus().subscribe((res) => {
         this.loading = res;
+        this.initializeToolTips();
         this.ref.detectChanges();
       })
     );
     this.subscriptions.add(
       this.form.valueChanges.subscribe((changes) => {
+      this.initializeToolTips();
         this.ref.detectChanges();
       })
     );
     this.checkForQueryParams();
+
+  }
+
+  initializeToolTips() {
+    setTimeout(() => {
+      let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      });
+    }, 250)
   }
 
   checkForQueryParams() {

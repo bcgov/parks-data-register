@@ -42,7 +42,7 @@
 </div>
 <div class="container-fluid p-4">
   <h3>Search results</h3>
-  <table class="table table-striped mb-0" aria-label="Name search results">
+  <table class="table table-striped mb-0 table-hover" aria-label="Name search results">
     <thead>
       <tr>
         <th scope="col" colspan="1">DATE OF CHANGE</th>
@@ -53,8 +53,8 @@
         <th scope="col" colspan="1">CHANGED BY</th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor="let item of data">
+    <tbody class="hover-pointer">
+      <tr *ngFor="let item of data" (click)="navToDetails(item)">
         <th class="py-3" scope="row" colspan="1">{{ item?.updateDate | date}}</th>
         <td class="py-3">
           <strong>{{ item?.displayId }}</strong>

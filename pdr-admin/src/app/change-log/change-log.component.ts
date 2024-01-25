@@ -6,6 +6,7 @@ import { LoggerService } from '../services/logger.service';
 import { UrlService } from '../services/url.service';
 import { Utils } from '../utils/utils';
 import { ChangelogService } from '../services/changelog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-change-log',
@@ -36,7 +37,8 @@ export class ChangeLogComponent {
     private loadingService: LoadingService,
     private ref: ChangeDetectorRef,
     private urlService: UrlService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -175,6 +177,10 @@ export class ChangeLogComponent {
 
   loadMore() {
     this.submit(false, this.searchParams.lastResultIndex);
+  }
+
+  navToDetails(item) {
+    this.router.navigate([`/protected-areas/${item.pk}`]);
   }
 
   ngOnDestroy() {

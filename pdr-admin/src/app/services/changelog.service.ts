@@ -74,7 +74,7 @@ export class ChangelogService {
   }
 
   setSearchResults(data) {
-    this.dataService.setItemValue(Constants.dataIds.SEARCH_RESULTS, data);
+    this.dataService.setItemValue(Constants.dataIds.CHANGELOG_SEARCH_RESULTS, data);
   }
 
 }

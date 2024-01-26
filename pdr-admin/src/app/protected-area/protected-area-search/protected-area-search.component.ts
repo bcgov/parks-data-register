@@ -187,6 +187,11 @@ export class ProtectedAreaSearchComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    tooltipTriggerList.forEach((tt) => {
+      const el = bootstrap.Tooltip.getInstance(tt);
+      el.hide();
+    })
     this.subscriptions.unsubscribe();
     this.searchService.clearSearchResults();
   }

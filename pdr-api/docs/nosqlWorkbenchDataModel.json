@@ -93,6 +93,10 @@
         {
           "AttributeName": "statusChanged",
           "AttributeType": "BOOL"
+        },
+        {
+          "AttributeName": "sites",
+          "AttributeType": "S"
         }
       ],
       "TableFacets": [
@@ -133,6 +137,17 @@
             "notes",
             "type"
           ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "Site",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "orcs",
+            "SortKeyAlias": "site"
+          },
+          "TableData": [],
           "DataAccess": {
             "MySql": {}
           }
@@ -268,6 +283,136 @@
         },
         {
           "pk": {
+            "S": "1"
+          },
+          "sk": {
+            "S": "Site::1"
+          }
+        },
+        {
+          "pk": {
+            "S": "1"
+          },
+          "sk": {
+            "S": "Site::2"
+          }
+        },
+        {
+          "pk": {
+            "S": "1::Site::1"
+          },
+          "sk": {
+            "S": "Details"
+          },
+          "createDate": {
+            "S": "2019-08-10T16:15:50.868Z"
+          },
+          "updateDate": {
+            "S": "2023-08-10T16:11:54.513Z"
+          },
+          "legalName": {
+            "S": "Example Site 1"
+          },
+          "displayName": {
+            "S": "Example Site 1"
+          },
+          "phoneticName": {
+            "S": "Example Site 1"
+          },
+          "status": {
+            "S": "established"
+          },
+          "lastModifiedBy": {
+            "S": "JUSER"
+          },
+          "type": {
+            "S": "site"
+          },
+          "displayId": {
+            "S": "0001-1"
+          }
+        },
+        {
+          "pk": {
+            "S": "1::Site::1"
+          },
+          "sk": {
+            "S": "2019-08-10T16:15:50.868Z"
+          },
+          "legalName": {
+            "S": "Old site name"
+          },
+          "displayName": {
+            "S": "Old site name"
+          },
+          "phoneticName": {
+            "S": "Old site name"
+          },
+          "status": {
+            "S": "historical"
+          },
+          "lastModifiedBy": {
+            "S": "JUSER"
+          },
+          "type": {
+            "S": "site"
+          },
+          "newLegalName": {
+            "S": "Example Site 1"
+          },
+          "newEffectiveDate": {
+            "S": "2020-08-10T16:15:50.868Z"
+          },
+          "newStatus": {
+            "S": "established"
+          },
+          "displayId": {
+            "S": "0001-1"
+          },
+          "legalNameChanged": {
+            "BOOL": true
+          },
+          "statusChanged": {
+            "BOOL": false
+          }
+        },
+        {
+          "pk": {
+            "S": "1::Site::2"
+          },
+          "sk": {
+            "S": "Details"
+          },
+          "createDate": {
+            "S": "2019-08-10T16:15:50.868Z"
+          },
+          "updateDate": {
+            "S": "2019-08-10T16:15:50.868Z"
+          },
+          "legalName": {
+            "S": "Example Site 2"
+          },
+          "displayName": {
+            "S": "Example Site 2"
+          },
+          "phoneticName": {
+            "S": "Example Site 2"
+          },
+          "status": {
+            "S": "established"
+          },
+          "lastModifiedBy": {
+            "S": "JUSER"
+          },
+          "type": {
+            "S": "site"
+          },
+          "displayId": {
+            "S": "0001-2"
+          }
+        },
+        {
+          "pk": {
             "S": "363"
           },
           "sk": {
@@ -302,94 +447,6 @@
           },
           "displayId": {
             "S": "0363"
-          }
-        },
-        {
-          "pk": {
-            "S": "1"
-          },
-          "sk": {
-            "S": "2020-08-10T16:15:50.868Z"
-          },
-          "legalName": {
-            "S": "Strath Park"
-          },
-          "displayName": {
-            "S": "Strath Park"
-          },
-          "phoneticName": {
-            "S": "strath park"
-          },
-          "status": {
-            "S": "historical"
-          },
-          "notes": {
-            "S": "Updated name"
-          },
-          "lastModifiedBy": {
-            "S": "JUSER"
-          },
-          "type": {
-            "S": "protectedArea"
-          },
-          "newLegalName": {
-            "S": "Strathcona Park"
-          },
-          "newEffectiveDate": {
-            "S": "2023-08-10T16:11:54.513Z"
-          },
-          "newStatus": {
-            "S": "established"
-          },
-          "displayId": {
-            "S": "0001"
-          },
-          "legalNameChanged": {
-            "BOOL": true
-          },
-          "statusChanged": {
-            "BOOL": false
-          }
-        },
-        {
-          "pk": {
-            "S": "9876"
-          },
-          "sk": {
-            "S": "Details"
-          },
-          "createDate": {
-            "S": "2023-11-24T14:53:00.000Z"
-          },
-          "updateDate": {
-            "S": "2023-11-24T14:54:00.000Z"
-          },
-          "legalName": {
-            "S": "Repealed Provincial Park"
-          },
-          "displayName": {
-            "S": "Repealed Provincial Park"
-          },
-          "phoneticName": {
-            "S": "rɪˈpild prəˈvɪnʃəl pɑrk"
-          },
-          "status": {
-            "S": "repealed"
-          },
-          "notes": {
-            "S": "Protected area repealed, does not exist anymore."
-          },
-          "searchTerms": {
-            "S": "Established park name"
-          },
-          "lastModifiedBy": {
-            "S": "JUSER"
-          },
-          "type": {
-            "S": "protectedArea"
-          },
-          "displayId": {
-            "S": "9876"
           }
         },
         {

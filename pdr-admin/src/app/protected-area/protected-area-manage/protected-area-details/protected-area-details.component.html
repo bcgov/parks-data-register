@@ -8,10 +8,10 @@
   {{ currentData?.searchTerms || "-" }}
 </section>
 
-<!-- <section class="mb-5">
+<section class="mb-5">
   <h2>Notes</h2>
-  <small class="me-5">None</small>
-</section> -->
+  {{ currentData?.notes || "None" }}
+</section>
 
 <section class="mb-5" *ngFor="let data of historicalData">
   <h2>Historical name</h2>

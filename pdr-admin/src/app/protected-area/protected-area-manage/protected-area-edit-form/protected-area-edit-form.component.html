@@ -12,20 +12,12 @@
   <div class="row">
     <div class="col">
       <div class="d-flex">
-        <ngds-date-input
-          (displayChange)="onDatePickerInteract()"
-          [control]="form?.controls?.['effectiveDate']"
-          [timezone]="tz"
-          [maxDate]="now"
-          [label]="'Effective date'"
-          [subLabel]="
+        <ngds-date-input (displayChange)="onDatePickerInteract()" [control]="form?.controls?.['effectiveDate']"
+          [timezone]="tz" [maxDate]="now" [label]="'Effective date'" [subLabel]="
             updateType === 'minor'
               ? 'Change only if effective date was entered incorrectly.'
               : 'The data the legal name change became effective.'
-          "
-          [placeholder]="'Choose date'"
-          [loadWhile]="loading"
-        >
+          " [placeholder]="'Choose date'" [loadWhile]="loading">
           <i ngdsInputPrepend class="text-muted mx-2 align-items-center bi bi-calendar-date"></i>
         </ngds-date-input>
       </div>
@@ -36,42 +28,27 @@
 <section *ngIf="this.currentData.status !== 'repealed'">
   <div class="row mt-4">
     <div class="col-12 col-xl-8">
-      <ngds-text-input
-        [control]="form?.controls?.['legalName']"
-        [label]="updateType === 'minor' ? 'Current legal name' : 'New legal name'"
-        [subLabel]="
+      <ngds-text-input [control]="form?.controls?.['legalName']"
+        [label]="updateType === 'minor' ? 'Current legal name' : 'New legal name'" [subLabel]="
           updateType === 'minor'
             ? 'Use only for minor updates, like typos. For legal name changes, use Change legal name.'
             : 'The new legal name exactly as it appears on the OIC documents.'
-        "
-        [loadWhile]="loading"
-      >
+        " [loadWhile]="loading">
       </ngds-text-input>
     </div>
   </div>
 
   <div class="form-check mt-4">
     <label class="form-check-label">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        [(ngModel)]="hideDisplayName"
-        (change)="toggleDisplayNameForm()"
-        [ngModelOptions]="{ standalone: true }"
-      />Legal name is the same as Display name</label
-    >
+      <input class="form-check-input" type="checkbox" [(ngModel)]="hideDisplayName" (change)="toggleDisplayNameForm()"
+        [ngModelOptions]="{ standalone: true }" />Legal name is the same as Display name</label>
   </div>
 
   <div class="row mt-4" *ngIf="!hideDisplayName">
     <div class="col-12 col-xl-8">
-      <ngds-text-input
-        [control]="form?.controls?.['displayName']"
-        [label]="'Display name'"
-        [subLabel]="
+      <ngds-text-input [control]="form?.controls?.['displayName']" [label]="'Display name'" [subLabel]="
           'Leave blank unless the name that should be displayed on public-facing materials is different from the legal name.'
-        "
-        [loadWhile]="loading"
-      >
+        " [loadWhile]="loading">
       </ngds-text-input>
     </div>
   </div>
@@ -88,24 +65,22 @@
   </div>
   <div class="row mt-4">
     <div class="col-12 col-xl-8">
-      <ngds-text-input
-        [control]="form?.controls?.['audioClip']"
-        [label]="'Audio link'"
-        [subLabel]="'Enter the full link address, including https:// or similar.'"
-        [loadWhile]="loading"
-      >
+      <ngds-text-input [control]="form?.controls?.['audioClip']" [label]="'Audio link'"
+        [subLabel]="'Enter the full link address, including https:// or similar.'" [loadWhile]="loading">
       </ngds-text-input>
     </div>
   </div>
   <div class="row mt-4">
     <div class="col-12 col-xl-8">
-      <ngds-text-input 
-        [control]="form?.controls?.['searchTerms']" 
-        [label]="'Search Terms'" 
-        [subLabel]="
+      <ngds-text-input [control]="form?.controls?.['searchTerms']" [label]="'Search Terms'" [subLabel]="
           'Add names people might search for that are not already included in the data (e.g., English transcriptions of Indigenous names, unofficial names).'
-        " 
-        [loadWhile]="loading">
+        " [loadWhile]="loading">
+      </ngds-text-input>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12 col-xl-8">
+      <ngds-text-input [control]="form?.controls?.['notes']" [label]="'Notes'" [loadWhile]="loading" [multiline]="true">
       </ngds-text-input>
     </div>
   </div>
@@ -116,14 +91,8 @@
     <button type="button" class="btn btn-outline-primary action-buttons" (click)="cancel()" [disabled]="loading">
       Cancel
     </button>
-    <button
-      type="button"
-      class="btn btn-primary action-buttons"
-      data-bs-toggle="modal"
-      data-bs-target="#confirmSave"
-      [disabled]="loading || form.pristine || form.invalid"
-      (click)="setModalData()"
-    >
+    <button type="button" class="btn btn-primary action-buttons" data-bs-toggle="modal" data-bs-target="#confirmSave"
+      [disabled]="loading || form.pristine || form.invalid" (click)="setModalData()">
       Save changes
     </button>
   </div>

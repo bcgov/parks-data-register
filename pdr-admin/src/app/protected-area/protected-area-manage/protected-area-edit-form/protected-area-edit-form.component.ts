@@ -27,6 +27,7 @@ export class ProtectedAreaEditFormComponent {
     phoneticName: new UntypedFormControl(null, { nonNullable: true }),
     audioClip: new UntypedFormControl(null, { nonNullable: true }),
     searchTerms: new UntypedFormControl(null, { nonNullable: true }),
+    notes: new UntypedFormControl(null, { nonNullable: true }),
   });
 
   public currentData;
@@ -42,6 +43,7 @@ export class ProtectedAreaEditFormComponent {
     phoneticName: 'Phonetic Name',
     audioClip: 'Audio link',
     searchTerms: 'Search terms',
+    notes: 'Notes',
   };
 
   public tz = Constants.timeZoneIANA;
@@ -57,7 +59,7 @@ export class ProtectedAreaEditFormComponent {
     private loadingService: LoadingService,
     private ref: ChangeDetectorRef,
     private reloadConfirmationDialogueService: ReloadConfirmationDialogueService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -147,14 +149,14 @@ export class ProtectedAreaEditFormComponent {
     const baseObj =
       this.updateType === 'major'
         ? {
-            effectiveDate: '',
-            legalName: '',
-            phoneticName: '',
-            searchTerms: '',
-            notes: '',
-            audioClip: '',
-            lastVersionDate: this.currentData.lastVersionDate,
-          }
+          effectiveDate: '',
+          legalName: '',
+          phoneticName: '',
+          searchTerms: '',
+          notes: '',
+          audioClip: '',
+          lastVersionDate: this.currentData.lastVersionDate,
+        }
         : this.currentData;
 
     let mergedObj = { ...baseObj, ...this.modalObj };

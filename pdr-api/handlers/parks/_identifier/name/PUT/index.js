@@ -254,6 +254,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
     ':updateDate': { S: currentTimeISO },
     ':lastModifiedBy': { S: user },
     ':status': { S: status },
+    ':notes': { S: body.notes },
     ':lastVersionDate': { S: body.lastVersionDate },
     ':effectiveDate': { S: body.effectiveDate }
   }

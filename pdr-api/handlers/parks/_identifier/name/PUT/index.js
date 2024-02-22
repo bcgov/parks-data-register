@@ -310,6 +310,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
         sk: 'Details',
         updateDate: currentTimeISO,
         effectiveDate: body.effectiveDate,
+        notes: body.notes,
         lastModifiedBy: user,
         status: status
       }

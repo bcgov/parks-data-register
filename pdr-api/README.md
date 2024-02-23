@@ -46,6 +46,17 @@ Set the AWS Credentials:
    - AWS_DEFAULT_REGION
    - AWS_REGION
 
+Copy the [sample-env.json](docs/sample-env.json) file to the root of your local `pdr-api` folder and make changes according to your own personal set up. 
+
+```
+    "TABLE_NAME": "NameRegister", // local DynamoDB table name
+    "IS_OFFLINE": true, // set to true if working offline
+    "AWS_REGION": "local-env", // can be anything if working locally
+    "DYNAMODB_ENDPOINT_URL": "http://172.17.0.1:8000", // local endpoint of your local dynamodb server
+    "OPENSEARCH_DOMAIN_ENDPOINT": "http://localhost:9200", // local endpoint of your local opensearch server
+    "OPENSEARCH_MAIN_INDEX": "main-index" // local OS index name
+```
+
 Navigate to the folder cotaining `template.yaml`
 
 Build your application with the `sam build` command.
@@ -62,6 +73,22 @@ pdr-api$ curl http://localhost:3000/
 ```
 
 You can also use `yarn build` & `yarn start` to build and start the API locally. 
+
+## Connecting to remote AWS DynamoDB endpoints (for migrations, etc)
+
+DynamoDB functionality is universally inherited from `dynamodb` which is exported from [dynamoUtils](layers/dynamodb/dynamodb.js). By default, the DynamoDB endpoint is `dynamodb.<region>.amazonaws.com`, unless you have the local environment variable `IS_OFFLINE=true`. The `DYNAMODB_ENDPOINT_URL` environment variable determines which endpoint `dynamodb` will point to.
+
+### Local connections
+```
+export IS_OFFLINE=true
+export DYNAMODB_ENDPOINT_URL="http://172.17.0.1:8000" // local endpoint of your local dynamodb server
+```
+
+### Remote connections
+```
+unset IS_OFFLINE
+export DYNAMODB_ENDPOINT_URL="dynamodb.ca-central-1.amazonaws.com" // remote endpoint for all dynamodb connections in ca-central-1
+```
 
 ### Testing
 

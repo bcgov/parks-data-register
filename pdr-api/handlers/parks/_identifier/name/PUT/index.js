@@ -58,7 +58,7 @@ exports.handler = async (event, context) => {
     const user = event.requestContext?.authorizer?.userID;
 
     // Ensures all required fields are present in the payload.
-    let checkFields = [ ...mandatoryFields ];
+    let checkFields = [...mandatoryFields];
     if (updateType === 'major') {
       checkFields.push('legalName');
     }
@@ -211,7 +211,7 @@ async function createChangeLogItem(body, user, currentTimeISO, currentRecord, ne
 
   // Sets the 'sk' property of the changelog record to the current time in ISO format.
   changelogRecord['sk'] = { 'S': currentTimeISO };
-  changelogRecord['updateDate'] = {'S': currentTimeISO };
+  changelogRecord['updateDate'] = { 'S': currentTimeISO };
   changelogRecord['lastModifiedBy'] = { 'S': user };
 
   // This will copy the incomign legal, effective, and status as a 'new' item to ensure
@@ -265,7 +265,14 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
         updateExpression.push(`${field} = :${field}`);
       }
     }
+  } else if (updateType === 'major') {
+    // If we are repealing, we can add a note
+    updatedAttributeValues[`:notes`] = { S: body.notes || '' };
+    updateExpression.push(`notes = :notes`);
+  } else {
+    // If we are doing a minor edit on a repealed record, we cannot edit the note
   }
+
   // Defines the parameters for updating the record.
   let updateParams = {
     TableName: TABLE_NAME,

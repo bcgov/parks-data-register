@@ -46,7 +46,8 @@ async function run() {
         siteObj.displayName = AWS.DynamoDB.Converter.input(row.legalName);
         siteObj.status = AWS.DynamoDB.Converter.input(row.status);
         siteObj.type = AWS.DynamoDB.Converter.input(`site`);
-        siteObj.displayID = AWS.DynamoDB.Converter.input(`${row.orcs}-${row.siteNumber}`);
+        siteObj.displayId = AWS.DynamoDB.Converter.input(`${row.orcs}-${row.siteNumber}`);
+        siteObj.updateDate = AWS.DynamoDB.Converter.input(DateTime.now().setZone('America/Vancouver').toISO());
       }
     
       const putSiteObject = {

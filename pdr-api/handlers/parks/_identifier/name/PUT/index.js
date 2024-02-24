@@ -118,7 +118,8 @@ function validateRequest(body, checkFields, updateType) {
   // If repealing, trim all optional fields
   for (const field of Object.keys(body))
     if (updateType === 'repeal' && checkFields.indexOf(field) === -1) {
-      delete body[field];
+      // If we are repealing, we can attach a note (2024-02-23)
+      if (field !== 'notes') delete body[field];
     }
   // Check if mandatory fields were provided.
   for (const field of checkFields) {
@@ -265,14 +266,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
         updateExpression.push(`${field} = :${field}`);
       }
     }
-  } else if (updateType === 'major') {
-    // If we are repealing, we can add a note
-    updatedAttributeValues[`:notes`] = { S: body.notes || '' };
-    updateExpression.push(`notes = :notes`);
-  } else {
-    // If we are doing a minor edit on a repealed record, we cannot edit the note
   }
-
   // Defines the parameters for updating the record.
   let updateParams = {
     TableName: TABLE_NAME,

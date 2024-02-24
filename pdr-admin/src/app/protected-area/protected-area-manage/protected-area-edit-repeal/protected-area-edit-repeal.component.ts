@@ -31,6 +31,7 @@ export class ProtectedAreaEditRepealComponent {
     phoneticName: 'Phonetic Name',
     audioClip: 'Audio link',
     searchTerms: 'Search terms',
+    notes: 'Notes',
   };
   public tz = Constants.timeZoneIANA;
   public now = DateTime.now().setZone(this.tz);
@@ -48,7 +49,7 @@ export class ProtectedAreaEditRepealComponent {
     private loadingService: LoadingService,
     private ref: ChangeDetectorRef,
     private reloadConfirmationDialogueService: ReloadConfirmationDialogueService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(

@@ -189,7 +189,7 @@ If you are running OpenSearch on a separate VM.
 
 ### Populating and querying the local OpenSearch instance
 
-Edit `env.js` to include the following variables. Replace the variables with the correct variables for your local instance. 
+Edit `env.json` to include the following variables. Replace the variables with the correct variables for your local instance. 
 
 ```json
 "OPENSEARCH_DOMAIN_ENDPOINT": "http://192.168.1.111:9200",
@@ -199,7 +199,7 @@ Edit `env.js` to include the following variables. Replace the variables with the
 Get a data dump from an AWS DynamoDB source of your choice.
 
 ```bash
-aws dynamodb scan --table-name <tableName> scan > dump.json
+aws dynamodb scan --table-name <tableName> > dump.json
 ```
 
 Navigate to `/tools` and run `opensearchRestore.js` to populate the local OpenSearch server.
@@ -211,7 +211,7 @@ node opensearchRestore.js
 Check the `docs.count` of the index:
 
 ```bash
-curl -XGET "http://localhost:9200/_cat/indices?v
+curl -XGET http://localhost:9200/_cat/indices?v
 ```
 
 ## Local OpenSearch Dashboards

@@ -34,7 +34,7 @@ export class ApiService implements OnDestroy {
   init() {
     // If config is setting api, override.
     if (this.configService.config['API_LOCATION']) {
-      if (this.configService.config['API_PATH']) {
+      if (this.configService.config['API_PATH'] && this.configService.config['API_LOCATION'] !== 'http://localhost:3000') {
         this.apiPath = this.configService.config['API_LOCATION'] + this.configService.config['API_PATH'];
       } else {
         this.apiPath = this.configService.config['API_LOCATION'];

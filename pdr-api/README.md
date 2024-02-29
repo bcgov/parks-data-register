@@ -246,6 +246,12 @@ Start your Dashboards server by running the file.
 
 Your server should become available at `http://localhost:5601`. It may take a few minutes to start.
 
+## Deploying Opensearch in docker
+```
+cd tools/opensearch-docker
+docker-compose up
+```
+
 # Deployment Pipeline
 
 ## Github Actions

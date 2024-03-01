@@ -46,7 +46,7 @@ describe('All Park Names GET', () => {
     const event = {
       httpMethod: 'GET',
       queryStringParameters: {
-        status: 'current'
+        status: 'established'
       },
       requestContext: {
         authorizer: {
@@ -57,7 +57,7 @@ describe('All Park Names GET', () => {
     const res = await lambda.handler(event, null);
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(200);
-    expect(body.data.items.length).toBe(2);
+    expect(body.data.items.length).toBe(4);
   });
 
   test('Search all park names by legal name', async () => {
@@ -86,7 +86,7 @@ describe('All Park Names GET', () => {
       httpMethod: 'GET',
       queryStringParameters: {
         legalName: 'Old Park 1',
-        status: 'current'
+        status: 'established'
       },
       requestContext: {
         authorizer: {
@@ -98,7 +98,7 @@ describe('All Park Names GET', () => {
       httpMethod: 'GET',
       queryStringParameters: {
         legalName: 'Test Park 1',
-        status: 'current'
+        status: 'established'
       },
       requestContext: {
         authorizer: {

@@ -41,7 +41,7 @@ export class ProtectedAreaService {
       if (id) {
         res = (await lastValueFrom(this.apiService.get(`parks/${id}/name`, queryParams)))['data']['items'];
       }
-      const currentProtectedAreaIndex = res.findIndex((element) => element.status === 'current');
+      const currentProtectedAreaIndex = res.findIndex((element) => element.status === 'established');
 
       const currentProtectedArea = this.processProtectedArea(res.splice(currentProtectedAreaIndex, 1)[0]);
 

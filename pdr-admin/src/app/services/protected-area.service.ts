@@ -41,19 +41,25 @@ export class ProtectedAreaService {
       if (id) {
         res = (await lastValueFrom(this.apiService.get(`parks/${id}/name`, queryParams)))['data']['items'];
       }
-      const currentProtectedAreaIndex = res.findIndex((element) => element.status === 'established');
+      let resWithoutSites = [];
+      for (const obj of res.slice()) {
+        if (obj?.sk.includes('Site::') === false) {
+          resWithoutSites.push(obj);
+        }
+      }
+      const currentProtectedAreaIndex = resWithoutSites.findIndex((element) => element.status === 'established');
 
-      const currentProtectedArea = this.processProtectedArea(res.splice(currentProtectedAreaIndex, 1)[0]);
+      const currentProtectedArea = this.processProtectedArea(resWithoutSites.splice(currentProtectedAreaIndex, 1)[0]);
 
-      for (let i = 0; i < res.length; i++) {
-        res[i] = this.processProtectedArea(res[i]);
+      for (let i = 0; i < resWithoutSites.length; i++) {
+        resWithoutSites[i] = this.processProtectedArea(resWithoutSites[i]);
       }
 
       // Sort historical by descending effective date
-      res.sort((a, b) => new Date(b.effectiveDate).valueOf() - new Date(a.effectiveDate).valueOf());
+      resWithoutSites.sort((a, b) => new Date(b.effectiveDate).valueOf() - new Date(a.effectiveDate).valueOf());
 
       this.dataService.setItemValue(Constants.dataIds.CURRENT_PROTECTED_AREA, currentProtectedArea);
-      this.dataService.setItemValue(Constants.dataIds.HISTORICAL_PROTECTED_AREA, res);
+      this.dataService.setItemValue(Constants.dataIds.HISTORICAL_PROTECTED_AREA, resWithoutSites);
     } catch (err) {
       this.loggerService.error(err);
       this.toastService.addMessage(`Something went wrong. Please try again.`, ``, ToastTypes.ERROR);

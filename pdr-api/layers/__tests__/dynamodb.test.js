@@ -85,11 +85,12 @@ describe('DynamoDB Layer Tests', () => {
     const regScan = await layer.runScan(scan);
     expect(regScan.items).toEqual(expect.arrayContaining([
       data.mockCurrentParkName1,
-      data.mockOldParkName1
+      data.mockOldParkName1,
+      data.mockParkSite1
     ]));
 
     // Limited scan
-    const limitScan = await layer.runScan(scan, 1);
+    const limitScan = await layer.runScan(scan, 3);
     expect(limitScan.items.length).toEqual(1);
     expect(limitScan).toHaveProperty('lastEvaluatedKey');
 

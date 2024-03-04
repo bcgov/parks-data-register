@@ -47,7 +47,7 @@ describe('Specific Park Names GET', () => {
     const res = await lambda.handler(event, null);
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(200);
-    expect(body.data.items.length).toBe(2);
+    expect(body.data.items.length).toBe(3);
   });
 
   test('Get all current name information for park identifier', async () => {
@@ -55,7 +55,7 @@ describe('Specific Park Names GET', () => {
     const event = {
       httpMethod: 'GET',
       queryStringParameters: {
-        status: 'current'
+        status: 'established'
       },
       pathParameters: {
         identifier: '1'
@@ -70,7 +70,7 @@ describe('Specific Park Names GET', () => {
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(200);
     expect(body.data.items.length).toBe(1);
-    expect(body.data.items[0].status).toEqual('current');
+    expect(body.data.items[0].status).toEqual('established');
   });
 
   test('Public user', async () => {

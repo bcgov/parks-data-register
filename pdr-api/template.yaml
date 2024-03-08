@@ -676,6 +676,47 @@ Resources:
               Authorizer: NONE
               OverrideApiAuth: true
 
+  # Get sites by park id
+  SiteGet:
+    FunctionName: SiteGet
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/parks/_identifier/sites/_siteIdentifier/GET
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Sites by Park Id GET lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        SiteGet:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/sites/{siteIdentifier}
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+        SitesByParkIdOptions:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/sites/{siteIdentifier}
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
+
 
 Outputs:
   #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

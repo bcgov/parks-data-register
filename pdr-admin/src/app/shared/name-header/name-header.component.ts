@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Utils } from 'src/app/utils/utils';
 
-export interface headerData {
+export interface HeaderData {
   displayId?: string,
   legalName?: string,
   interactionTemplate?: any,
@@ -17,7 +17,7 @@ export interface headerData {
   styleUrls: ['./name-header.component.scss']
 })
 export class NameHeaderComponent {
-  @Input() headerData: headerData;
+  @Input() headerData: HeaderData;
 
   public utils = new Utils();
 }

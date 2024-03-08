@@ -5,7 +5,7 @@ import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 import { SiteService } from 'src/app/services/site.service';
 import { UrlService } from 'src/app/services/url.service';
-import { headerData } from 'src/app/shared/name-header/name-header.component';
+import { HeaderData } from 'src/app/shared/name-header/name-header.component';
 import { Utils } from 'src/app/utils/utils';
 
 @Component({
@@ -21,7 +21,7 @@ export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterVie
 
   public state = 'details';
   public displayLevel = '';
-  public headerData: headerData = {};
+  public headerData: HeaderData = {};
 
   @ViewChild('interactionTemplate') interactionTemplate: TemplateRef<any>;
 
@@ -40,12 +40,12 @@ export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterVie
         if (!res) {
           this.protectedAreaService.fetchData(this.id);
         } else {
-          this.headerData['displayId'] = res?.displayId,
-          this.headerData['legalName'] = res?.legalName,
-          this.headerData['status'] = res?.status,
-          this.headerData['type'] = 'Protected Area',
-          this.headerData['effectiveDateDisplay'] = res?.effectiveDate,
-          this.headerData['updateDateDisplay'] = res?.updateDate ? this.utils.formatDateForDisplay(res.updateDate) : ''
+          this.headerData['displayId'] = res?.displayId;
+          this.headerData['legalName'] = res?.legalName;
+          this.headerData['status'] = res?.status;
+          this.headerData['type'] = 'Protected Area';
+          this.headerData['effectiveDateDisplay'] = res?.effectiveDate;
+          this.headerData['updateDateDisplay'] = res?.updateDate ? this.utils.formatDateForDisplay(res.updateDate) : '';
           this.ref.detectChanges();
         }
       })
@@ -81,7 +81,7 @@ export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterVie
     this.ref.detectChanges();
   }
 
-  checkNoSubpath(){
+  checkNoSubpath() {
     // this will need to be more robust in the future
     const tags = this.urlService.getRoutePathTags();
     return tags.indexOf('sites') === -1;

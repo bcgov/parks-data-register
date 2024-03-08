@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Breadcrumb } from '../models/breadcrumb.model';
 import { ProtectedAreaService } from './protected-area.service';
 import { Utils } from '../utils/utils';
+import { SiteService } from './site.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,12 +15,17 @@ export class BreadcrumbService {
   private readonly _breadcrumbs = new BehaviorSubject<Breadcrumb[]>([]);
   private utils = new Utils();
   public protectedArea;
+  public site;
   public subscriptions = new Subscription();
 
   // Observable exposing the breadcrumb hierarchy
   readonly breadcrumbs = this._breadcrumbs.asObservable();
 
-  constructor(private router: Router, private protectedAreaService: ProtectedAreaService) {
+  constructor(
+    private router: Router,
+    private protectedAreaService: ProtectedAreaService,
+    private siteService: SiteService
+  ) {
     // Initial seed
     this.setBreadcrumb();
 
@@ -27,6 +33,15 @@ export class BreadcrumbService {
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
         if (res) {
           this.protectedArea = res;
+          this.setBreadcrumb();
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.siteService.watchCurrentSite().subscribe((res) => {
+        if (res) {
+          this.site = res;
           this.setBreadcrumb();
         }
       })
@@ -64,7 +79,11 @@ export class BreadcrumbService {
         switch (route.data['breadcrumb']) {
           case 'PROTECTED_AREA_DETAILS':
             label = `${this.protectedArea?.displayName || '-'}`;
-            altLabel = 'Details';
+            altLabel = 'Protected Area Details';
+            break;
+          case 'SITE_DETAILS':
+            label = `${this.site?.displayName || '-'}`;
+            altLabel = 'Site Details';
             break;
           case 'PROTECTED_AREA_EDIT':
             label = this.utils.upperCaseFirstChar(routeUrl[routeUrl.length - 1]);

@@ -15,6 +15,11 @@ const routes: Routes = [
     },
     children: [
       {
+        path: 'sites',
+        loadChildren: () =>
+          import('../site/site.module').then((m) => m.SiteModule),
+      },
+      {
         path: 'edit-repealed',
         component: ProtectedAreaEditFormComponent,
         data: {
@@ -55,4 +60,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ProtectedAreaManageRoutingModule {}
+export class ProtectedAreaManageRoutingModule { }

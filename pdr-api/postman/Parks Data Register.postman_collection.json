@@ -319,53 +319,6 @@
 							"name": "Sites",
 							"item": [
 								{
-									"name": "Specific Site",
-									"item": [
-										{
-											"name": "Get Specific Site",
-											"request": {
-												"method": "GET",
-												"header": [],
-												"url": {
-													"raw": "{{base_url}}/parks/:identifier/sites/:siteIdentifier",
-													"host": [
-														"{{base_url}}"
-													],
-													"path": [
-														"parks",
-														":identifier",
-														"sites",
-														":siteIdentifier"
-													],
-													"query": [
-														{
-															"key": "sk",
-															"value": "Details",
-															"disabled": true
-														},
-														{
-															"key": "status",
-															"value": "historical",
-															"disabled": true
-														}
-													],
-													"variable": [
-														{
-															"key": "identifier",
-															"value": "300"
-														},
-														{
-															"key": "siteIdentifier",
-															"value": "9"
-														}
-													]
-												}
-											},
-											"response": []
-										}
-									]
-								},
-								{
 									"name": "Get Sites By Park Id",
 									"request": {
 										"method": "GET",
@@ -449,6 +402,52 @@
 										{
 											"key": "sortOrder",
 											"value": "desc"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Site",
+			"item": [
+				{
+					"name": "Specific Site",
+					"item": [
+						{
+							"name": "Get Specific Site",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "sk",
+											"value": "Details",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "historical",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
 										}
 									]
 								}

@@ -1,5 +1,5 @@
-const { createDB } = require('../../../../../../__tests__/settings');
-const { MockData } = require('../../../../../../__tests__/mock_data');
+const { createDB } = require('../../../../__tests__/settings');
+const { MockData } = require('../../../../__tests__/mock_data');
 
 const data = new MockData;
 let dbClient;
@@ -21,8 +21,7 @@ describe('Site GET', () => {
         const event = {
             httpMethod: 'GET',
             pathParameters: {
-                identifier: '1',
-                siteIdentifier: '1'
+                identifier: '1::Site::1',
             },
             requestContext: {
                 authorizer: {
@@ -41,8 +40,7 @@ describe('Site GET', () => {
         const event = {
             httpMethod: 'GET',
             pathParameters: {
-                identifier: '1',
-                siteIdentifier: '1'
+                identifier: '1::Site::1',
             },
             queryStringParameters: {
                 sk: 'Details'
@@ -65,8 +63,7 @@ describe('Site GET', () => {
         const event = {
             httpMethod: 'GET',
             pathParameters: {
-                identifier: '1',
-                siteIdentifier: '1'
+                identifier: '1::Site::1',
             },
             queryStringParameters: {
                 status: 'established'
@@ -89,8 +86,7 @@ describe('Site GET', () => {
         const event = {
             httpMethod: 'GET',
             pathParameters: {
-                identifier: '1',
-                siteIdentifier: '1'
+                identifier: '1::Site::1',
             },
             queryStringParameters: {
                 status: 'historical'

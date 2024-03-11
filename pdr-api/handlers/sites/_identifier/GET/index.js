@@ -9,8 +9,7 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        const parkIdentifier = event.pathParameters.identifier;
-        const siteIdentifier = event.pathParameters.siteIdentifier;
+        const identifier = event.pathParameters.identifier;
 
         const queryParams = event.queryStringParameters;
         const isAdmin = JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
@@ -18,13 +17,13 @@ exports.handler = async (event, context) => {
         const status = queryParams?.status;
 
         // Check if query is valid
-        await validateRequest(parkIdentifier, isAdmin, status);
+        await validateRequest(identifier, isAdmin, status);
 
         // SK for PA Site obj is Site::{siteId}
         let query = {
             TableName: TABLE_NAME,
             ExpressionAttributeValues: {
-                ':pk': { S: `${parkIdentifier}::Site::${siteIdentifier}` }
+                ':pk': { S: identifier }
             },
             KeyConditionExpression: 'pk = :pk',
         };
@@ -54,10 +53,11 @@ exports.handler = async (event, context) => {
 };
 
 async function validateRequest(identifier, isAdmin, status) {
+
     // Public users are not allowed to see sites that are part of a pending protected area
     let protectedArea = null;
     try {
-        protectedArea = await getOne(identifier, 'Details');
+        protectedArea = await getOne((identifier.split('::'))[0], 'Details');
     } catch (err) {
         logger.Error('err:', err)
         throw new Error('Error getting protected area');

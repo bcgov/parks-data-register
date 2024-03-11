@@ -57,7 +57,7 @@ Then
   - [ ] Code is peer reviewed and has passed CI/CD tests
 - QA:
   - [ ] Acceptance criteria are tested (Functionality meets the acceptance criteria defined in the ticket)
-  - [ ] Code is shippable to the production environment
+  - [ ] Code is potentially shippable to the production environment
   - [ ] Functional features have been tested and passed by QA
   - [ ] UI components tested by designer
   - [ ] Code is deployed to PROD when moved to 'done' column (unless requested otherwise by PO)

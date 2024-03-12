@@ -8,6 +8,7 @@ import { Constants } from 'src/app/utils/constants';
 import { Utils } from 'src/app/utils/utils';
 import { DateTime } from 'luxon';
 import { ReloadConfirmationDialogueService } from 'src/app/services/reload-confirmation-dialogue.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-protected-area-edit-repeal',
@@ -48,13 +49,23 @@ export class ProtectedAreaEditRepealComponent {
     private protectedAreaService: ProtectedAreaService,
     private loadingService: LoadingService,
     private ref: ChangeDetectorRef,
-    private reloadConfirmationDialogueService: ReloadConfirmationDialogueService
+    private reloadConfirmationDialogueService: ReloadConfirmationDialogueService,
+    private toastService: ToastService
   ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
         this.currentData = res ? res : {};
+        if (this.currentData?.status === 'repealed') {
+          // no repeals on a repealed protected area
+          this.toastService.addMessage(
+            'No repeals permitted on a repealed protected area.',
+            'Invalid action',
+            3
+          );
+          this.router.navigate(['/protected-areas']);
+        }
         this.ref.detectChanges();
       })
     );

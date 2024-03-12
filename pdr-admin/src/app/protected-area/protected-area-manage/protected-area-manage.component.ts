@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, 
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { LoadingService } from 'src/app/services/loading.service';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 import { SiteService } from 'src/app/services/site.service';
 import { UrlService } from 'src/app/services/url.service';
@@ -32,6 +33,7 @@ export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterVie
     private ref: ChangeDetectorRef,
     private siteService: SiteService,
     private urlService: UrlService,
+    protected loadingService: LoadingService
   ) { }
 
   ngOnInit(): void {
@@ -85,6 +87,14 @@ export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterVie
     // this will need to be more robust in the future
     const tags = this.urlService.getRoutePathTags();
     return tags.indexOf('sites') === -1;
+  }
+
+  isRepealed(): boolean {
+    return this.headerData?.status ? this.headerData.status === 'repealed' : false;
+  }
+
+  isLoading(): boolean {
+    return this.loadingService.isLoading();
   }
 
   navigate(path) {

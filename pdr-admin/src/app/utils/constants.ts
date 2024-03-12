@@ -5,7 +5,9 @@ export class Constants {
     CURRENT_PROTECTED_AREA: 'current-protected-area',
     PROTECTED_AREA_PUT: 'protected-area-put',
     HISTORICAL_PROTECTED_AREA: 'historical-protected-area',
-    CHANGELOG_SEARCH_RESULTS: 'changelog-search-results'
+    CHANGELOG_SEARCH_RESULTS: 'changelog-search-results',
+    CURRENT_SITES_LIST: 'current-sites-list',
+    CURRENT_SITE: 'current-site'
   };
 
   public static readonly timeZoneIANA = 'America/Vancouver';

@@ -1,0 +1,12 @@
+<div
+  *ngFor="let site of siteLinksList?.value"
+  class="d-flex mb-2"
+>
+  <button
+    class="btn btn-link"
+    (click)="navToSite(site)"
+  >
+    <strong>{{site?.strong}}</strong>
+    &nbsp;&nbsp;{{site?.paName}}
+  </button>
+</div>

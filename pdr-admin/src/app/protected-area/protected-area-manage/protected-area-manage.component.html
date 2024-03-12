@@ -1,39 +1,33 @@
-<div class="container-fluid pt-4 px-4">
-  <section class="pb-4 mb-4 border-bottom">
-    <div class="d-flex justify-content-between flex-wrap mb-1">
-      <h1 class="mb-0">
-        {{ currentData?.displayId || "-" }} <span class="fw-normal">{{ currentData?.legalName || "-" }}</span>
-      </h1>
-      <button
-        *ngIf="state === 'details'"
-        type="button"
-        class="btn btn-outline-primary my-3 my-sm-0"
-        (click)="navigate('edit')"
-      >
-        <i class="bi bi-pen me-2"></i>Edit
-      </button>
-      <button
-        *ngIf="state === 'edit'"
-        type="button"
-        class="btn btn-outline-primary my-3 my-sm-0"
-        (click)="navigate('')"
-      >
-        <i class="bi bi-card-heading me-2"></i>Details
-      </button>
-    </div>
-    <div class="d-flex justify-content-start text-muted">
-      <div class="me-4 fs-5"><strong>Type</strong> Protected Area</div>
-      <div class="me-4 fs-5">
-        <strong>Status</strong> {{ this.utils.upperCaseFirstChar(currentData?.status) || "-" }}
-      </div>
-      <div *ngIf="currentData?.status === 'repealed'" class="me-4 fs-5">
-        <strong>Repealed date</strong> {{ currentData?.effectiveDateDisplay || "-" }}
-      </div>
-      <div class="me-4 fs-5"><strong>Last updated</strong> {{ currentData?.updateDateDisplay || "-" }}</div>
-    </div>
-  </section>
-</div>
-<div class="container-fluid pb-4 px-4">
-  <app-protected-area-details *ngIf="showDetails"></app-protected-area-details>
+<section class="m-4">
+  <app-name-header
+    *ngIf="checkNoSubpath()"
+    [headerData]="headerData"
+  ></app-name-header>
   <router-outlet></router-outlet>
-</div>
+  <div
+    class="container-fluid pb-4 px-4"
+    *ngIf="state !== 'edit'"
+  >
+    <app-protected-area-details *ngIf="displayLevel === 'protected-area'"></app-protected-area-details>
+    <app-site-list *ngIf="displayLevel === 'sites'"></app-site-list>
+  </div>
+</section>
+
+<ng-template #interactionTemplate>
+  <button
+    *ngIf="state === 'details'"
+    type="button"
+    class="btn btn-outline-primary my-3 my-sm-0"
+    (click)="navigate('edit')"
+  >
+    <i class="bi bi-pen me-2"></i>Edit
+  </button>
+  <button
+    *ngIf="state === 'edit'"
+    type="button"
+    class="btn btn-outline-primary my-3 my-sm-0"
+    (click)="navigate('')"
+  >
+    <i class="bi bi-card-heading me-2"></i>Details
+  </button>
+</ng-template>

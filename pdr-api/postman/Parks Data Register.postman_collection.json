@@ -411,6 +411,52 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "Site",
+			"item": [
+				{
+					"name": "Specific Site",
+					"item": [
+						{
+							"name": "Get Specific Site",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "sk",
+											"value": "Details",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "historical",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		}
 	],
 	"auth": {

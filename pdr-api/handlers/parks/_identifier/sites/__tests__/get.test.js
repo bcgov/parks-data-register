@@ -4,7 +4,7 @@ const { MockData } = require('../../../../../__tests__/mock_data');
 const data = new MockData;
 let dbClient;
 
-describe('Specific Park Names GET', () => {
+describe('Park Site GET', () => {
     const OLD_ENV = process.env;
     beforeEach(async () => {
         jest.resetModules();

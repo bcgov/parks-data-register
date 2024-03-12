@@ -636,11 +636,52 @@ Resources:
     DependsOn: NameRegister
 
   # Get sites by park id
-  SitesByParkIdGet:
-    FunctionName: SitesByParkIdGet
+  ParkSitesGet:
+    FunctionName: ParkSitesGet
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: handlers/parks/_identifier/sites/GET
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 30
+      Description: Park Sites GET lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        ParkSitesGet:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/sites
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+        ParkSitesOptions:
+          Type: Api
+          Properties:
+            Path: /parks/{identifier}/sites
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
+
+  # Get sites by park id
+  SiteGet:
+    FunctionName: SiteGet
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/sites/_identifier/GET
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
@@ -659,23 +700,22 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref TableNameRegister
       Events:
-        SitesByParkIdGet:
+        SiteGet:
           Type: Api
           Properties:
-            Path: /parks/{identifier}/sites
+            Path: /sites/{identifier}
             Method: GET
             RestApiId: !Ref ApiDeployment
         SitesByParkIdOptions:
           Type: Api
           Properties:
-            Path: /parks/{identifier}/sites
+            Path: /sites/{identifier}
             Method: OPTIONS
             RestApiId: !Ref ApiDeployment
             Auth:
               ApiKeyRequired: false
               Authorizer: NONE
               OverrideApiAuth: true
-
 
 Outputs:
   #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

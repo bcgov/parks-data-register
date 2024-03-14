@@ -171,7 +171,7 @@ describe('OSQuery class', () => {
   });
 
   describe('addMustNotMatchTermsRule method', () => {
-    test('should call addTermsRule correctly with ignore=true and exactMatch=false', async () => {
+    test('(addMustNot) should call addTermsRule correctly with ignore=true and exactMatch=false', async () => {
       const queryInstance = new OSQuery();
       const terms = { field: 'value' };
       const terms2 = { field2: 'value2', field3: 'value3' };
@@ -216,7 +216,7 @@ describe('OSQuery class', () => {
 });
 
 describe('addShouldMatchTermsRule method', () => {
-  test('should call addTermsRule correctly with ignore=true and exactMatch=false', async () => {
+  test('(addShouldNot) should call addTermsRule correctly with ignore=true and exactMatch=false', async () => {
     const queryInstance = new OSQuery();
     const terms = { field: 'value' };
     const terms2 = { field2: 'value2', field3: 'value3' };

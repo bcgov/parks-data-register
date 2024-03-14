@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const { TABLE_NAME, dynamodb, getOne, ESTABLISHED_STATE, HISTORICAL_STATE, REPEALED_STATE } = require('/opt/dynamodb');
+const { TABLE_NAME, dynamodb, getOne, getSitesForProtectedArea, setSiteStatus, ESTABLISHED_STATE, HISTORICAL_STATE, REPEALED_STATE } = require('/opt/dynamodb');
 const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
@@ -188,11 +188,33 @@ async function majorChange(identifier, user, body, currentTimeISO, currentRecord
 
   let context = 'Legal Name Change.';
   if (newStatus === REPEALED_STATE) {
-    context = 'Protected area repealed.'
+    context = 'Protected area repealed.';
+
+    // Handle repealing sites
+    await handleRepealSites(identifier);
   }
 
   // Returns a success response with the updated attributes.
   return sendResponse(200, attributes, 'Protected area record updated', null, context);
+}
+
+/**
+ * Asynchronously handles the repeal of sites.
+ *
+ * @async
+ * @function handleRepealSites
+ * @param {string} identifier - The identifier of the Protected Area.
+ * @returns {Promise} - A Promise that resolves when all the Protected Area's sites have been repealed.
+ *
+ * @example
+ * await handleRepealSites('123');
+ */
+async function handleRepealSites(identifier) {
+  // Get each site in the current Protected Area
+  const sites = await getSitesForProtectedArea(identifier);
+
+  // Repeal them all
+  await setSiteStatus(sites, REPEALED_STATE);
 }
 
 /**

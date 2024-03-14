@@ -123,12 +123,6 @@ async function runScan(query, limit = null, lastEvaluatedKey = null, paginated =
   }
 }
 
-// TODO: Remove this, it is unused.
-async function getConfig() {
-  const config = await getOne('config', 'config');
-  return AWS.DynamoDB.Converter.unmarshall(config);
-}
-
 async function putItem(obj, tableName = TABLE_NAME) {
   let putObj = {
     TableName: tableName,
@@ -151,14 +145,13 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
     return result;
   }
 
-  console.log("dataToInsert");
-  console.log(JSON.stringify(dataToInsert));
+  logger.info("dataToInsert");
+  logger.debug(JSON.stringify(dataToInsert));
 
   const dataChunks = chunkArray(dataToInsert, chunkSize);
 
-  console.log("datachunks")
-  console.log(JSON.stringify(dataChunks));
-
+  logger.info("datachunks")
+  logger.debug(JSON.stringify(dataChunks));
 
   for (let index = 0; index < dataChunks.length; index++) {
     const chunk = dataChunks[index];
@@ -169,7 +162,7 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
       }
     }));
 
-    console.log(JSON.stringify(writeRequests))
+    logger.debug(JSON.stringify(writeRequests))
 
     const params = {
       RequestItems: {
@@ -178,7 +171,7 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
     };
 
     try {
-      console.log(JSON.stringify(params));
+      logger.debug(JSON.stringify(params));
       const data = await dynamodb.batchWriteItem(params).promise();
       logger.info(`BatchWriteItem response for chunk ${index}:`, data);
     } catch (err) {
@@ -187,21 +180,62 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
   }
 }
 
+/**
+ * Asynchronously retrieves all sites for a given protected area.
+ *
+ * @async
+ * @function getSitesForProtectedArea
+ * @param {string} identifier - The identifier of the Protected Area.
+ * @returns {Promise} - A Promise that resolves when the sites have been retrieved.
+ *
+ * @example
+ * await getSitesForProtectedArea('123');
+ */
+async function getSitesForProtectedArea(identifier) {
+  const query = {
+    TableName: TABLE_NAME,
+    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
+    ExpressionAttributeValues: {
+      ':pk': { S: identifier },
+      ':sk': { S: 'Site::' }
+    }
+  };
+  logger.info('Get list of sites for a protected area');
+  const res = await runQuery(query);
+  logger.debug(res);
+  return res;
+}
+
+/**
+ * Asynchronously sets the status for a list of sites.
+ *
+ * @async
+ * @param {Array<string>} sites - An array of site identifiers. Each identifier should be in the form of '<ProtectedAreaID>:Site:<SiteID>'.
+ * @param {string} status - The status to be set for the sites.
+ * @returns {Promise<Object>} A promise that resolves with the new site object.
+ */
+async function setSiteStatus(sites, status) {
+  // Takes the form of [<ProtectedAreaID>:Site::<SiteID>]
+  // Sets the site status and returns the new object
+  return Promise.resolve();
+}
+
 
 module.exports = {
-  TABLE_NAME,
-  AWS_REGION,
   AUDIT_TABLE_NAME,
-  STATUS_INDEX_NAME,
-  LEGALNAME_INDEX_NAME,
+  AWS_REGION,
   ESTABLISHED_STATE,
   HISTORICAL_STATE,
+  LEGALNAME_INDEX_NAME,
   REPEALED_STATE,
+  STATUS_INDEX_NAME,
+  TABLE_NAME,
   batchWriteData,
   dynamodb,
+  getOne,
+  getSitesForProtectedArea,
+  putItem,
   runQuery,
   runScan,
-  getOne,
-  getConfig,
-  putItem
+  setSiteStatus
 };

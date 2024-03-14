@@ -1,5 +1,6 @@
-const { createDB, TABLE_NAME } = require('../../__tests__/settings');
+const { createDB, deleteDB, getHashedText } = require('../../__tests__/settings');
 const { MockData } = require('../../__tests__/mock_data');
+const AWS = require('aws-sdk');
 
 const data = new MockData;
 let dbClient;
@@ -10,15 +11,18 @@ describe('DynamoDB Layer Tests', () => {
   const OLD_ENV = process.env;
   beforeEach(async () => {
     jest.resetModules();
+    const hash = getHashedText('DynamoDB Layer Tests');
+    process.env.TABLE_NAME = hash;
     dbClient = await createDB([
       data.mockCurrentParkName1,
       data.mockCurrentParkName2,
-      data.mockOldParkName1
-    ]);
-    process.env = { ...OLD_ENV }; // Make a copy of environment
+      data.mockOldParkName1,
+      data.mockParkSite1
+    ], hash);
   });
 
-  afterAll(() => {
+  afterEach(async () => {
+    await deleteDB(process.env.TABLE_NAME);
     process.env = OLD_ENV; // Restore old environment
   });
 
@@ -31,12 +35,32 @@ describe('DynamoDB Layer Tests', () => {
     // item does not exist
     const notExists = await layer.getOne('badpk', 'badsk');
     expect(notExists).toEqual({});
-  })
+  });
+
+  test('Put one item', async () => {
+    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+
+    const insertedRecord = { pk: { S: '123put' }, sk: { S: 'Details' }};
+
+    // Put the item into the db
+    await layer.putItem(insertedRecord);
+
+    // It should be there
+    const record = await layer.getOne('123put', 'Details');
+    expect(record).toEqual(AWS.DynamoDB.Converter.unmarshall(insertedRecord));
+  });
+
+  test('Get sites for protected area', async () => {
+    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const records = await layer.getSitesForProtectedArea('1');
+    expect(records.items.length).toEqual(1);
+    expect(records.items[0].sk).toEqual('Site::1');
+  });
 
   test('Run Query', async () => {
     const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
     const query = {
-      TableName: TABLE_NAME,
+      TableName: process.env.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk',
       ExpressionAttributeValues: {
         ':pk': { S: '1' }
@@ -75,7 +99,7 @@ describe('DynamoDB Layer Tests', () => {
   test('Run Scan', async () => {
     const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
     const scan = {
-      TableName: TABLE_NAME,
+      TableName: process.env.TABLE_NAME,
       FilterExpression: 'pk = :pk',
       ExpressionAttributeValues: {
         ':pk': { S: '1' }
@@ -85,15 +109,13 @@ describe('DynamoDB Layer Tests', () => {
     const regScan = await layer.runScan(scan);
     expect(regScan.items).toEqual(expect.arrayContaining([
       data.mockCurrentParkName1,
-      data.mockOldParkName1,
-      data.mockParkSite1
+      data.mockOldParkName1
     ]));
 
-    // Limited scan
-    const limitScan = await layer.runScan(scan, 3);
+    // // Limited scan
+    const limitScan = await layer.runScan(scan, 1);
     expect(limitScan.items.length).toEqual(1);
     expect(limitScan).toHaveProperty('lastEvaluatedKey');
-
 
     // Starting from lastEvaluatedKey
     const layerLEKScan = { ExclusiveStartKey: limitScan.lastEvaluatedKey, ...scan };
@@ -111,5 +133,28 @@ describe('DynamoDB Layer Tests', () => {
     scanSpy.mockClear();
     await layer.runScan(scan, 1, null, false);
     expect(scanSpy.mock.calls.length).toBeGreaterThan(1);
-  })
+  });
+
+  test('Batch Write Item', async () => {
+    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const recordSize = 51;
+    const chunkSize = 5;
+    let records = [];
+
+    for (let i = 0; i < recordSize; i++) {
+      let jsonObject = {
+        pk: `{BatchWrite${i}}`,
+        sk: 'Details'
+      };
+      records.push(AWS.DynamoDB.Converter.marshall(jsonObject));
+    }
+
+    const querySpy = jest.spyOn(layer.dynamodb, 'batchWriteItem');
+    await layer.batchWriteData(records, chunkSize, process.env.TABLE_NAME);
+
+    const fullBatchesCount = recordSize / chunkSize;
+    const remainder = recordSize % chunkSize;
+
+    expect(querySpy).toHaveBeenCalledTimes(Math.floor(fullBatchesCount) + remainder);
+  });
 });

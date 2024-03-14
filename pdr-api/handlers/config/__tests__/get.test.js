@@ -1,4 +1,4 @@
-const { createDB } = require('../../../__tests__/settings');
+const { createDB, deleteDB, getHashedText } = require('../../../__tests__/settings');
 const { MockData } = require('../../../__tests__/mock_data');
 
 const data = new MockData;
@@ -8,11 +8,13 @@ describe('Specific Park Names GET', () => {
   const OLD_ENV = process.env;
   beforeEach(async () => {
     jest.resetModules();
-    dbClient = await createDB(data.allData());
-    process.env = { ...OLD_ENV }; // Make a copy of environment
+    const hash = getHashedText(expect.getState().currentTestName);
+    process.env.TABLE_NAME = hash;
+    dbClient = await createDB(data.allData(), hash);
   });
 
-  afterAll(() => {
+  afterEach(() => {
+    deleteDB(process.env.TABLE_NAME);
     process.env = OLD_ENV; // Restore old environment
   });
 

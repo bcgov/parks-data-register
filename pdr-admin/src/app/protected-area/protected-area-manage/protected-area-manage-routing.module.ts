@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes, mapToCanActivate, mapToCanDeactivate } from '@angular/router';
+import { RouterModule, Routes, mapToCanDeactivate } from '@angular/router';
 import { ProtectedAreaEditRepealComponent } from './protected-area-edit-repeal/protected-area-edit-repeal.component';
-import { ProtectedAreaEditComponent } from './protected-area-edit/protected-area-edit.component';
 import { ProtectedAreaManageComponent } from './protected-area-manage.component';
 import { ProtectedAreaEditFormComponent } from './protected-area-edit-form/protected-area-edit-form.component';
 import { UnsavedChangesGuard } from 'src/app/guards/unsaved-changes-guard';
@@ -28,29 +27,31 @@ const routes: Routes = [
         },
       },
       {
-        path: 'edit',
-        component: ProtectedAreaEditComponent,
+        path: 'repeal',
+        component: ProtectedAreaEditRepealComponent,
+        canDeactivate: mapToCanDeactivate([UnsavedChangesGuard]),
         data: {
-          breadcrumb: 'Edit',
+          breadcrumb: 'Repeal',
+          updateType: 'repeal'
         },
-        children: [
-          {
-            path: 'repeal',
-            component: ProtectedAreaEditRepealComponent,
-            canDeactivate: mapToCanDeactivate([UnsavedChangesGuard]),
-            data: {
-              breadcrumb: 'Repeal',
-            },
-          },
-          {
-            path: ':updateType',
-            component: ProtectedAreaEditFormComponent,
-            canDeactivate: mapToCanDeactivate([UnsavedChangesGuard]),
-            data: {
-              breadcrumb: 'PROTECTED_AREA_EDIT',
-            },
-          },
-        ],
+      },
+      {
+        path: 'minor',
+        component: ProtectedAreaEditFormComponent,
+        canDeactivate: mapToCanDeactivate([UnsavedChangesGuard]),
+        data: {
+          breadcrumb: 'Minor Edit',
+          updateType: 'minor'
+        },
+      },
+      {
+        path: 'major',
+        component: ProtectedAreaEditFormComponent,
+        canDeactivate: mapToCanDeactivate([UnsavedChangesGuard]),
+        data: {
+          breadcrumb: 'Legal Name Change',
+          updateType: 'major'
+        },
       },
     ],
   },

@@ -1,11 +1,18 @@
 <section>
-  <h1 *ngIf="updateType === 'minor'">Make Minor edits</h1>
-  <h1 *ngIf="updateType === 'major'">Change legal name</h1>
-  <h2>Required data</h2>
-  <p *ngIf="updateType === 'major'">
-    After you enter a new legal name, the name currently in use and all its associated data will be automatically placed
-    under historical names.
-  </p>
+  <div *ngIf="updateType === 'minor'">
+    <h1 class="mb-3">Make minor edits</h1>
+    <p>
+      Use only for minor changes like typos or to add missing information. If editing a repealed record only the effective date may be updated.
+    </p>
+  </div>
+  <div *ngIf="updateType === 'major'">
+    <h1 class="mb-3">Change legal name</h1>
+    <p>
+      After you enter a new legal name, the name currently in use and all its associated data will be automatically placed
+      under historical names.
+    </p>
+  </div>
+  <h2 class="mt-4">Required data</h2>
 </section>
 
 <section>

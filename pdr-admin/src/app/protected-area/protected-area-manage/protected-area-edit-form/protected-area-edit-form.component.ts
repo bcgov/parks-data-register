@@ -9,6 +9,7 @@ import { ViewChild } from '@angular/core';
 import { Constants } from 'src/app/utils/constants';
 import { DateTime } from 'luxon';
 import { ReloadConfirmationDialogueService } from 'src/app/services/reload-confirmation-dialogue.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-protected-area-edit-form',
@@ -58,7 +59,8 @@ export class ProtectedAreaEditFormComponent {
     private protectedAreaService: ProtectedAreaService,
     private loadingService: LoadingService,
     private ref: ChangeDetectorRef,
-    private reloadConfirmationDialogueService: ReloadConfirmationDialogueService
+    private reloadConfirmationDialogueService: ReloadConfirmationDialogueService,
+    private toastService: ToastService,
   ) { }
 
   ngOnInit(): void {
@@ -66,9 +68,19 @@ export class ProtectedAreaEditFormComponent {
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
         this.currentData = res ? res : {};
         // Populate form with data
-        if (this.currentData && this.updateType === 'minor') {
-          // TODO: Prompt user is another change has been detected after init.
-          this.initForm(this.form, this.currentData);
+        if (this.currentData) {
+          if (this.updateType === 'minor') {
+            // TODO: Prompt user is another change has been detected after init.
+            this.initForm(this.form, this.currentData);
+          } else if (this.currentData.status === 'repealed') {
+            // no major edits on a repealed protected area
+            this.toastService.addMessage(
+              'No major edits permitted on a repealed protected area.',
+              'Invalid action',
+              3
+            );
+            this.router.navigate(['/protected-areas']);
+          }
         }
         this.ref.detectChanges();
       })

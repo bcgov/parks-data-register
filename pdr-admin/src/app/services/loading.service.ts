@@ -9,7 +9,7 @@ export class LoadingService {
   public fetchList = new BehaviorSubject({});
   public loading = new BehaviorSubject(false);
 
-  constructor(private logger: LoggerService) {}
+  constructor(private logger: LoggerService) { }
 
   addToFetchList(id, attributes = { loading: true }) {
     this.logger.debug(`addToFetchList: ${id} ${JSON.stringify(attributes)}`);
@@ -35,6 +35,10 @@ export class LoadingService {
     } else if (Object.keys(this.fetchList.value).length <= 0 && this.loading.value) {
       this.loading.next(false);
     }
+  }
+
+  isLoading(): boolean {
+    return this.loading?.value || false;
   }
 
   getFetchList() {

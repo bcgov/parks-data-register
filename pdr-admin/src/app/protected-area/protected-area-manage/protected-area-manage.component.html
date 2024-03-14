@@ -14,20 +14,57 @@
 </section>
 
 <ng-template #interactionTemplate>
-  <button
-    *ngIf="state === 'details'"
-    type="button"
-    class="btn btn-outline-primary my-3 my-sm-0"
-    (click)="navigate('edit')"
-  >
-    <i class="bi bi-pen me-2"></i>Edit
-  </button>
-  <button
-    *ngIf="state === 'edit'"
-    type="button"
-    class="btn btn-outline-primary my-3 my-sm-0"
-    (click)="navigate('')"
-  >
-    <i class="bi bi-card-heading me-2"></i>Details
-  </button>
+  <div *ngIf="state === 'details'">
+    <div class="dropdown">
+      <button
+        type="button"
+        class="btn btn-primary d-flex"
+        data-bs-toggle="dropdown"
+        [disabled]="isLoading()"
+      >
+        Edit<div class="bt bi-caret-down-fill ms-3"></div>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <button
+            class="btn btn-link dropdown-item d-flex"
+            (click)="navigate('minor')"
+          >
+            <div class="bi bi-pen-fill me-2"></div>
+            Minor edit
+          </button>
+        </li>
+        <li>
+          <button
+            class="btn btn-link dropdown-item d-flex"
+            (click)="navigate('major')"
+            [disabled]="isRepealed()"
+          >
+            <div class="bi bi-arrow-clockwise me-2"></div>
+            Legal name
+          </button>
+        </li>
+        <li>
+          <button
+            class="btn btn-link dropdown-item d-flex"
+            (click)="navigate('repeal')"
+            [disabled]="isRepealed()"
+          >
+            <div class="bi bi-toggles me-2"></div>
+            Repeal
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="state=== 'edit'">
+    <button
+      type="button"
+      class="btn btn-outline-primary my-3 my-sm-0"
+      (click)="navigate('')"
+      [disabled]="isLoading()"
+    >
+      Details<i class="bi bi-eye-fill ms-2"></i>
+    </button>
+  </div>
 </ng-template>

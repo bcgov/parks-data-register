@@ -1,7 +1,6 @@
-const { DocumentClient } = require('aws-sdk/clients/dynamodb');
-const { handler } = require('../PUT/index'); // Update the path accordingly
 const { Settings } = require('luxon');
 const oldNow = Settings.now();
+const { REGION, ENDPOINT, TABLE_NAME, createDB, deleteDB, getHashedText } = require('../../../../../__tests__/settings');
 
 const item1 = {
   "pk": "41",
@@ -18,31 +17,19 @@ const item1 = {
 
 const item2 = { ...item1 };
 item2.status = "repealed";
-
+let ddb;
 async function insertItem(item) {
-  const { REGION, ENDPOINT, TABLE_NAME } = require('../../../../../__tests__/settings');
-  const ddb = new DocumentClient({
-    region: REGION,
-    endpoint: ENDPOINT,
-    convertEmptyValues: true
-  });
   await ddb
     .put({
-      TableName: TABLE_NAME,
+      TableName: process.env.TABLE_NAME,
       Item: item
     })
     .promise();
 }
 
 async function removeItem(item) {
-  const { REGION, ENDPOINT, TABLE_NAME } = require('../../../../../__tests__/settings');
-  const ddb = new DocumentClient({
-    region: REGION,
-    endpoint: ENDPOINT,
-    convertEmptyValues: true
-  });
   await ddb.delete({
-    TableName: TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     Key: {
       "pk": item.pk,
       "sk": item.sk
@@ -51,17 +38,24 @@ async function removeItem(item) {
 }
 
 describe('Lambda Handler Tests', () => {
+  const OLD_ENV = process.env;
   const IDIR_TEST_USER = 'IDIR_USER_TODO';
 
-  beforeAll(() => {
+  beforeAll(async () => {
     Settings.now = () => new Date(2018, 4, 25).valueOf();
+    const hash = getHashedText('Lambda Handler Tests');
+    process.env.TABLE_NAME = hash;
+    ddb = await createDB(null, hash);
   })
 
-  afterAll(() => {
+  afterAll(async () => {
+    await deleteDB(process.env.TABLE_NAME);
     Settings.now = () => new Date(oldNow).valueOf();
+    process.env = OLD_ENV; // Restore old environment
   });
 
   test('validateRequest should throw an error for invalid payload', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const invalidPayload = { effectiveDate: '2023-01-01' };
 
     const response = await handler(invalidPayload);
@@ -69,6 +63,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('minorUpdate should return a response with status code 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = { orcs: 'someId', effectiveDate: '2023-01-01' };
 
     const result = await handler({
@@ -87,6 +82,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('minorUpdate should return a response with status code 403', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
@@ -111,6 +107,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('minorUpdate should return a response with status code 200', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     await insertItem(item1);
     const body = {
       "lastVersionDate": "date1",
@@ -142,6 +139,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('minorUpdate should return a response with status code missing things 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "41",
       "lastVersionDate": "date1",
@@ -169,6 +167,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('minorUpdate should fail because of type issues 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "3",
       "lastVersionDate": "date1",
@@ -199,6 +198,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('Repeal should repeal a protectedArea 200', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     await insertItem(item1);
     const body = {
       "effectiveDate": "1911-03-01",
@@ -233,6 +233,7 @@ describe('Lambda Handler Tests', () => {
   })
 
   test('Edit should fail if status isnt established 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     await insertItem(item2);
     const body = {
       "effectiveDate": "1911-03-01",
@@ -265,6 +266,7 @@ describe('Lambda Handler Tests', () => {
   })
 
   test('Invalid update type: 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "123",
       "lastVersionDate": "date1",
@@ -296,6 +298,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('Invalid status: 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "123",
       "lastVersionDate": "date1",
@@ -327,6 +330,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('nameChange should return a response with status code 200', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     await insertItem(item1);
     const body = {
       "orcs": "41",
@@ -357,13 +361,13 @@ describe('Lambda Handler Tests', () => {
     });
     expect(result.statusCode).toBe(200);
     const payload = JSON.parse(result.body);
-    console.log('payload.data:', payload.data);
     expect(payload.data.legalName).toBe('Strathcona Park 2');
     expect(payload.data.lastModifiedBy).toBe(IDIR_TEST_USER)
     await removeItem(item1);
   });
 
   test('Payload does not include lastVersionDate, return 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     await insertItem(item1);
     const body = {
       "orcs": "41",
@@ -396,6 +400,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('Major change does not include changed legalName, return 400', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     await insertItem(item1);
     const body = {
       "orcs": "41",
@@ -430,6 +435,7 @@ describe('Lambda Handler Tests', () => {
 
 
   test('Payload does not include displayName value, return 200', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     await insertItem(item1);
     const body = {
       "orcs": "41",
@@ -466,6 +472,7 @@ describe('Lambda Handler Tests', () => {
   });
 
   test('Expected behaviour on field absence', async () => {
+    const { handler } = require('../PUT/index'); // Update the path accordingly
     const requests = [
       {
         body: {

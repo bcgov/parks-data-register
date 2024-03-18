@@ -128,8 +128,7 @@ export class ProtectedAreaEditFormComponent {
   }
 
   cancel() {
-    if (this.currentData.status === 'repealed') this.router.navigate(['protected-areas', this.currentData.pk]);
-    else this.router.navigate(['protected-areas', this.currentData.pk, 'edit']);
+    this.router.navigate(['protected-areas', this.currentData.pk]);
   }
 
   setModalData() {

@@ -57,15 +57,6 @@ export class ProtectedAreaEditRepealComponent {
     this.subscriptions.add(
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
         this.currentData = res ? res : {};
-        if (this.currentData?.status === 'repealed') {
-          // no repeals on a repealed protected area
-          this.toastService.addMessage(
-            'No repeals permitted on a repealed protected area.',
-            'Invalid action',
-            3
-          );
-          this.router.navigate(['/protected-areas']);
-        }
         this.ref.detectChanges();
       })
     );
@@ -104,9 +95,7 @@ export class ProtectedAreaEditRepealComponent {
     // We need to pass lastVersionDate (which is updateDate)
     // We also need to pass in all fields regardless if we are changing them or not
     const mergedObj = { ...this.currentData, ...this.modalObj };
-
     await this.protectedAreaService.repeal(this.currentData.pk, mergedObj);
-    this.protectedAreaService.fetchData(this.currentData.pk);
     this.confirmSaveClose.nativeElement.click();
     this.router.navigate(['protected-areas', this.currentData.pk]);
   }

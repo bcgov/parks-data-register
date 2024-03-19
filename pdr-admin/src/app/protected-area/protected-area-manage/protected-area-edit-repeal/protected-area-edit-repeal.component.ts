@@ -79,7 +79,7 @@ export class ProtectedAreaEditRepealComponent {
   }
 
   cancel() {
-    this.router.navigate(['protected-areas', this.currentData.pk, 'edit']);
+    this.router.navigate(['protected-areas', this.currentData.pk]);
   }
 
   setModalData() {

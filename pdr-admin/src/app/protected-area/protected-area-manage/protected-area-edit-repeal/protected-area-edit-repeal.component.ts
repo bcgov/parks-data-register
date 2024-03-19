@@ -97,6 +97,7 @@ export class ProtectedAreaEditRepealComponent {
     const mergedObj = { ...this.currentData, ...this.modalObj };
     await this.protectedAreaService.repeal(this.currentData.pk, mergedObj);
     this.confirmSaveClose.nativeElement.click();
+    this.protectedAreaService.fetchData(this.currentData.pk);
     this.router.navigate(['protected-areas', this.currentData.pk]);
   }
 

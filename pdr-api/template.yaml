@@ -478,7 +478,7 @@ Resources:
     Properties:
       StageName: !Ref Stage
       Cors:
-        AllowMethods: "'POST,GET,OPTIONS'"
+        AllowMethods: "'POST,GET,OPTIONS,PUT'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
         MaxAge: "'600'"
@@ -556,7 +556,7 @@ Resources:
       Environment:
         Variables:
           LOG_LEVEL: info
-          SSO_ISSUER: !Ref SSOIssuerUrl  
+          SSO_ISSUER: !Ref SSOIssuerUrl
           SSO_JWKSURI: !Ref SSOJWKSUri
 
   NameRegister:

@@ -25,9 +25,14 @@ Then
 
 #### Development Checklist:
 
-- [ ] 
-- [ ] 
-- [ ]       
+- [ ] ...
+- [ ] ...
+- [ ] ...
+
+#### Dependencies
+
+- Blocked by
+- Blocking
 
 **Wireframe(s):**
 
@@ -67,9 +72,4 @@ Then
 
 #### Notes:
 - 
-- 
-
-#### Dependencies
-
-- Blocked by
-- Blocking
+-

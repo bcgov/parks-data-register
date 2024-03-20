@@ -40,6 +40,26 @@ export class SiteService {
     this.loadingService.removeFromFetchList(Constants.dataIds.CURRENT_SITES_LIST);
   }
 
+  async fetchSpecificSite(pAreaId, siteId) {
+    this.loadingService.addToFetchList(Constants.dataIds.CURRENT_SITE);
+    const identifier = `${pAreaId}::Site::${siteId}`;
+    try {
+      let res = (await lastValueFrom(this.apiService.get(`sites/${identifier}`)))['data']['items'];
+      let historicalSites = res.filter((e) => e.status === 'historical') || [];
+      if (historicalSites.length) {
+        historicalSites.sort((a, b) => new Date(b.effectiveDate).valueOf() - new Date(a.effectiveDate).valueOf());
+      }
+      let currentSite = res.filter((e) => e.status === 'established' || e.status === 'repealed')[0] || null;
+      this.dataService.setItemValue(Constants.dataIds.CURRENT_SITE, currentSite);
+      this.dataService.setItemValue(Constants.dataIds.HISTORICAL_SITES, historicalSites);
+    } catch (error) {
+      this.loggerService.error(error);
+      this.toastService.addMessage(`Something went wrong. Please try again.`, ``, ToastTypes.ERROR);
+      this.eventService.setError(new EventObject(EventKeywords.ERROR, String(error), 'Specific Sites GET'));
+    }
+    this.loadingService.removeFromFetchList(Constants.dataIds.CURRENT_SITE);
+  }
+
   watchSitesList() {
     return this.dataService.watchItem(Constants.dataIds.CURRENT_SITES_LIST);
   }
@@ -48,12 +68,20 @@ export class SiteService {
     return this.dataService.watchItem(Constants.dataIds.CURRENT_SITE);
   }
 
-  clearCurrentSite() {
-    return this.dataService.watchItem(Constants.dataIds.CURRENT_SITE);
+  watchHistoricalSites() {
+    return this.dataService.watchItem(Constants.dataIds.HISTORICAL_SITES);
   }
 
-  clearSitesLit() {
-    this.dataService.setCacheValue(Constants.dataIds.CURRENT_SITES_LIST, null);
+  clearCurrentSite() {
+    return this.dataService.setItemValue(Constants.dataIds.CURRENT_SITE, null);
+  }
+
+  clearSitesList() {
+    this.dataService.setItemValue(Constants.dataIds.CURRENT_SITES_LIST, null);
+  }
+
+  clearHistoricalSites() {
+    this.dataService.setItemValue(Constants.dataIds.HISTORICAL_SITES, null);
   }
 
 }

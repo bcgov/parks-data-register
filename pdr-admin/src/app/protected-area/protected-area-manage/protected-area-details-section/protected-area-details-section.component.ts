@@ -7,4 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class ProtectedAreaDetailsSectionComponent {
   @Input() data;
+  @Input() title: string = '';
 }

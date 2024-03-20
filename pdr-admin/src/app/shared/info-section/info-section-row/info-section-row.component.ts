@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./info-section-row.component.scss']
 })
 export class InfoSectionRowComponent implements AfterViewInit{
-  @Input() key: String = '-';
+  @Input() key: string = '-';
   @Input() set data(value) {
     this._data.next(value);
     this.cdr.detectChanges();

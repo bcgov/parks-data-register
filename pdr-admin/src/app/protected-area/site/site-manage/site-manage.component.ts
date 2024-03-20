@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SiteService } from 'src/app/services/site.service';
 import { UrlService } from 'src/app/services/url.service';
@@ -10,7 +10,7 @@ import { Utils } from 'src/app/utils/utils';
   templateUrl: './site-manage.component.html',
   styleUrls: ['./site-manage.component.scss']
 })
-export class SiteManageComponent implements OnInit, OnDestroy {
+export class SiteManageComponent implements OnDestroy {
 
   public pAreaId;
   public siteId;
@@ -51,9 +51,6 @@ export class SiteManageComponent implements OnInit, OnDestroy {
     this.pAreaId = tags[tags.indexOf('protected-areas') + 1];
     this.siteId = tags[tags.indexOf('sites') + 1];
     this.siteData = this.siteService.fetchSpecificSite(this.pAreaId, this.siteId);
-  }
-
-  ngOnInit(): void {
   }
 
   ngOnDestroy(): void {

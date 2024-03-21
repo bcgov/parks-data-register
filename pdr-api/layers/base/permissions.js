@@ -4,9 +4,9 @@ const INVALID_TOKEN = {
   decoded: false,
   data: null
 };
-const { logger } = require('/opt/base');
+const { logger } = require('./base');
 
-exports.decodeJWT = async function (event, issuer, jwksUri) {
+async function decodeJWT(event, issuer, jwksUri) {
   const token = event.headers.Authorization;
 
   let decoded = null;
@@ -46,7 +46,7 @@ exports.decodeJWT = async function (event, issuer, jwksUri) {
   }
 };
 
-const verifyToken = function (token, issuer, jwksUri, callback, sendError) {
+function verifyToken(token, issuer, jwksUri, callback, sendError) {
   logger.debug('verifying token');
   logger.debug('token:', token);
 
@@ -128,7 +128,7 @@ async function roleFilter(records, roles) {
 }
 exports.roleFilter = roleFilter;
 
-exports.resolvePermissions = function (token) {
+function resolvePermissions(token) {
   let roles = ['public'];
   let isAdmin = false;
   let isAuthenticated = false;
@@ -156,4 +156,9 @@ exports.resolvePermissions = function (token) {
     isAuthenticated: isAuthenticated,
     email: token.data.email
   };
+};
+
+module.exports = {
+  decodeJWT,
+  resolvePermissions
 };

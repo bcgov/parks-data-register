@@ -1,6 +1,6 @@
-build-OpenSearchLayer:
+build-AWSUtilsLayer:
 	# copy dependency directory into artifacts directory
-	cp -r * "$(ARTIFACTS_DIR)" 
+	cp -r * "$(ARTIFACTS_DIR)"
 	# remove makefile in artifacts directory
 	rm "$(ARTIFACTS_DIR)/Makefile"
 	# install dependencies in artifacts directory

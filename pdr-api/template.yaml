@@ -164,7 +164,7 @@ Resources:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: base
-      Description: Parks Data Register Base Layer
+      Description: Common Base Tooling Layer
       ContentUri: layers/base/
       CompatibleRuntimes:
         - nodejs18.x
@@ -173,12 +173,12 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
-  DynamoDBLayer:
+  AWSUtilsLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: dynamodb
-      Description: Parks Data Register DynamoDB Utilities Layer
-      ContentUri: layers/dynamodb/
+      LayerName: awsUtils
+      Description: Common AWS Tooling Layer
+      ContentUri: layers/awsUtils/
       CompatibleRuntimes:
         - nodejs18.x
       LicenseInfo: 'Apache-2.0'
@@ -186,25 +186,12 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
-  PermissionsLayer:
+  DataUtilsLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: permissions
-      Description: Parks Data Register Permissions Utilities Layer
-      ContentUri: layers/permissions/
-      CompatibleRuntimes:
-        - nodejs18.x
-      LicenseInfo: 'Apache-2.0'
-      RetentionPolicy: Retain
-    Metadata:
-      BuildMethod: makefile
-
-  OpenSearchLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: opensearch
-      Description: Parks Data Register OpenSearch Utilities Layer
-      ContentUri: layers/opensearch/
+      LayerName: dataUtils
+      Description: Utilities, tools and helper functions specific to PDR data
+      ContentUri: layers/dataUtils/
       CompatibleRuntimes:
         - nodejs18.x
       LicenseInfo: 'Apache-2.0'
@@ -227,8 +214,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
-        - !Ref OpenSearchLayer
+        - !Ref AWSUtilsLayer
       Role: !GetAtt StreamRole.Arn
       Runtime: nodejs18.x
       Architectures:
@@ -277,8 +263,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
-        - !Ref OpenSearchLayer
+        - !Ref AWSUtilsLayer
       Role: !GetAtt StreamRole.Arn
       Runtime: nodejs18.x
       Architectures:
@@ -323,7 +308,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -368,7 +353,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -409,7 +394,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -450,7 +435,8 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
+        - !Ref DataUtilsLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -514,7 +500,7 @@ Resources:
       Timeout: 60
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
       VpcConfig:
         SecurityGroupIds:
@@ -550,8 +536,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref PermissionsLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
       Environment:
         Variables:
@@ -644,7 +629,8 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
+        - !Ref DataUtilsLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -685,7 +671,7 @@ Resources:
       Handler: index.handler
       Layers:
         - !Ref BaseLayer
-        - !Ref DynamoDBLayer
+        - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
       Architectures:
         - x86_64

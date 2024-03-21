@@ -27,7 +27,7 @@ describe('DynamoDB Layer Tests', () => {
   });
 
   test('Get one item', async () => {
-    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
     // item exists
     const exists = await layer.getOne('1', 'Details');
     expect(exists.pk).toEqual('1');
@@ -38,7 +38,7 @@ describe('DynamoDB Layer Tests', () => {
   });
 
   test('Put one item', async () => {
-    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
 
     const insertedRecord = { pk: { S: '123put' }, sk: { S: 'Details' }};
 
@@ -50,15 +50,8 @@ describe('DynamoDB Layer Tests', () => {
     expect(record).toEqual(AWS.DynamoDB.Converter.unmarshall(insertedRecord));
   });
 
-  test('Get sites for protected area', async () => {
-    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
-    const records = await layer.getSitesForProtectedArea('1');
-    expect(records.items.length).toEqual(1);
-    expect(records.items[0].sk).toEqual('Site::1');
-  });
-
   test('Run Query', async () => {
-    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
     const query = {
       TableName: process.env.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk',
@@ -97,7 +90,7 @@ describe('DynamoDB Layer Tests', () => {
   })
 
   test('Run Scan', async () => {
-    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
     const scan = {
       TableName: process.env.TABLE_NAME,
       FilterExpression: 'pk = :pk',
@@ -136,7 +129,7 @@ describe('DynamoDB Layer Tests', () => {
   });
 
   test('Batch Write Item', async () => {
-    const layer = require('../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
     const recordSize = 51;
     const chunkSize = 5;
     let records = [];

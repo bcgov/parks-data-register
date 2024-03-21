@@ -28,7 +28,7 @@ describe('Specific Park Names GET', () => {
 
   test('GET config error', async () => {
     // If query error
-    const dynamodbLayer = require('../../../.aws-sam/build/DynamoDBLayer/dynamodb');
+    const dynamodbLayer = require('../../../.aws-sam/build/AWSUtilsLayer/dynamodb');
     jest.spyOn(dynamodbLayer, 'runQuery').mockReturnValue(() => new Error);
     const lambda = require('../GET/index');
     const error = await lambda.handler({});

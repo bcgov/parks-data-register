@@ -1,5 +1,14 @@
 const AWS = require("aws-sdk");
-const { TABLE_NAME, dynamodb, getOne, getSitesForProtectedArea, setSiteStatus, ESTABLISHED_STATE, HISTORICAL_STATE, REPEALED_STATE } = require('/opt/dynamodb');
+const {
+  dynamodb,
+  getOne,
+  setSiteStatus,
+  ESTABLISHED_STATE,
+  HISTORICAL_STATE,
+  REPEALED_STATE,
+  TABLE_NAME
+} = require('/opt/dynamodb');
+const { getSitesForProtectedArea } = require('/opt/siteUtils');
 const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
@@ -16,7 +25,7 @@ const optionalFields = [
   'searchTerms',
   'notes',
   'audioClip'
-]
+];
 
 /**
  * AWS Lambda function for updating park name details.
@@ -77,7 +86,7 @@ exports.handler = async (event, context) => {
 
     // If no currentRecord exists, we shouldn't perform any actions.
     if (!currentRecord?.pk) {
-      throw `Protected area with identifier '${identifier}' not found.`
+      throw `Protected area with identifier '${identifier}' not found.`;
     }
 
     // Checks the type of update and calls the corresponding function.
@@ -261,7 +270,7 @@ async function createChangeLogItem(body, user, currentTimeISO, currentRecord, ne
       TableName: TABLE_NAME,
       Item: changelogRecord
     }
-  }
+  };
 }
 
 /**
@@ -279,7 +288,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
     ':status': { S: status },
     ':lastVersionDate': { S: body.lastVersionDate },
     ':effectiveDate': { S: body.effectiveDate }
-  }
+  };
   let updateExpression = ['SET updateDate = :updateDate, #status = :status, lastModifiedBy = :lastModifiedBy, effectiveDate = :effectiveDate'];
   if (!repealOnly) {
     for (const field of optionalFields) {
@@ -306,7 +315,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
   // If major change (not repealed), deny if legalName is the same
   if (updateType === 'major') {
     updateParams.ExpressionAttributeValues[':oldLegalName'] = { S: body.legalName };
-    updateParams.ConditionExpression += ' AND legalName <> :oldLegalName'
+    updateParams.ConditionExpression += ' AND legalName <> :oldLegalName';
   }
 
   logger.debug(`Record update params:`, updateParams);
@@ -335,7 +344,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
         effectiveDate: body.effectiveDate,
         lastModifiedBy: user,
         status: status
-      }
+      };
       for (const field of optionalFields) {
         if (body.hasOwnProperty(field)) {
           returnItem[field] = body[field];
@@ -361,7 +370,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
           return true;
         }
         return false;
-      })
+      });
     }
     if (error?.code === 'ConditionalCheckFailedException') {
       // Check for ConditionalCheckFailedException with single item update.

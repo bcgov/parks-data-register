@@ -1,6 +1,13 @@
 const AWS = require("aws-sdk");
-const { TABLE_NAME, dynamodb, getOne, setSiteStatus, ESTABLISHED_STATE,
-  HISTORICAL_STATE, REPEALED_STATE } = require('/opt/dynamodb');
+const {
+  dynamodb,
+  getOne,
+  setSiteStatus,
+  ESTABLISHED_STATE,
+  HISTORICAL_STATE,
+  REPEALED_STATE,
+  TABLE_NAME
+} = require('/opt/dynamodb');
 const { getSitesForProtectedArea } = require('/opt/siteUtils');
 const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');

@@ -2,7 +2,7 @@
 
 # Introduction
 
-This folder consists of the back end code for the Parks Data Register API. It contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. 
+This folder consists of the back end code for the Parks Data Register API. It contains source code and supporting files for a serverless application that you can deploy with the SAM CLI.
 
 The AWS resources for this project are defined in the `template.yaml` file.
 Data models can be found in [/docs](https://github.com/bcgov/parks-data-register/tree/main/pdr-api/docs)
@@ -46,7 +46,7 @@ Set the AWS Credentials:
    - AWS_DEFAULT_REGION
    - AWS_REGION
 
-Copy the [sample-env.json](docs/sample-env.json) file to the root of your local `pdr-api` folder and make changes according to your own personal set up. 
+Copy the [sample-env.json](docs/sample-env.json) file to the root of your local `pdr-api` folder and make changes according to your own personal set up.
 
 ```
     "TABLE_NAME": "NameRegister", // local DynamoDB table name
@@ -72,7 +72,7 @@ pdr-api$ sam local start-api
 pdr-api$ curl http://localhost:3000/
 ```
 
-You can also use `yarn build` & `yarn start` to build and start the API locally. 
+You can also use `yarn build` & `yarn start` to build and start the API locally.
 
 ## Connecting to remote AWS DynamoDB endpoints (for migrations, etc)
 
@@ -117,7 +117,7 @@ Run the suite of unit tests with `yarn test`:
 pdr-api$ yarn test
 ```
 
-With SAM, lambda and layer dependencies are stored their respective `nodejs` folder upon running `sam build`, not the common `node_modules` folder. Since Jest looks for dependencies in the `node_modules` folder, a symlink is created in the build step so Jest can find layer dependencies outside of a SAM docker container environment. 
+With SAM, lambda and layer dependencies are stored their respective `nodejs` folder upon running `sam build`, not the common `node_modules` folder. Since Jest looks for dependencies in the `node_modules` folder, a symlink is created in the build step so Jest can find layer dependencies outside of a SAM docker container environment.
 
 Because of this, dependency mapping does not exist prior to `sam build` and therefore `sam build` is included in the `yarn test` script.
 
@@ -133,7 +133,7 @@ The `/opt` directory is only available at runtime within the SAM docker containe
 "jest": {
   ...
   "moduleNameMapper": [
-    "^/opt/dynamodb": "<rootDir>/.aws-sam/build/DynamoDBLayer/dynamodb",
+    "^/opt/dynamodb": "<rootDir>/.aws-sam/build/AWSUtilsLayer/dynamodb",
     "^/opt/base": "<rootDir>/.aws-sam/build/BaseLayer/base",
     ...,
     "^/opt/layer": "<rootDir>/.aws-sam/build/LayerName/layerFile"
@@ -141,7 +141,7 @@ The `/opt` directory is only available at runtime within the SAM docker containe
 }
 ```
 
-The configuration above tells Jest to look for layer resources in the build folder. We tell Jest to look here instead of the `/layer` folder because all the layer's dependencies are available within the build folder via symlink after running `sam build`. 
+The configuration above tells Jest to look for layer resources in the build folder. We tell Jest to look here instead of the `/layer` folder because all the layer's dependencies are available within the build folder via symlink after running `sam build`.
 
 ## Local OpenSearch server
 OpenSearch can be hosted locally for ease of development. This README will explain how to set up a local OpenSearch instance on a Linux VM. For other installation options, refer to the OpenSearch documentation.
@@ -185,11 +185,11 @@ Or
 curl -X GET http://<OPENSEARCH-SERVER-IP>:9200
 ```
 
-If you are running OpenSearch on a separate VM. 
+If you are running OpenSearch on a separate VM.
 
 ### Populating and querying the local OpenSearch instance
 
-Edit `env.json` to include the following variables. Replace the variables with the correct variables for your local instance. 
+Edit `env.json` to include the following variables. Replace the variables with the correct variables for your local instance.
 
 ```json
 "OPENSEARCH_DOMAIN_ENDPOINT": "http://192.168.1.111:9200",

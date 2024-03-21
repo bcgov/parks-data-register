@@ -4,7 +4,9 @@
   "author": "Team Osprey",
   "license": "MIT",
   "dependencies": {
-    "winston": "^3.10.0"
+    "winston": "^3.10.0",
+    "jsonwebtoken": "^9.0.0",
+    "jwks-rsa": "^3.0.0"
   },
   "scripts": {
     "test": "mocha tests/unit/"

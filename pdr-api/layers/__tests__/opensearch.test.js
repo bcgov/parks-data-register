@@ -1,7 +1,7 @@
 const {
   OPENSEARCH_MAIN_INDEX,
   OSQuery,
-} = require('../../.aws-sam/build/OpenSearchLayer/opensearch');
+} = require('../../.aws-sam/build/AWSUtilsLayer/opensearch');
 
 const DEFAULT_RESULT_SIZE = 10;
 const MAX_RESULT_SIZE = 100;
@@ -56,7 +56,7 @@ describe('OSQuery class', () => {
 
   describe('search method', () => {
     test('should call OpenSearch client search method with correct parameters', async () => {
-      const layer = require('../../.aws-sam/build/OpenSearchLayer/opensearch');
+      const layer = require('../../.aws-sam/build/AWSUtilsLayer/opensearch');
 
       const queryInstance = new OSQuery();
 

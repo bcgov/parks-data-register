@@ -1,4 +1,4 @@
-const { getSitesForProtectedArea } = require('/opt/dynamodb');
+const { getSitesForProtectedArea } = require('/opt/siteUtils');
 const { logger, sendResponse } = require('/opt/base');
 
 exports.handler = async (event, context) => {

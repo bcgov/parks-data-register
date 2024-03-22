@@ -1,57 +1,30 @@
-<ng-container *ngIf="data">
-  <p>
-    <strong>Effective date</strong
-    ><small class="ms-2">
-      <ng-container *ngIf="data && data.effectiveDateDisplay">
-        {{ data.effectiveDateDisplay }}
-      </ng-container>
-      <ng-container *ngIf="!data || !data.effectiveDateDisplay">
-        <span class="text-muted fst-italic">None</span>
-      </ng-container>
-    </small>
-  </p>
-  <p>
-    <strong>Legal name</strong
-    ><small class="ms-2">
-      <ng-container *ngIf="data && data.legalName">
-        {{ data.legalName }}
-      </ng-container>
-      <ng-container *ngIf="!data || !data.legalName">
-        <span class="text-muted fst-italic">None</span>
-      </ng-container>
-    </small>
-  </p>
-  <p>
-    <strong>Display name</strong
-    ><small class="ms-2">
-      <ng-container *ngIf="data && data.displayName">
-        {{ data.displayName }}
-      </ng-container>
-      <ng-container *ngIf="!data || !data.displayName">
-        <span class="text-muted fst-italic">None</span>
-      </ng-container>
-    </small>
-  </p>
-  <p>
-    <strong>Phonetic name</strong>
-    <small class="ms-2">
-      <ng-container *ngIf="data && data.phoneticName">
-        {{ data.phoneticName }}
-      </ng-container>
-      <ng-container *ngIf="!data || !data.phoneticName">
-        <span class="text-muted fst-italic">None</span>
-      </ng-container>
-    </small>
-  </p>
-  <p>
-    <strong>Audio link</strong>
-    <small class="ms-2">
-      <ng-container *ngIf="data && data.audioClip">
-        <a href="{{ data.audioClip }}">{{ data?.audioClip }}</a>
-      </ng-container>
-      <ng-container *ngIf="!data || !data.audioClip">
-        <span class="text-muted fst-italic">None</span>
-      </ng-container>
-    </small>
-  </p>
-</ng-container>
+<app-info-section
+  [title]="title"
+  *ngIf="data"
+>
+  <app-info-section-row
+    key="Effective date"
+    [data]="data?.effectiveDateDisplay"
+  ></app-info-section-row>
+  <app-info-section-row
+    key="Legal name"
+    [data]="data?.legalName"
+  ></app-info-section-row>
+  <app-info-section-row
+    key="Display name"
+    [data]="data?.displayName"
+  ></app-info-section-row>
+  <app-info-section-row
+    key="Phonetic name"
+    [data]="data?.phoneticName"
+  ></app-info-section-row>
+  <app-info-section-row
+    key="Audio link"
+    [data]="data?.audioClip"
+  >
+    <a
+      *ngIf="data?.audioClip"
+      href="{{ data?.audioClip }}"
+    >{{ data?.audioClip || null }}</a>
+  </app-info-section-row>
+</app-info-section>

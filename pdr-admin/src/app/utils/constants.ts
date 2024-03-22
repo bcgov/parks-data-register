@@ -7,7 +7,8 @@ export class Constants {
     HISTORICAL_PROTECTED_AREA: 'historical-protected-area',
     CHANGELOG_SEARCH_RESULTS: 'changelog-search-results',
     CURRENT_SITES_LIST: 'current-sites-list',
-    CURRENT_SITE: 'current-site'
+    CURRENT_SITE: 'current-site',
+    HISTORICAL_SITES: 'historical-sites'
   };
 
   public static readonly timeZoneIANA = 'America/Vancouver';

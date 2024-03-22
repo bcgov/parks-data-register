@@ -1,34 +1,28 @@
-<section class="mb-5">
-  <h2>Legal name</h2>
-  <app-protected-area-details-section [data]="currentData"></app-protected-area-details-section>
-</section>
+<!-- Legal name -->
+<app-protected-area-details-section
+  title="Legal name"
+  [data]="currentData"
+></app-protected-area-details-section>
 
-<section class="mb-5">
-  <h2>Search terms</h2>
+<!-- Search terms -->
+<app-info-section title="Search terms">
   {{ currentData?.searchTerms || "-" }}
-</section>
+</app-info-section>
 
-<section class="mb-5">
-  <h2>Notes</h2>
+<!-- Notes -->
+<app-info-section title="Notes">
   {{ currentData?.notes || "None" }}
-</section>
+</app-info-section>
 
-<section class="mb-5" *ngFor="let data of historicalData">
-  <h2>Historical name</h2>
-  <app-protected-area-details-section [data]="data"></app-protected-area-details-section>
-</section>
+<!-- Historical data -->
+<app-protected-area-details-section
+  title="Historical name"
+  *ngFor="let data of historicalData"
+  [data]="data"
+></app-protected-area-details-section>
 
+<!-- Sites -->
 <section class="mb-5">
   <h2>Sites</h2>
   <app-site-list></app-site-list>
 </section>
-
-<!-- <section class="mb-5">
-  <h2>Associated sites</h2>
-  <small class="me-5">None</small>
-</section>
-
-<section class="mb-5">
-  <h2>Recent chances</h2>
-  <small class="me-5">None</small>
-</section> -->

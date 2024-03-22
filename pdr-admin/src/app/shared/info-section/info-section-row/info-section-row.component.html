@@ -1,0 +1,22 @@
+<div class="row mb-3">
+  <div class="col-12 col-lg-2">
+    <strong>{{key}}</strong>
+  </div>
+  <small class="div-12 col-lg-auto">
+    <div #childContent>
+      <ng-content>
+      </ng-content>
+    </div>
+    <span *ngIf="! childContent?.children?.length">
+      <div *ngIf="data">
+        {{data}}
+      </div>
+      <em
+        *ngIf="!data"
+        class="text-muted"
+      >
+        None
+      </em>
+    </span>
+  </small>
+</div>

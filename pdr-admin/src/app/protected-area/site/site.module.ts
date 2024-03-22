@@ -8,9 +8,10 @@ import { SiteComponent } from './site.component';
 import { SiteRoutingModule } from './site-routing.component';
 import { SiteListComponent } from './site-list/site-list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SiteDetailsComponent } from './site-manage/site-details/site-details.component';
 
 @NgModule({
-  declarations: [SiteManageComponent, SiteComponent, SiteListComponent],
+  declarations: [SiteManageComponent, SiteComponent, SiteListComponent, SiteDetailsComponent],
   imports: [
     CommonModule, RouterModule, NgdsFormsModule, FormsModule, SharedModule
   ],

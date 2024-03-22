@@ -1,0 +1,31 @@
+<app-info-section title="Legal name">
+  <app-info-section-row key="Effective date">
+    <div *ngIf="currentData?.createDate">
+      {{currentData?.createDate | date: 'mediumDate'}}
+    </div>
+  </app-info-section-row>
+  <app-info-section-row
+    key="Legal name"
+    [data]="currentData?.legalName"
+  >
+  </app-info-section-row>
+  <app-info-section-row
+    key="Display name"
+    [data]="currentData?.displayName"
+  >
+  </app-info-section-row>
+  <app-info-section-row
+    key="Phonetic name"
+    [data]="currentData?.phoneticName"
+  >
+  </app-info-section-row>
+  <app-info-section-row
+    key="Audio link"
+    [data]="currentData?.audioClip"
+  >
+    <a
+      *ngIf="currentData?.audioClip"
+      href="{{ currentData?.audioClip }}"
+    >{{ currentData?.audioClip || null }}</a>
+  </app-info-section-row>
+</app-info-section>

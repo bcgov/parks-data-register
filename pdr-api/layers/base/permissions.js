@@ -4,7 +4,7 @@ const INVALID_TOKEN = {
   decoded: false,
   data: null
 };
-const { logger } = require('./base');
+const { Exception, logger } = require('./base');
 
 async function decodeJWT(event, issuer, jwksUri) {
   const token = event.headers.Authorization;
@@ -158,7 +158,26 @@ function resolvePermissions(token) {
   };
 };
 
+/**
+ * Checks if the user invoking the function is an admin.
+ * @param {Object} lambdaEvent - The Lambda event object.
+ * @returns {boolean} Returns true if the user is an admin, otherwise throws an error.
+ * @throws {Error} Throws an error with details if the user is not an admin.
+ */
+function requireAdmin(lambdaEvent) {
+  const isAdmin = JSON.parse(lambdaEvent?.requestContext?.authorizer?.isAdmin);
+  if (!isAdmin) {
+    throw new Exception('User does not have the permissions to perform this action.', {
+      code: 403,
+      error: 'Unauthorized to perform this function.'
+    });
+  }
+  return true;
+}
+
+
 module.exports = {
   decodeJWT,
+  requireAdmin,
   resolvePermissions
 };

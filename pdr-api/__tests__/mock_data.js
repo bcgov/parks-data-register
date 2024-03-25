@@ -35,6 +35,17 @@ exports.MockData = class {
     status: 'established',
     notes: 'some notes'
   };
+  mockRepealParkName3 = {
+    pk: '3',
+    sk: 'Details',
+    createDate: '2023-08-10T16:11:54.513Z',
+    updateDate: '2023-08-10T16:11:54.513Z',
+    legalName: 'Test Park 3',
+    displayName: 'Test Park 3',
+    phoneticName: 'tɛst pɑːk thriː',
+    status: 'repealed',
+    notes: 'some notes'
+  };
   mockPendingParkName1 = {
     pk: '3',
     sk: 'Details',
@@ -66,6 +77,7 @@ exports.MockData = class {
     phoneticName: 'tɛst site wʌn',
     status: 'established',
     lastModifiedBy: 'TESTADMIN',
+    lastVersionDate: '2023-08-10T16:11:54.513Z',
     type: 'site'
   };
   mockOldSite1 = {
@@ -91,6 +103,18 @@ exports.MockData = class {
     displayName: 'Test Site 3-1',
     phoneticName: 'tɛst site wʌn',
     status: 'established',
+    lastModifiedBy: 'TESTADMIN',
+    type: 'site'
+  };
+  mockRepealSite3 = {
+    pk: '1::Site::3',
+    sk: 'Details',
+    createDate: '2023-08-10T16:11:54.513Z',
+    updateDate: '2023-08-10T16:11:54.513Z',
+    legalName: 'Test Site 1-3',
+    displayName: 'Test Site 1-3',
+    phoneticName: 'tɛst site thri',
+    status: 'repealed',
     lastModifiedBy: 'TESTADMIN',
     type: 'site'
   };

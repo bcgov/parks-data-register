@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5e8ff27b-5007-49ec-9d94-0646c0155f1b",
+		"_postman_id": "0b78509c-c8e0-4992-8951-43ccd576dd20",
 		"name": "Parks Data Register",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "21509305"
+		"_exporter_id": "14509064"
 	},
 	"item": [
 		{
@@ -424,7 +424,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/sites/:identifier",
+									"raw": "{{base_url}}/sites/:identifier?status=repealed",
 									"host": [
 										"{{base_url}}"
 									],
@@ -440,8 +440,142 @@
 										},
 										{
 											"key": "status",
-											"value": "historical",
-											"disabled": true
+											"value": "established"
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Specific Site (Minor)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"effectiveDate\": \"1911-03-03\",\r\n    \"lastVersionDate\": \"2024-03-25T09:55:24.664-07:00\",\r\n    \"legalName\": \"new legal name\",\r\n    \"displayName\": \"new display name\",\r\n    \"notes\": \"new notes\",\r\n    \"phoneticName\": \"phoneticName\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier?updateType=minor",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "updateType",
+											"value": "minor"
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Specific Site (Major)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"lastVersionDate\": \"2024-03-25T09:20:14.141-07:00\",\r\n    \"legalName\": \"New Albas Site 3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier?updateType=major",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "updateType",
+											"value": "major"
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Specific Site (Repeal)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"lastVersionDate\": \"2024-03-25T09:16:52.544-07:00\",\r\n    \"notes\": \"Some Notes 6\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier?updateType=repeal",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "updateType",
+											"value": "repeal"
 										}
 									],
 									"variable": [

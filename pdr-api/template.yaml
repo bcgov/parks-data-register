@@ -703,6 +703,37 @@ Resources:
               Authorizer: NONE
               OverrideApiAuth: true
 
+  SitePut:
+    FunctionName: SitePut
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/sites/_identifier/PUT
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref AWSUtilsLayer
+        - !Ref DataUtilsLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Site PUT lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        ParkNamePut:
+          Type: Api
+          Properties:
+            Path: /sites/{identifier}
+            Method: PUT
+            RestApiId: !Ref ApiDeployment
+
 Outputs:
   #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   #   # Find out more about other implicit resources you can reference within SAM

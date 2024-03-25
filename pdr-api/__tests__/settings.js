@@ -69,6 +69,39 @@ async function deleteDB(tableName = TABLE_NAME) {
   }
 }
 
+async function putDB(data, tableName = TABLE_NAME) {
+  const docClient = new DocumentClient({
+    region: AWS_REGION,
+    endpoint: ENDPOINT,
+    convertEmptyValues: true
+  });
+
+  // If data is a single item, make it an array
+  if (!data.length) {
+    data = [data];
+  }
+  for (const item of data) {
+    await docClient.put({
+      TableName: tableName,
+      Item: item
+    }).promise();
+  }
+}
+
+async function getOneDB(pk, sk, tableName = TABLE_NAME) {
+  const dynamodb = new AWS.DynamoDB({
+    region: AWS_REGION,
+    endpoint: DYNAMODB_ENDPOINT_URL
+  });
+  const query = {
+    TableName: tableName,
+    Key: AWS.DynamoDB.Converter.marshall({pk, sk})
+  }
+  let res = await dynamodb.getItem(query).promise();
+  console.log('res:', res);
+  return AWS.DynamoDB.Converter.unmarshall(res.Item);
+}
+
 // Generate hashed text
 function getHashedText(text) {
   return crypto.createHash('md5').update(text).digest('hex');
@@ -83,5 +116,7 @@ module.exports = {
   TIMEZONE,
   createDB,
   deleteDB,
-  getHashedText
+  getOneDB,
+  getHashedText,
+  putDB
 };

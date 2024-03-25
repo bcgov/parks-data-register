@@ -1,8 +1,14 @@
-import { formatDate } from '@angular/common';
+import { DateTime } from 'luxon';
+import { Constants } from './constants';
 
 export class Utils {
   public formatDateForDisplay(date) {
-    return date ? formatDate(date, 'MMMM dd, YYYY', 'en-CA', 'PST') : null;
+    let newDate = DateTime.fromISO(date).setZone(Constants.timeZoneIANA);
+    console.log('newDate.toFormat(DDD):', newDate.toFormat('DDD'));
+    if (newDate.toFormat('DDD') === 'Invalid DateTime') {
+      return null;
+    }
+    return newDate.toFormat('DDD');
   }
 
   public getChangedProperties(form): string[] {

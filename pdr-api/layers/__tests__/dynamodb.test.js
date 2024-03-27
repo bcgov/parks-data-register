@@ -1,6 +1,7 @@
 const { createDB, deleteDB, getHashedText } = require('../../__tests__/settings');
 const { MockData } = require('../../__tests__/mock_data');
 const AWS = require('aws-sdk');
+const { batchTransactData } = require('../awsUtils/dynamodb');
 
 const data = new MockData;
 let dbClient;
@@ -40,7 +41,7 @@ describe('DynamoDB Layer Tests', () => {
   test('Put one item', async () => {
     const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
 
-    const insertedRecord = { pk: { S: '123put' }, sk: { S: 'Details' }};
+    const insertedRecord = { pk: { S: '123put' }, sk: { S: 'Details' } };
 
     // Put the item into the db
     await layer.putItem(insertedRecord);
@@ -58,7 +59,7 @@ describe('DynamoDB Layer Tests', () => {
       ExpressionAttributeValues: {
         ':pk': { S: '1' }
       }
-    }
+    };
     // Regular query
     const regQuery = await layer.runQuery(query);
     expect(regQuery.items).toEqual(expect.arrayContaining([
@@ -78,7 +79,7 @@ describe('DynamoDB Layer Tests', () => {
     const nextEvaluatedKey = {
       pk: { S: lekRes.items[0].pk },
       sk: { S: lekRes.items[0].sk }
-    }
+    };
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(layerLEKQuery);
     expect(limitQuery.lastEvaluatedKey).not.toEqual(nextEvaluatedKey);
@@ -87,7 +88,7 @@ describe('DynamoDB Layer Tests', () => {
     querySpy.mockClear();
     await layer.runQuery(query, 1, null, false);
     expect(querySpy.mock.calls.length).toBeGreaterThan(1);
-  })
+  });
 
   test('Run Scan', async () => {
     const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
@@ -97,7 +98,7 @@ describe('DynamoDB Layer Tests', () => {
       ExpressionAttributeValues: {
         ':pk': { S: '1' }
       }
-    }
+    };
     // Regular scan
     const regScan = await layer.runScan(scan);
     expect(regScan.items).toEqual(expect.arrayContaining([
@@ -117,7 +118,7 @@ describe('DynamoDB Layer Tests', () => {
     const nextEvaluatedKey = {
       pk: { S: lekRes.items[0].pk },
       sk: { S: lekRes.items[0].sk }
-    }
+    };
     expect(scanSpy).toHaveBeenCalledTimes(1);
     expect(scanSpy).toHaveBeenCalledWith(layerLEKScan);
     expect(limitScan.lastEvaluatedKey).not.toEqual(nextEvaluatedKey);
@@ -149,5 +150,88 @@ describe('DynamoDB Layer Tests', () => {
     const remainder = recordSize % chunkSize;
 
     expect(querySpy).toHaveBeenCalledTimes(Math.floor(fullBatchesCount) + remainder);
+  });
+
+  test('Transact Write Item', async () => {
+    const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
+    // 1. Delete
+    const db = await layer.dynamodb.scan({ TableName: process.env.TABLE_NAME }).promise();
+    let deleteTransactions = [];
+    for (const item of db.Items) {
+      deleteTransactions.push({
+        TableName: process.env.TABLE_NAME,
+        Key: {
+          pk: item.pk,
+          sk: item.sk
+        }
+      });
+    }
+    await layer.batchTransactData(deleteTransactions, 'Delete');
+    const scanDel = await layer.dynamodb.scan({ TableName: process.env.TABLE_NAME }).promise();
+    expect(scanDel.Items.length).toBe(0);
+    // 2. Put
+    const putItems = [
+      data.mockCurrentParkName1,
+      data.mockCurrentParkName2,
+      data.mockOldParkName1,
+      data.mockParkSite1
+    ];
+    let putTransactions = [];
+    for (const item of putItems) {
+      putTransactions.push({
+        TableName: process.env.TABLE_NAME,
+        Item: AWS.DynamoDB.Converter.marshall(item)
+      })
+    }
+    await layer.batchTransactData(putTransactions);
+    const scanPut = await layer.dynamodb.scan({ TableName: process.env.TABLE_NAME }).promise();
+    expect(scanPut.Items.length).toBe(4);
+    // 3. Update with put
+    // Should perform updates as specified but do a put by default when no action specified
+    const newLegalName1 = 'newLegalName1';
+    const newLegalName2 = 'newLegalName2';
+    const update1 = {
+      TableName: process.env.TABLE_NAME,
+      Key: {
+        pk: { S: data.mockCurrentParkName1.pk },
+        sk: { S: data.mockCurrentParkName1.sk },
+      },
+      UpdateExpression: 'set legalName = :legalName',
+      ExpressionAttributeValues: {
+        ':legalName': { S: newLegalName1 }
+      }
+    }
+    const update2 = {
+      TableName: process.env.TABLE_NAME,
+      Key: {
+        pk: { S: data.mockCurrentParkName2.pk },
+        sk: { S: data.mockCurrentParkName2.sk },
+      },
+      UpdateExpression: 'set legalName = :legalName',
+      ExpressionAttributeValues: {
+        ':legalName': { S: newLegalName2 }
+      }
+    }
+    const updateTransactions = [
+      {
+        action: 'Update',
+        data: update1
+      },
+      {
+        action: 'Update',
+        data: update2
+      },
+      {
+        TableName: process.env.TABLE_NAME,
+        Item: AWS.DynamoDB.Converter.marshall(data.mockCurrentSite1)
+      }
+    ]
+    await batchTransactData(updateTransactions);
+    const scanUpdate = await layer.dynamodb.scan({ TableName: process.env.TABLE_NAME }).promise();
+    expect(scanUpdate.Items.length).toBe(5);
+    const updatedItem1 = scanUpdate.Items.find((e) => e.pk.S === data.mockCurrentParkName1.pk && e.sk.S === data.mockCurrentParkName1.sk);
+    expect(AWS.DynamoDB.Converter.unmarshall(updatedItem1).legalName).toEqual(newLegalName1);
+    const updatedItem2 = scanUpdate.Items.find((e) => e.pk.S === data.mockCurrentParkName2.pk && e.sk.S === data.mockCurrentParkName2.sk);
+    expect(AWS.DynamoDB.Converter.unmarshall(updatedItem2).legalName).toEqual(newLegalName2);
   });
 });

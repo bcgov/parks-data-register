@@ -24,7 +24,8 @@
       "^/opt/dynamodb": "<rootDir>/.aws-sam/build/AWSUtilsLayer/dynamodb",
       "^/opt/base": "<rootDir>/.aws-sam/build/BaseLayer/base",
       "^/opt/opensearch": "<rootDir>/.aws-sam/build/AWSUtilsLayer/opensearch",
-      "^/opt/siteUtils": "<rootDir>/.aws-sam/build/DataUtilsLayer/siteUtils"
+      "^/opt/siteUtils": "<rootDir>/.aws-sam/build/DataUtilsLayer/siteUtils",
+      "^/opt/data-constants": "<rootDir>/.aws-sam/build/DataUtilsLayer/data-constants"
     }
   },
   "dependencies": {

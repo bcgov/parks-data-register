@@ -1,3 +1,9 @@
+const {
+  ESTABLISHED_STATE,
+  HISTORICAL_STATE,
+  REPEALED_STATE,
+} = require('/opt/data-constants');
+
 exports.MockData = class {
   // For tests.
   mockConfig = {
@@ -12,7 +18,7 @@ exports.MockData = class {
     legalName: 'Test Park 1',
     displayName: 'Test Park 1',
     phoneticName: 'tɛst pɑːk wʌn',
-    status: 'established',
+    status: ESTABLISHED_STATE,
     notes: 'some notes'
   };
   mockOldParkName1 = {
@@ -21,7 +27,7 @@ exports.MockData = class {
     legalName: 'Old Park 1',
     displayName: 'Old Park 1',
     phoneticName: 'əʊld pɑːk wʌn',
-    status: 'historical',
+    status: HISTORICAL_STATE,
     notes: 'some notes'
   };
   mockCurrentParkName2 = {
@@ -32,7 +38,7 @@ exports.MockData = class {
     legalName: 'Test Park 2',
     displayName: 'Test Park 2',
     phoneticName: 'tɛst pɑːk tuː',
-    status: 'established',
+    status: ESTABLISHED_STATE,
     notes: 'some notes'
   };
   mockRepealParkName3 = {
@@ -43,7 +49,7 @@ exports.MockData = class {
     legalName: 'Test Park 3',
     displayName: 'Test Park 3',
     phoneticName: 'tɛst pɑːk thriː',
-    status: 'repealed',
+    status: REPEALED_STATE,
     notes: 'some notes'
   };
   mockPendingParkName1 = {
@@ -75,7 +81,7 @@ exports.MockData = class {
     legalName: 'Test Site 1-1',
     displayName: 'Test Site 1-1',
     phoneticName: 'tɛst site wʌn',
-    status: 'established',
+    status: ESTABLISHED_STATE,
     lastModifiedBy: 'TESTADMIN',
     lastVersionDate: '2023-08-10T16:11:54.513Z',
     type: 'site'
@@ -86,7 +92,7 @@ exports.MockData = class {
     legalName: 'Old Site 1-1',
     displayName: 'Old Site 1-1',
     phoneticName: 'əʊld site wʌn',
-    status: 'historical',
+    status: HISTORICAL_STATE,
     lastModifiedBy: 'TESTADMIN',
     newLegalName: 'Test Site 1-1',
     newEffectiveDate: '2020-08-10T16:15:50.868Z',
@@ -102,7 +108,7 @@ exports.MockData = class {
     legalName: 'Test Site 3-1',
     displayName: 'Test Site 3-1',
     phoneticName: 'tɛst site wʌn',
-    status: 'established',
+    status: ESTABLISHED_STATE,
     lastModifiedBy: 'TESTADMIN',
     type: 'site'
   };
@@ -114,7 +120,7 @@ exports.MockData = class {
     legalName: 'Test Site 1-3',
     displayName: 'Test Site 1-3',
     phoneticName: 'tɛst site thri',
-    status: 'repealed',
+    status: REPEALED_STATE,
     lastModifiedBy: 'TESTADMIN',
     type: 'site'
   };

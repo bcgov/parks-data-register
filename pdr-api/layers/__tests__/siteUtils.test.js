@@ -3,6 +3,13 @@ const { MockData } = require('../../__tests__/mock_data');
 const AWS = require('aws-sdk');
 const { batchTransactData } = require('/opt/dynamodb');
 
+const {
+  SITE_MAIN_SK,
+  MAJOR_UPDATE_TYPE,
+  MINOR_UPDATE_TYPE,
+  REPEAL_UPDATE_TYPE,
+} = require('/opt/data-constants');
+
 const data = new MockData;
 let dbClient;
 
@@ -31,7 +38,7 @@ describe('Sites Layer Tests', () => {
     expect(records.items.length).toEqual(1);
     expect(records.items[0].sk).toEqual('Site::1');
   });
-})
+});
 
 describe('Validate Sites PUT Request', () => {
   const OLD_ENV = process.env;
@@ -55,7 +62,7 @@ describe('Validate Sites PUT Request', () => {
     } catch (error) {
       expect(error.message).toBe('Empty request body.');
     }
-  })
+  });
 
   test('Throws error if site does not exist', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -64,22 +71,22 @@ describe('Validate Sites PUT Request', () => {
     } catch (error) {
       expect(error.message).toBe('Site not found.');
     }
-  })
+  });
 
   test('Throws error if trying to repeal park that is already repealed', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
     await putDB(data.mockRepealSite3, tableName);
     try {
-      expect(await layer.validatePutRequest('1::Site::3', { arg1: 'arg1' }, layer.REPEAL_UPDATE_TYPE)).toThrow();
+      expect(await layer.validatePutRequest('1::Site::3', { arg1: 'arg1' }, REPEAL_UPDATE_TYPE)).toThrow();
     } catch (error) {
       expect(error.message).toBe('Forbidden update action.');
     }
     try {
-      expect(await layer.validatePutRequest('1::Site::3', { arg1: 'arg1' }, layer.MAJOR_UPDATE_TYPE)).toThrow();
+      expect(await layer.validatePutRequest('1::Site::3', { arg1: 'arg1' }, MAJOR_UPDATE_TYPE)).toThrow();
     } catch (error) {
       expect(error.message).toBe('Forbidden update action.');
     }
-  })
+  });
 
   test('Throws error if invalid updateType provided', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -90,24 +97,24 @@ describe('Validate Sites PUT Request', () => {
     } catch (error) {
       expect(error.message).toBe(`'${invalidUpdateType}' is not a valid update type.`);
     }
-  })
+  });
 
   test('Throws error if mandatory fields were not provided', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
     await putDB(data.mockCurrentSite1, tableName);
-    // Minor 
+    // Minor
     try {
-      expect(await layer.validatePutRequest('1::Site::1', { lastVersionDate: new Date() }, layer.MINOR_UPDATE_TYPE)).toThrow();
+      expect(await layer.validatePutRequest('1::Site::1', { lastVersionDate: new Date() }, MINOR_UPDATE_TYPE)).toThrow();
     } catch (error) {
       expect(error.message).toBe('Missing mandatory fields.');
     }
-    // Major 
+    // Major
     try {
-      expect(await layer.validatePutRequest('1::Site::1', { lastVersionDate: new Date(), effectiveDate: new Date() }, layer.MAJOR_UPDATE_TYPE)).toThrow();
+      expect(await layer.validatePutRequest('1::Site::1', { lastVersionDate: new Date(), effectiveDate: new Date() }, MAJOR_UPDATE_TYPE)).toThrow();
     } catch (error) {
       expect(error.message).toBe('Missing mandatory fields.');
     }
-  })
+  });
 
   test('Throws if the new legal name in a major update is not different from the old legal name', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -125,7 +132,7 @@ describe('Validate Sites PUT Request', () => {
     } catch (error) {
       expect(error.message).toBe('Invalid mandatory field.');
     }
-  })
+  });
 
   test('Removes all but notes field from body if repealing', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -137,18 +144,18 @@ describe('Validate Sites PUT Request', () => {
       displayName: 'displayName',
       phoneticName: 'phoneticName',
       notes: 'notes'
-    }
+    };
     expect(await layer.validatePutRequest(
       '1::Site::1',
       body,
-      layer.REPEAL_UPDATE_TYPE
+      REPEAL_UPDATE_TYPE
     )).toBeTruthy();
     expect(body).toEqual({
       lastVersionDate: 'date1',
       effectiveDate: 'date2',
       notes: 'notes'
-    })
-  })
+    });
+  });
 
   test('Accepts valid requests', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -165,7 +172,7 @@ describe('Validate Sites PUT Request', () => {
         displayName: newDisplayName,
         newNotes: newNotes
       },
-      layer.MINOR_UPDATE_TYPE
+      MINOR_UPDATE_TYPE
     )).toBeTruthy();
     // Major
     expect(await layer.validatePutRequest(
@@ -177,7 +184,7 @@ describe('Validate Sites PUT Request', () => {
         newNotes: newNotes,
         legalName: newLegalName
       },
-      layer.MAJOR_UPDATE_TYPE
+      MAJOR_UPDATE_TYPE
     )).toBeTruthy();
     // Repeal
     expect(await layer.validatePutRequest(
@@ -189,7 +196,7 @@ describe('Validate Sites PUT Request', () => {
         newNotes: newNotes,
         legalName: newLegalName
       },
-      layer.REPEAL_UPDATE_TYPE
+      REPEAL_UPDATE_TYPE
     )).toBeTruthy();
   });
 });
@@ -209,6 +216,15 @@ describe('Build Sites PUT Objects', () => {
     process.env = OLD_ENV; // Restore old environment
   });
 
+  test('Throws an error if invalid site identifier provided.', async () => {
+    const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
+    try {
+      expect(await layer.createPASiteUpdate('bad', 'displayName')).toThrow();
+    } catch (error) {
+      expect(error.message).toBe('Malformed site identifier.');
+    }
+  });
+
   test('Builds the object for the protected area site update', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
     await putDB(data.mockParkSite1, tableName);
@@ -219,8 +235,8 @@ describe('Build Sites PUT Objects', () => {
       UpdateExpression: 'SET displayName = :displayName',
       ExpressionAttributeValues: { ':displayName': { S: 'newSiteName' } },
       ConditionExpression: 'attribute_exists(pk)'
-    })
-  })
+    });
+  });
 
   test('Builds the changelog object for the site update', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -243,7 +259,7 @@ describe('Build Sites PUT Objects', () => {
     expect(resultData.status).toEqual('historical');
     expect(resultData.legalNameChanged).toBeTruthy();
     expect(resultData.statusChanged).toBeFalsy();
-  })
+  });
 
   test('Builds the transaction for a site name put', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -258,7 +274,7 @@ describe('Build Sites PUT Objects', () => {
         effectiveDate: 'effectiveDate',
         legalName: 'newLegalName'
       },
-      layer.MINOR_UPDATE_TYPE,
+      MINOR_UPDATE_TYPE,
       'user1',
       'updateDate',
     );
@@ -272,7 +288,7 @@ describe('Build Sites PUT Objects', () => {
         legalName: 'newLegalName2',
         displayName: 'newDisplayName'
       },
-      layer.MAJOR_UPDATE_TYPE,
+      MAJOR_UPDATE_TYPE,
       'user1',
       lastVersionDate,
     );
@@ -285,7 +301,7 @@ describe('Build Sites PUT Objects', () => {
         effectiveDate: 'effectiveDate',
         legalName: 'newLegalName2',
       },
-      layer.REPEAL_UPDATE_TYPE,
+      REPEAL_UPDATE_TYPE,
       'user1',
       lastVersionDate,
     );
@@ -303,7 +319,7 @@ describe('Build Sites PUT Objects', () => {
       lastVersionDate,
     );
     expect(res4.length).toEqual(1);
-  })
+  });
 
   test('Can minor edit a repealed site name', async () => {
     const layer = require('../../.aws-sam/build/DataUtilsLayer/siteUtils');
@@ -318,15 +334,15 @@ describe('Build Sites PUT Objects', () => {
         effectiveDate: 'effectiveDate',
         notes: 'newNotes'
       },
-      layer.MINOR_UPDATE_TYPE,
+      MINOR_UPDATE_TYPE,
       'user2',
       lastVersionDate,
     );
     await batchTransactData(res);
-    let finalObj = await getOneDB('1::Site::1', 'Details', tableName);
+    let finalObj = await getOneDB('1::Site::1', SITE_MAIN_SK, tableName);
     expect(finalObj.status).toEqual(layer.REPEALED_STATE);
     expect(finalObj.notes).toEqual('newNotes');
     expect(finalObj.lastModifiedBy).toEqual('user2');
-  })
+  });
 
-})
+});

@@ -23,8 +23,7 @@ exports.handler = async (event, context) => {
     const currentTimeISO = getNowISO();
 
     // Perform update.
-    const transactions = await createSitePutTransaction(identifier, body, queryParams?.updateType, user,
-      currentTimeISO);
+    const transactions = await createSitePutTransaction(identifier, body, queryParams?.updateType, user, currentTimeISO);
 
     await batchTransactData(transactions);
 

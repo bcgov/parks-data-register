@@ -3,32 +3,18 @@ const { logger } = require('/opt/base');
 const { TABLE_NAME, runQuery, getOne } = require('/opt/dynamodb');
 const { marshall } = require('@aws-sdk/util-dynamodb');
 
-const MINOR_UPDATE_TYPE = 'minor';
-const MAJOR_UPDATE_TYPE = 'major';
-const REPEAL_UPDATE_TYPE = 'repeal';
-const UPDATE_TYPES = [
+const {
+  ESTABLISHED_STATE,
+  HISTORICAL_STATE,
   MAJOR_UPDATE_TYPE,
+  MANDATORY_PUT_FIELDS,
   MINOR_UPDATE_TYPE,
-  REPEAL_UPDATE_TYPE
-];
-
-const ESTABLISHED_STATE = 'established';
-const HISTORICAL_STATE = 'historical';
-const REPEALED_STATE = 'repealed';
-
-const MANDATORY_PUT_FIELDS = [
-  'effectiveDate',
-  'lastVersionDate'
-];
-
-const OPTIONAL_PUT_FIELDS = [
-  'audioClip',
-  'displayName',
-  'legalName',
-  'notes',
-  'phoneticName',
-  'searchTerms'
-];
+  OPTIONAL_PUT_FIELDS,
+  REPEAL_UPDATE_TYPE,
+  REPEALED_STATE,
+  SITE_MAIN_SK,
+  UPDATE_TYPES
+} = require('/opt/data-constants');
 
 /**
  * Asynchronously retrieves all sites for a given protected area.
@@ -75,7 +61,7 @@ async function validatePutRequest(identifier, body, updateType) {
     }
 
     // Check if site exists
-    const site = await getOne(identifier, 'Details');
+    const site = await getOne(identifier, SITE_MAIN_SK);
     if (!Object.keys(site).length) {
       // Throw if site not found
       throw new Exception(`Site not found.`, {
@@ -164,7 +150,7 @@ const createSitePutTransaction = async function (identifier, body, updateType, u
 
     // 1. Update the existing main site object
     // Get existing site object (pk: <pAreaId>::Site::<siteId>, sk: Details)
-    const site = await getOne(identifier, 'Details');
+    const site = await getOne(identifier, SITE_MAIN_SK);
 
     // Determine next status
     let newStatus = site.status;
@@ -197,7 +183,7 @@ const createSitePutTransaction = async function (identifier, body, updateType, u
       TableName: TABLE_NAME,
       Key: {
         pk: { S: identifier },
-        sk: { S: 'Details' }
+        sk: { S: SITE_MAIN_SK }
       },
       ExpressionAttributeValues: updatedAttributeValues,
       ExpressionAttributeNames: { '#status': 'status' },
@@ -250,6 +236,14 @@ const createPASiteUpdate = function (identifier, displayName) {
   try {
 
     // Build update transaction for protected area site object
+    const pk = identifier?.split('::')[0] || null;
+    const siteId = identifier?.split('::')[2] || null;
+    if (!pk || !siteId) {
+      throw new Exception('Malformed site identifier.', {
+        code: 400,
+        error: `Site identifier is not of the format '<protected_area_id>::Site::<site_id>.'`
+      });
+    }
     const paSiteUpdate = {
       TableName: TABLE_NAME,
       Key: {
@@ -287,7 +281,7 @@ const createPASiteUpdate = function (identifier, displayName) {
 const createChangeLogPut = async function (identifier, body, user, currentTimeISO, newStatus) {
   // Get the existing record
   try {
-    const oldSite = await getOne(identifier, 'Details');
+    const oldSite = await getOne(identifier, SITE_MAIN_SK);
 
     // Fields that will overwrite
     const fields = {

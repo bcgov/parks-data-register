@@ -6,9 +6,6 @@ const AWS_REGION = process.env.AWS_REGION || 'ca-central-1';
 const AUDIT_TABLE_NAME = process.env.TABLE_NAME || "Audit";
 const STATUS_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByStatusOfOrcs";
 const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByLegalName";
-const ESTABLISHED_STATE = 'established';
-const HISTORICAL_STATE = 'historical';
-const REPEALED_STATE = 'repealed';
 
 const TRANSACTION_MAX_SIZE = 100;
 
@@ -248,10 +245,7 @@ async function setSiteStatus(sites, status) {
 module.exports = {
   AUDIT_TABLE_NAME,
   AWS_REGION,
-  ESTABLISHED_STATE,
-  HISTORICAL_STATE,
   LEGALNAME_INDEX_NAME,
-  REPEALED_STATE,
   STATUS_INDEX_NAME,
   TABLE_NAME,
   batchTransactData,

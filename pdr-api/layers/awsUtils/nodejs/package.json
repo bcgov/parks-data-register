@@ -4,7 +4,8 @@
   "author": "Team Osprey",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.1441.0",
-    "@opensearch-project/opensearch": "^2.4.0"
+    "@aws-sdk/credential-provider-node": "^3.540.0",
+    "@opensearch-project/opensearch": "^2.4.0",
+    "aws-sdk": "^2.1441.0"
   }
 }

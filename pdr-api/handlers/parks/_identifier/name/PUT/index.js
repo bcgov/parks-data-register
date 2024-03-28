@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 const {
   dynamodb,
   getOne,
@@ -239,7 +239,7 @@ async function createChangeLogItem(body, user, currentTimeISO, currentRecord, ne
   logger.info('Creating changelog item');
 
   // Converts the current record to a format suitable for DynamoDB.
-  let changelogRecord = AWS.DynamoDB.Converter.marshall(currentRecord);
+  let changelogRecord = marshall(currentRecord);
 
   // Sets the 'sk' property of the changelog record to the current time in ISO format.
   changelogRecord['sk'] = { 'S': currentTimeISO };
@@ -334,7 +334,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
             Update: updateParams
           }
         ]
-      }).promise();
+      });
 
       // Return the object we would have inserted.
       let returnItem = {
@@ -353,11 +353,11 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
       return returnItem;
     } else {
       // Executes the update operation and retrieves the updated attributes.
-      const { Attributes } = await dynamodb.updateItem(updateParams).promise();
+      const { Attributes } = await dynamodb.updateItem(updateParams);
 
       // Converts the DynamoDB attributes to a more usable format.
-      logger.debug('Update success:', AWS.DynamoDB.Converter.unmarshall(Attributes));
-      return AWS.DynamoDB.Converter.unmarshall(Attributes);
+      logger.debug('Update success:', unmarshall(Attributes));
+      return unmarshall(Attributes);
     }
   } catch (error) {
     // Logs any errors that occur during the update operation.

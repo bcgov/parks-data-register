@@ -1,6 +1,5 @@
 const { createDB, deleteDB, getHashedText } = require('../../__tests__/settings');
 const { MockData } = require('../../__tests__/mock_data');
-const AWS = require('aws-sdk');
 
 const data = new MockData;
 let dbClient;

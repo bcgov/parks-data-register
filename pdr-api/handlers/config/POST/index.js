@@ -1,8 +1,7 @@
-const AWS = require("aws-sdk");
-
 const { dynamodb, TABLE_NAME } = require("/opt/dynamodb");
 const { logger, sendResponse } = require("/opt/base");
 const { decodeJWT, resolvePermissions } = require("/opt/permissions");
+const { marshall } = require('@aws-sdk/util-dynamodb');
 
 exports.handler = async (event, context) => {
   // Allow CORS
@@ -27,11 +26,11 @@ exports.handler = async (event, context) => {
     configObject.Item["pk"] = { S: "config" };
     configObject.Item["sk"] = { S: "config" };
     configObject.Item["configData"] = {
-      M: AWS.DynamoDB.Converter.marshall(newObject),
+      M: marshall(newObject),
     };
 
     logger.debug("putting item:", configObject);
-    const res = await dynamodb.putItem(configObject).promise();
+    const res = await dynamodb.putItem(configObject);
     logger.debug("res:", res);
     return sendResponse(200, res);
   } catch (err) {

@@ -4,6 +4,5 @@
   "author": "Team Osprey",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.1441.0"
   }
 }

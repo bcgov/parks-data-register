@@ -1,4 +1,5 @@
-const AWS = require('aws-sdk');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 const { logger } = require('/opt/base');
 
 const TABLE_NAME = process.env.TABLE_NAME || 'NameRegister';
@@ -18,17 +19,20 @@ if (process.env.IS_OFFLINE === 'true') {
   options.endpoint = process.env.DYNAMODB_ENDPOINT_URL || 'http://localhost:8000';
 }
 
-const dynamodb = new AWS.DynamoDB(options);
+const dynamodb = new DynamoDB(options);
 
 // simple way to return a single Item by primary key.
 async function getOne(pk, sk) {
   logger.info(`getItem: { pk: ${pk}, sk: ${sk} }`);
   const params = {
     TableName: TABLE_NAME,
-    Key: AWS.DynamoDB.Converter.marshall({ pk, sk })
+    Key: marshall({ pk, sk }),
   };
-  let item = await dynamodb.getItem(params).promise();
-  return AWS.DynamoDB.Converter.unmarshall(item?.Item) || {};
+  let item = await dynamodb.getItem(params);
+  if (item?.Item) {
+    return unmarshall(item.Item);
+  }
+  return {};
 }
 
 async function runQuery(query, limit = null, lastEvaluatedKey = null, paginated = true) {
@@ -51,10 +55,10 @@ async function runQuery(query, limit = null, lastEvaluatedKey = null, paginated 
     if (limit && paginated) {
       query.Limit = limit;
     }
-    pageData = await dynamodb.query(query).promise();
+    pageData = await dynamodb.query(query);
     data = data.concat(
       pageData.Items.map(item => {
-        return AWS.DynamoDB.Converter.unmarshall(item);
+        return unmarshall(item);
       })
     );
     if (page < 2) {
@@ -97,10 +101,10 @@ async function runScan(query, limit = null, lastEvaluatedKey = null, paginated =
     if (limit && paginated) {
       query.Limit = limit;
     }
-    pageData = await dynamodb.scan(query).promise();
+    pageData = await dynamodb.scan(query);
     data = data.concat(
       pageData.Items.map(item => {
-        return AWS.DynamoDB.Converter.unmarshall(item);
+        return unmarshall(item);
       })
     );
     if (page < 2) {
@@ -130,7 +134,7 @@ async function putItem(obj, tableName = TABLE_NAME) {
     ConditionExpression: 'attribute_not_exists(pk) AND attribute_not_exists(sk)',
   };
 
-  await dynamodb.putItem(putObj).promise();
+  await dynamodb.putItem(putObj);
 }
 
 async function batchWriteData(dataToInsert, chunkSize, tableName) {
@@ -150,7 +154,7 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
 
   const dataChunks = chunkArray(dataToInsert, chunkSize);
 
-  logger.info("datachunks")
+  logger.info("datachunks");
   logger.debug(JSON.stringify(dataChunks));
 
   for (let index = 0; index < dataChunks.length; index++) {
@@ -162,7 +166,7 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
       }
     }));
 
-    logger.debug(JSON.stringify(writeRequests))
+    logger.debug(JSON.stringify(writeRequests));
 
     const params = {
       RequestItems: {
@@ -172,7 +176,7 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
 
     try {
       logger.debug(JSON.stringify(params));
-      const data = await dynamodb.batchWriteItem(params).promise();
+      const data = await dynamodb.batchWriteItem(params);
       logger.info(`BatchWriteItem response for chunk ${index}:`, data);
     } catch (err) {
       logger.error(`Error batch writing items in chunk ${index}:`, err);

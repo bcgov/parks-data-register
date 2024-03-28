@@ -1,5 +1,6 @@
 const { Settings } = require('luxon');
 const oldNow = Settings.now();
+const { marshall } = require('@aws-sdk/util-dynamodb');
 const { REGION, ENDPOINT, TABLE_NAME, createDB, deleteDB, getHashedText } = require('../../../../../__tests__/settings');
 
 const item1 = {
@@ -20,21 +21,20 @@ item2.status = "repealed";
 let ddb;
 async function insertItem(item) {
   await ddb
-    .put({
+    .putItem({
       TableName: process.env.TABLE_NAME,
-      Item: item
-    })
-    .promise();
+      Item: marshall(item)
+    });
 }
 
 async function removeItem(item) {
-  await ddb.delete({
+  await ddb.deleteItem({
     TableName: process.env.TABLE_NAME,
     Key: {
-      "pk": item.pk,
-      "sk": item.sk
+      "pk": marshall(item.pk),
+      "sk": marshall(item.sk)
     }
-  }).promise();
+  });
 }
 
 describe('Lambda Handler Tests', () => {

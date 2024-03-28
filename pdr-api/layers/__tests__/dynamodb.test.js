@@ -1,6 +1,6 @@
 const { createDB, deleteDB, getHashedText } = require('../../__tests__/settings');
 const { MockData } = require('../../__tests__/mock_data');
-const AWS = require('aws-sdk');
+const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 
 const data = new MockData;
 let dbClient;
@@ -40,14 +40,14 @@ describe('DynamoDB Layer Tests', () => {
   test('Put one item', async () => {
     const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
 
-    const insertedRecord = { pk: { S: '123put' }, sk: { S: 'Details' }};
+    const insertedRecord = { pk: { S: '123put' }, sk: { S: 'Details' } };
 
     // Put the item into the db
     await layer.putItem(insertedRecord);
 
     // It should be there
     const record = await layer.getOne('123put', 'Details');
-    expect(record).toEqual(AWS.DynamoDB.Converter.unmarshall(insertedRecord));
+    expect(record).toEqual(unmarshall(insertedRecord));
   });
 
   test('Run Query', async () => {
@@ -58,7 +58,7 @@ describe('DynamoDB Layer Tests', () => {
       ExpressionAttributeValues: {
         ':pk': { S: '1' }
       }
-    }
+    };
     // Regular query
     const regQuery = await layer.runQuery(query);
     expect(regQuery.items).toEqual(expect.arrayContaining([
@@ -78,7 +78,7 @@ describe('DynamoDB Layer Tests', () => {
     const nextEvaluatedKey = {
       pk: { S: lekRes.items[0].pk },
       sk: { S: lekRes.items[0].sk }
-    }
+    };
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(layerLEKQuery);
     expect(limitQuery.lastEvaluatedKey).not.toEqual(nextEvaluatedKey);
@@ -87,7 +87,7 @@ describe('DynamoDB Layer Tests', () => {
     querySpy.mockClear();
     await layer.runQuery(query, 1, null, false);
     expect(querySpy.mock.calls.length).toBeGreaterThan(1);
-  })
+  });
 
   test('Run Scan', async () => {
     const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
@@ -97,7 +97,7 @@ describe('DynamoDB Layer Tests', () => {
       ExpressionAttributeValues: {
         ':pk': { S: '1' }
       }
-    }
+    };
     // Regular scan
     const regScan = await layer.runScan(scan);
     expect(regScan.items).toEqual(expect.arrayContaining([
@@ -117,7 +117,7 @@ describe('DynamoDB Layer Tests', () => {
     const nextEvaluatedKey = {
       pk: { S: lekRes.items[0].pk },
       sk: { S: lekRes.items[0].sk }
-    }
+    };
     expect(scanSpy).toHaveBeenCalledTimes(1);
     expect(scanSpy).toHaveBeenCalledWith(layerLEKScan);
     expect(limitScan.lastEvaluatedKey).not.toEqual(nextEvaluatedKey);
@@ -139,7 +139,7 @@ describe('DynamoDB Layer Tests', () => {
         pk: `{BatchWrite${i}}`,
         sk: 'Details'
       };
-      records.push(AWS.DynamoDB.Converter.marshall(jsonObject));
+      records.push(marshall(jsonObject));
     }
 
     const querySpy = jest.spyOn(layer.dynamodb, 'batchWriteItem');

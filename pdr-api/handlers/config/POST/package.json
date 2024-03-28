@@ -2,5 +2,7 @@
   "name": "config-post",
   "version": "1.0.0",
   "author": "Digitalspace <contact@digitalspace.ca>",
-  "dependencies": {}
+  "dependencies": {
+    "@aws-sdk/util-dynamodb": "^3.540.0"
+  }
 }

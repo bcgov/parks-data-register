@@ -3,9 +3,9 @@ const ENDPOINT = 'http://localhost:8000';
 const DYNAMODB_ENDPOINT_URL = process.env.DYNAMODB_ENDPOINT_URL = ENDPOINT;
 const TABLE_NAME = process.env.TABLE_NAME || 'NameRegistry-tests';
 const TIMEZONE = 'America/Vancouver';
-const { DocumentClient } = require('aws-sdk/clients/dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { marshall } = require('@aws-sdk/util-dynamodb');
 let DBMODEL = require('../docs/dbModel.json');
-const AWS = require('aws-sdk');
 
 const crypto = require('crypto');
 
@@ -15,26 +15,20 @@ process.env.IS_OFFLINE = 'true';
 async function createDB(items, tableName = TABLE_NAME) {
   // Set the TABLE_NAME to be the test table name in the database model.
   DBMODEL.TableName = tableName;
-  const dynamodb = new AWS.DynamoDB({
+  const dynamodb = new DynamoDB({
     region: AWS_REGION,
     endpoint: DYNAMODB_ENDPOINT_URL
   });
 
   try {
-    await dynamodb.createTable(DBMODEL).promise();
+    await dynamodb.createTable(DBMODEL);
   } catch (err) {
     console.error(err);
   }
 
-  const docClient = new DocumentClient({
-    region: AWS_REGION,
-    endpoint: ENDPOINT,
-    convertEmptyValues: true
-  });
-
   // If there are no items to create after creating the DB, just return the client handler.
   if (!items) {
-    return docClient;
+    return dynamodb;
   }
 
   // If the item passed in wasn't an array, turn it into one.
@@ -43,17 +37,17 @@ async function createDB(items, tableName = TABLE_NAME) {
   }
 
   for (const item of items) {
-    await docClient.put({
-      TableName: DBMODEL.TableName,
-      Item: item
-    }).promise();
+    await dynamodb.putItem({
+      TableName: tableName,
+      Item: marshall(item)
+    });
   }
 
-  return docClient;
+  return dynamodb;
 }
 
 async function deleteDB(tableName = TABLE_NAME) {
-  const dynamoDb = new AWS.DynamoDB({
+  const dynamoDb = new DynamoDB({
     region: AWS_REGION,
     endpoint: ENDPOINT
   });
@@ -62,8 +56,7 @@ async function deleteDB(tableName = TABLE_NAME) {
     await dynamoDb
       .deleteTable({
         TableName: tableName
-      })
-      .promise();
+      });
   } catch (err) {
     console.error(err);
   }

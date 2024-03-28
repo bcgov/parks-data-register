@@ -4,6 +4,7 @@
   "author": "Digitalspace <contact@digitalspace.ca>",
   "dependencies": {
     "@aws-sdk/credential-provider-node": "^3.425.0",
+    "@aws-sdk/util-dynamodb": "^3.540.0",
     "@opensearch-project/opensearch": "^2.4.0"
   }
 }

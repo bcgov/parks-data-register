@@ -1,9 +1,9 @@
-const AWS = require("aws-sdk");
 const { logger } = require('/opt/base');
 const { batchWriteData, AUDIT_TABLE_NAME } = require('/opt/dynamodb');
 const { defaultProvider } = require('@aws-sdk/credential-provider-node'); // V3 SDK.
 const { Client } = require('@opensearch-project/opensearch');
 const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
+const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 const OPENSEARCH_DOMAIN_ENDPOINT = process.env.OPENSEARCH_DOMAIN_ENDPOINT;
 const OPENSEARCH_MAIN_INDEX = process.env.OPENSEARCH_MAIN_INDEX;
 
@@ -48,13 +48,13 @@ exports.handler = async function (event, context) {
       logger.info(`openSearchId:${JSON.stringify(openSearchId)}`);
 
       const auditImage = {
-        pk: AWS.DynamoDB.Converter.input(user),
-        sk: AWS.DynamoDB.Converter.input(creationTime),
+        pk: marshall(user),
+        sk: marshall(creationTime),
         gsipk: gsipk,
         gsisk: gsisk,
         newImage: { "M": newImage },
         oldImage: { "M": oldImage },
-        operation: AWS.DynamoDB.Converter.input(eventName)
+        operation: marshall(eventName)
       };
 
       logger.debug(`auditImage:${JSON.stringify(auditImage)}`);
@@ -66,7 +66,7 @@ exports.handler = async function (event, context) {
           const data = {
             id: openSearchId,
             index: OPENSEARCH_MAIN_INDEX,
-            body: AWS.DynamoDB.Converter.unmarshall(newImage),
+            body: unmarshall(newImage),
             refresh: true
           };
           logger.debug(JSON.stringify(data));

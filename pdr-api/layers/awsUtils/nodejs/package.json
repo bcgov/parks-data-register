@@ -5,6 +5,6 @@
   "license": "MIT",
   "dependencies": {
     "@opensearch-project/opensearch": "^2.4.0",
-    "aws-sdk": "^2.1585.0"
+    "aws-sdk": "^2.1441.0"
   }
 }

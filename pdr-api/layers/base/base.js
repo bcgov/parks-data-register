@@ -1,9 +1,12 @@
 const { createLogger, format, transports } = require("winston");
 const { combine, timestamp } = format;
+const { DateTime } = require('luxon');
+
+const TIMEZONE = 'America/Vancouver';
 
 const LEVEL = process.env.LOG_LEVEL || "error";
 
-exports.logger = createLogger({
+const logger = createLogger({
   level: LEVEL,
   format: combine(
     timestamp(),
@@ -20,7 +23,17 @@ exports.logger = createLogger({
   transports: [new transports.Console()],
 });
 
-exports.sendResponse = function (code, data, message, error, context, other = null) {
+/**
+ * Constructs a response object with the provided parameters.
+ * @param {number} code - The HTTP status code of the response.
+ * @param {*} data - The data payload of the response.
+ * @param {string} message - The message associated with the response.
+ * @param {string|null} error - The error message, if any, associated with the response.
+ * @param {*} context - Additional context or metadata related to the response.
+ * @param {*} [other=null] - Additional fields to include in the response body.
+ * @returns {object} - The constructed response object.
+ */
+const sendResponse = function (code, data, message, error, context, other = null) {
   // All responses must include the following fields as a minimum.
   let body = {
     code: code,
@@ -28,7 +41,7 @@ exports.sendResponse = function (code, data, message, error, context, other = nu
     msg: message,
     error: error,
     context: context
-  }
+  };
   // If other fields are present, attach them to the body.
   if (other) {
     body = Object.assign(body, other);
@@ -47,10 +60,38 @@ exports.sendResponse = function (code, data, message, error, context, other = nu
   return response;
 };
 
-exports.checkWarmup = function (event) {
+const checkWarmup = function (event) {
   if (event?.warmup === true) {
     return true;
   } else {
     return false;
   }
 };
+
+const getNowISO = function () {
+  return getNow().toISO();
+};
+
+
+const getNow = function () {
+  return DateTime.now().setZone(TIMEZONE);
+};
+
+const Exception = class extends Error {
+  constructor(message, errorData) {
+    super(message);
+    this.code = errorData?.code || null;
+    this.error = errorData?.error || null;
+    this.msg = message || null;
+    this.data = errorData?.data || null;
+  }
+};
+
+module.exports = {
+  Exception,
+  checkWarmup,
+  getNow,
+  getNowISO,
+  logger,
+  sendResponse,
+}

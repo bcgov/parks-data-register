@@ -7,9 +7,8 @@ const AWS_REGION = process.env.AWS_REGION || 'ca-central-1';
 const AUDIT_TABLE_NAME = process.env.TABLE_NAME || "Audit";
 const STATUS_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByStatusOfOrcs";
 const LEGALNAME_INDEX_NAME = process.env.STATUS_INDEX_NAME || "ByLegalName";
-const ESTABLISHED_STATE = 'established';
-const HISTORICAL_STATE = 'historical';
-const REPEALED_STATE = 'repealed';
+
+const TRANSACTION_MAX_SIZE = 100;
 
 const options = {
   region: AWS_REGION
@@ -138,23 +137,11 @@ async function putItem(obj, tableName = TABLE_NAME) {
 }
 
 async function batchWriteData(dataToInsert, chunkSize, tableName) {
-  // Assume dataToInsert is already in Dynamo Json format
-
-  // Function to chunk the data into smaller arrays
-  function chunkArray(array, chunkSize) {
-    const result = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      result.push(array.slice(i, i + chunkSize));
-    }
-    return result;
-  }
-
   logger.info("dataToInsert");
   logger.debug(JSON.stringify(dataToInsert));
 
   const dataChunks = chunkArray(dataToInsert, chunkSize);
 
-  logger.info("datachunks");
   logger.debug(JSON.stringify(dataChunks));
 
   for (let index = 0; index < dataChunks.length; index++) {
@@ -184,6 +171,66 @@ async function batchWriteData(dataToInsert, chunkSize, tableName) {
   }
 }
 
+// Assume data is already in Dynamo Json format
+// Function to chunk the data into smaller arrays
+function chunkArray(array, chunkSize) {
+  const result = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    result.push(array.slice(i, i + chunkSize));
+  }
+  return result;
+}
+
+/**
+ * Asynchronously batches and transacts data into DynamoDB.
+ * @async
+ * @param {Array<Object>} data - The array of objects to be transacted into DynamoDB.
+ * If you want the transaction action to differ from the one provided in the `action` argument,
+ * you can provide your data as {action: ('Put', 'Update', 'Delete', 'ConditionExpression'), data: <object> }.
+ * This allows you to perform more than 1 type of action per transaction.
+ * @param {string} [action='Put'] - The default action to perform if not specified for each item ('Put', 'Update', 'Delete', 'ConditionExpression').
+ * @returns {Promise<boolean>} - A Promise that resolves to true if the batch transact operation succeeds.
+ */
+async function batchTransactData(data, action = 'Put') {
+
+  const dataChunks = chunkArray(data, TRANSACTION_MAX_SIZE);
+
+  logger.debug(JSON.stringify(data));
+  logger.debug(JSON.stringify(dataChunks));
+  logger.info('Data items:', data.length);
+  logger.info('Transactions:', dataChunks.length);
+
+  try {
+    for (let index = 0; index < dataChunks.length; index++) {
+      const chunk = dataChunks[index];
+
+      const TransactItems = chunk.map(item => {
+        let op = item?.action || action;
+        switch (op) {
+          case 'ConditionExpression':
+            return { ConditionExpression: item?.data || item };
+          case 'Update':
+            return { Update: item?.data || item };
+          case 'Delete':
+            return { Delete: item?.data || item };
+          case 'Put':
+          default:
+            return { Put: item?.data || item };
+        }
+      });
+
+      logger.debug(JSON.stringify(TransactItems));
+
+      const data = await dynamodb.transactWriteItems({ TransactItems: TransactItems });
+      logger.debug(`BatchWriteItem response for chunk ${index}:`, data);
+    }
+  } catch (error) {
+    logger.error(`Error batch writing items:`, error);
+    throw error;
+  }
+  return true;
+}
+
 /**
  * Asynchronously sets the status for a list of sites.
  *
@@ -202,12 +249,10 @@ async function setSiteStatus(sites, status) {
 module.exports = {
   AUDIT_TABLE_NAME,
   AWS_REGION,
-  ESTABLISHED_STATE,
-  HISTORICAL_STATE,
   LEGALNAME_INDEX_NAME,
-  REPEALED_STATE,
   STATUS_INDEX_NAME,
   TABLE_NAME,
+  batchTransactData,
   batchWriteData,
   dynamodb,
   getOne,

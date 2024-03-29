@@ -4,7 +4,7 @@ const DYNAMODB_ENDPOINT_URL = process.env.DYNAMODB_ENDPOINT_URL = ENDPOINT;
 const TABLE_NAME = process.env.TABLE_NAME || 'NameRegistry-tests';
 const TIMEZONE = 'America/Vancouver';
 const { DynamoDB } = require('@aws-sdk/client-dynamodb');
-const { marshall } = require('@aws-sdk/util-dynamodb');
+const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 let DBMODEL = require('../docs/dbModel.json');
 
 const crypto = require('crypto');
@@ -62,6 +62,37 @@ async function deleteDB(tableName = TABLE_NAME) {
   }
 }
 
+async function putDB(data, tableName = TABLE_NAME) {
+  const dynamodb = new DynamoDB({
+    region: AWS_REGION,
+    endpoint: ENDPOINT,
+  });
+
+  // If data is a single item, make it an array
+  if (!data.length) {
+    data = [data];
+  }
+  for (const item of data) {
+    await dynamodb.putItem({
+      TableName: tableName,
+      Item: marshall(item)
+    });
+  }
+}
+
+async function getOneDB(pk, sk, tableName = TABLE_NAME) {
+  const dynamodb = new DynamoDB({
+    region: AWS_REGION,
+    endpoint: DYNAMODB_ENDPOINT_URL
+  });
+  const query = {
+    TableName: tableName,
+    Key: marshall({pk, sk})
+  }
+  let res = await dynamodb.getItem(query);
+  return unmarshall(res.Item);
+}
+
 // Generate hashed text
 function getHashedText(text) {
   return crypto.createHash('md5').update(text).digest('hex');
@@ -76,5 +107,7 @@ module.exports = {
   TIMEZONE,
   createDB,
   deleteDB,
-  getHashedText
+  getOneDB,
+  getHashedText,
+  putDB
 };

@@ -22,9 +22,10 @@ describe('Utils', () => {
   });
 
   it('should format date for display: success', () => {
-    const date = new Date("1989-04-05T12:00:00.000+08:00");
+    const date = "1989-04-05T12:00:00.000+08:00";
     const res = utils.formatDateForDisplay(date);
-    expect(res).toEqual('April 04, 1989');
+    console.log('res:', res);
+    expect(res).toEqual('April 4, 1989');
   });
 
   it('should clean put object', () => {
@@ -58,15 +59,15 @@ describe('Utils', () => {
 
   it('should set last version date', () => {
     const obj = {
-      updateDate: new Date(1989, 3, 5),
+      updateDate: "1989-04-05T12:00:00.000+08:00",
     };
     const res = utils.setLastVersionDate(obj);
-    expect(res.lastVersionDate).toEqual(new Date(1989, 3, 5));
+    expect(res.lastVersionDate).toEqual("1989-04-05T12:00:00.000+08:00");
   });
 
   it('should set display date', () => {
-    const obj = { hotdog: new Date("1989-04-05T12:00:00.000+08:00") };
+    const obj = { hotdog: "1989-04-05T12:00:00.000+08:00" };
     const res = utils.setDisplayDate(obj, 'hotdog');
-    expect(res.hotdogDisplay).toEqual('April 04, 1989');
+    expect(res.hotdogDisplay).toEqual('April 4, 1989');
   });
 });

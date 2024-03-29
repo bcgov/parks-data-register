@@ -3,29 +3,19 @@ const {
   dynamodb,
   getOne,
   setSiteStatus,
-  ESTABLISHED_STATE,
-  HISTORICAL_STATE,
-  REPEALED_STATE,
   TABLE_NAME
 } = require('/opt/dynamodb');
+const {
+  ESTABLISHED_STATE,
+  HISTORICAL_STATE,
+  MANDATORY_PUT_FIELDS,
+  OPTIONAL_PUT_FIELDS,
+  REPEALED_STATE,
+} = require('/opt/data-constants');
 const { getSitesForProtectedArea } = require('/opt/siteUtils');
 const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
-
-const mandatoryFields = [
-  'effectiveDate',
-  'lastVersionDate'
-];
-
-const optionalFields = [
-  'legalName',
-  'displayName',
-  'phoneticName',
-  'searchTerms',
-  'notes',
-  'audioClip'
-];
 
 /**
  * AWS Lambda function for updating park name details.
@@ -67,7 +57,7 @@ exports.handler = async (event, context) => {
     const user = event.requestContext?.authorizer?.userID;
 
     // Ensures all required fields are present in the payload.
-    let checkFields = [...mandatoryFields];
+    let checkFields = [...MANDATORY_PUT_FIELDS];
     if (updateType === 'major') {
       checkFields.push('legalName');
     }
@@ -291,7 +281,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
   };
   let updateExpression = ['SET updateDate = :updateDate, #status = :status, lastModifiedBy = :lastModifiedBy, effectiveDate = :effectiveDate'];
   if (!repealOnly) {
-    for (const field of optionalFields) {
+    for (const field of OPTIONAL_PUT_FIELDS) {
       if (body.hasOwnProperty(field)) {
         updatedAttributeValues[`:${field}`] = { S: body[field] || '' };
         updateExpression.push(`${field} = :${field}`);
@@ -345,7 +335,7 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
         lastModifiedBy: user,
         status: status
       };
-      for (const field of optionalFields) {
+      for (const field of OPTIONAL_PUT_FIELDS) {
         if (body.hasOwnProperty(field)) {
           returnItem[field] = body[field];
         }

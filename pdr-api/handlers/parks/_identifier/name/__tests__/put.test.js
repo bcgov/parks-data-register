@@ -1,9 +1,9 @@
 const { Settings } = require('luxon');
 const oldNow = Settings.now();
 const { marshall } = require('@aws-sdk/util-dynamodb');
-const { REGION, ENDPOINT, TABLE_NAME, createDB, deleteDB, getHashedText } = require('../../../../../__tests__/settings');
+const { createDB, deleteDB, getHashedText } = require('../../../../../__tests__/settings');
 
-const item1 = {
+let item1 = {
   "pk": "41",
   "sk": "Details",
   "effectiveDate": "1911-03-01",
@@ -19,17 +19,17 @@ const item1 = {
 const item2 = { ...item1 };
 item2.status = "repealed";
 let ddb;
-async function insertItem(item) {
+async function insertItem(item, tableName) {
   await ddb
     .putItem({
-      TableName: process.env.TABLE_NAME,
+      TableName: tableName,
       Item: marshall(item)
     });
 }
 
-async function removeItem(item) {
+async function removeItem(item, tableName) {
   await ddb.deleteItem({
-    TableName: process.env.TABLE_NAME,
+    TableName: tableName,
     Key: {
       "pk": marshall(item.pk),
       "sk": marshall(item.sk)
@@ -40,21 +40,20 @@ async function removeItem(item) {
 describe('Lambda Handler Tests', () => {
   const OLD_ENV = process.env;
   const IDIR_TEST_USER = 'IDIR_USER_TODO';
-
   beforeAll(async () => {
     Settings.now = () => new Date(2018, 4, 25).valueOf();
     const hash = getHashedText('Lambda Handler Tests');
     process.env.TABLE_NAME = hash;
     ddb = await createDB(null, hash);
-  })
+  }, 100000)
 
   afterAll(async () => {
     await deleteDB(process.env.TABLE_NAME);
     Settings.now = () => new Date(oldNow).valueOf();
     process.env = OLD_ENV; // Restore old environment
-  });
+  }, 100000);
 
-  test('validateRequest should throw an error for invalid payload', async () => {
+  it('validateRequest should throw an error for invalid payload', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const invalidPayload = { effectiveDate: '2023-01-01' };
 
@@ -62,7 +61,7 @@ describe('Lambda Handler Tests', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('minorUpdate should return a response with status code 400', async () => {
+  it('minorUpdate should return a response with status code 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = { orcs: 'someId', effectiveDate: '2023-01-01' };
 
@@ -81,7 +80,7 @@ describe('Lambda Handler Tests', () => {
     expect(result.statusCode).toBe(400);
   });
 
-  test('minorUpdate should return a response with status code 403', async () => {
+  it('minorUpdate should return a response with status code 403', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "lastVersionDate": "date1",
@@ -91,7 +90,7 @@ describe('Lambda Handler Tests', () => {
     const result = await handler({
       body: JSON.stringify(body),
       pathParameters: {
-        "identifier": "41"
+        "identifier": item1.pk
       },
       queryStringParameters: {
         updateType: 'minor'
@@ -106,9 +105,9 @@ describe('Lambda Handler Tests', () => {
     expect(result.statusCode).toBe(403);
   });
 
-  test('minorUpdate should return a response with status code 200', async () => {
+  it('minorUpdate should return a response with status code 200', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
-    await insertItem(item1);
+    await insertItem(item1, process.env.TABLE_NAME);
     const body = {
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
@@ -125,7 +124,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'minor'
       },
       pathParameters: {
-        "identifier": "41"
+        "identifier": item1.pk
       },
       requestContext: {
         authorizer: {
@@ -135,10 +134,10 @@ describe('Lambda Handler Tests', () => {
       }
     });
     expect(result.statusCode).toBe(200);
-    await removeItem(item1);
+    await removeItem(item1, process.env.TABLE_NAME);
   });
 
-  test('minorUpdate should return a response with status code missing things 400', async () => {
+  it('minorUpdate should return a response with status code missing things 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "41",
@@ -166,7 +165,7 @@ describe('Lambda Handler Tests', () => {
     expect(result.statusCode).toBe(400);
   });
 
-  test('minorUpdate should fail because of type issues 400', async () => {
+  it('minorUpdate should fail because of type issues 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "3",
@@ -197,9 +196,10 @@ describe('Lambda Handler Tests', () => {
     expect(result.statusCode).toBe(400);
   });
 
-  test('Repeal should repeal a protectedArea 200', async () => {
+  it('Repeal should repeal a protectedArea 200', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
-    await insertItem(item1);
+    item1.pk = "242";
+    await insertItem(item1, process.env.TABLE_NAME);
     const body = {
       "effectiveDate": "1911-03-01",
       "lastVersionDate": "date1",
@@ -216,7 +216,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'repeal'
       },
       pathParameters: {
-        "identifier": "41"
+        "identifier": item1.pk
       },
       requestContext: {
         authorizer: {
@@ -227,14 +227,16 @@ describe('Lambda Handler Tests', () => {
     });
 
     expect(result.statusCode).toBe(200);
+    console.log(result)
     const payload = JSON.parse(result.body);
     expect(payload.data.status).toBe('repealed');
-    await removeItem(item1);
+    await removeItem(item1, process.env.TABLE_NAME);
   })
 
-  test('Edit should fail if status isnt established 400', async () => {
+  it('Edit should fail if status isnt established 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
-    await insertItem(item2);
+    item2.pk = "241";
+    await insertItem(item2, process.env.TABLE_NAME);
     const body = {
       "effectiveDate": "1911-03-01",
       "lastVersionDate": "date1",
@@ -252,7 +254,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'minorUpdate'
       },
       pathParameters: {
-        "identifier": "41"
+        "identifier": item2.pk
       },
       requestContext: {
         authorizer: {
@@ -262,10 +264,10 @@ describe('Lambda Handler Tests', () => {
       }
     });
     expect(result.statusCode).toBe(400);
-    await removeItem(item2);
+    await removeItem(item2, process.env.TABLE_NAME);
   })
 
-  test('Invalid update type: 400', async () => {
+  it('Invalid update type: 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "123",
@@ -297,7 +299,7 @@ describe('Lambda Handler Tests', () => {
     expect(result.statusCode).toBe(400);
   });
 
-  test('Invalid status: 400', async () => {
+  it('Invalid status: 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const body = {
       "orcs": "123",
@@ -329,11 +331,12 @@ describe('Lambda Handler Tests', () => {
     expect(result.statusCode).toBe(400);
   });
 
-  test('nameChange should return a response with status code 200', async () => {
+  it('nameChange should return a response with status code 200', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
-    await insertItem(item1);
+    item1.pk = "243";
+    await insertItem(item1, process.env.TABLE_NAME);
     const body = {
-      "orcs": "41",
+      "orcs": item1.pk,
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park 2",
@@ -350,7 +353,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'major'
       },
       pathParameters: {
-        "identifier": "41"
+        "identifier": item1.pk
       },
       requestContext: {
         authorizer: {
@@ -363,14 +366,15 @@ describe('Lambda Handler Tests', () => {
     const payload = JSON.parse(result.body);
     expect(payload.data.legalName).toBe('Strathcona Park 2');
     expect(payload.data.lastModifiedBy).toBe(IDIR_TEST_USER)
-    await removeItem(item1);
+    await removeItem(item1, process.env.TABLE_NAME);
   });
 
-  test('Payload does not include lastVersionDate, return 400', async () => {
+  it('Payload does not include lastVersionDate, return 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
-    await insertItem(item1);
+    item1.pk = "244";
+    await insertItem(item1, process.env.TABLE_NAME);
     const body = {
-      "orcs": "41",
+      "orcs": item1.pk,
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park 2",
       "status": "established",
@@ -386,7 +390,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'minor'
       },
       pathParameters: {
-        "identifier": "41"
+        "identifier": item1.pk
       },
       requestContext: {
         authorizer: {
@@ -396,14 +400,15 @@ describe('Lambda Handler Tests', () => {
       }
     });
     expect(result.statusCode).toBe(400);
-    await removeItem(item1);
+    await removeItem(item1, process.env.TABLE_NAME);
   });
 
-  test('Major change does not include changed legalName, return 400', async () => {
+  it('Major change does not include changed legalName, return 400', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
-    await insertItem(item1);
+    item1.pk = "245";
+    await insertItem(item1, process.env.TABLE_NAME);
     const body = {
-      "orcs": "41",
+      "orcs": item1.pk,
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park",
@@ -420,7 +425,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'major'
       },
       pathParameters: {
-        "identifier": "41"
+        "identifier": item1.pk
       },
       requestContext: {
         authorizer: {
@@ -430,15 +435,16 @@ describe('Lambda Handler Tests', () => {
       }
     });
     expect(result.statusCode).toBe(400);
-    await removeItem(item1);
+    await removeItem(item1, process.env.TABLE_NAME);
   });
 
 
-  test('Payload does not include displayName value, return 200', async () => {
+  it('Payload does not include displayName value, return 200', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
-    await insertItem(item1);
+    item1.pk = "246";
+    await insertItem(item1, process.env.TABLE_NAME);
     const body = {
-      "orcs": "41",
+      "orcs": item1.pk,
       "lastVersionDate": "date1",
       "effectiveDate": "1911-03-01",
       "legalName": "Strathcona Park 2",
@@ -455,7 +461,7 @@ describe('Lambda Handler Tests', () => {
         updateType: 'minor'
       },
       pathParameters: {
-        "identifier": "41"
+        "identifier": item1.pk
       },
       requestContext: {
         authorizer: {
@@ -468,10 +474,10 @@ describe('Lambda Handler Tests', () => {
     const payload = JSON.parse(result.body);
     // Display name is overwritten with legalname value
     expect(payload.data.displayName).toBe(`Strathcona Park 2`);
-    await removeItem(item1);
+    await removeItem(item1, process.env.TABLE_NAME);
   });
 
-  test('Expected behaviour on field absence', async () => {
+  it('Expected behaviour on field absence', async () => {
     const { handler } = require('../PUT/index'); // Update the path accordingly
     const requests = [
       {
@@ -574,14 +580,15 @@ describe('Lambda Handler Tests', () => {
       },
     ];
     for (const request of requests) {
-      await insertItem(item1);
+      item1.pk = "247";
+      await insertItem(item1, process.env.TABLE_NAME);
       const result = await handler({
         body: JSON.stringify(request.body),
         queryStringParameters: {
           updateType: request.updateType
         },
         pathParameters: {
-          "identifier": "41"
+          "identifier": item1.pk
         },
         requestContext: {
           authorizer: {
@@ -591,7 +598,7 @@ describe('Lambda Handler Tests', () => {
         }
       })
       expect(result.statusCode).toBe(request.expectCode);
-      await removeItem(item1);
+      await removeItem(item1, process.env.TABLE_NAME);
     }
   });
 });

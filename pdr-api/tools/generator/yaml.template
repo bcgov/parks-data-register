@@ -1,0 +1,43 @@
+{ FunctionName }:
+    FunctionName: { FunctionName }
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/{ path }/{ MethodName }
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref DynamoDBLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: { Description }
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        { FunctionName }:
+          Type: Api
+          Properties:
+            Path: /{ path }
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
+        ConfigOptions:
+          Type: Api
+          Properties:
+            Path: /{ path }
+            Method: OPTIONS
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true

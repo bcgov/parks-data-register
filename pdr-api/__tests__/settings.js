@@ -1,5 +1,5 @@
 const AWS_REGION = process.env.AWS_REGION || 'local-env';
-const ENDPOINT = 'http://localhost:8000';
+const ENDPOINT = 'http://127.0.0.1:8000';
 const DYNAMODB_ENDPOINT_URL = process.env.DYNAMODB_ENDPOINT_URL = ENDPOINT;
 const TABLE_NAME = process.env.TABLE_NAME || 'NameRegistry-tests';
 const TIMEZONE = 'America/Vancouver';
@@ -17,13 +17,14 @@ async function createDB(items, tableName = TABLE_NAME) {
   DBMODEL.TableName = tableName;
   const dynamodb = new DynamoDB({
     region: AWS_REGION,
-    endpoint: DYNAMODB_ENDPOINT_URL
+    endpoint: DYNAMODB_ENDPOINT_URL,
+    httpOptions: { timeout: 5000 }
   });
 
   try {
     await dynamodb.createTable(DBMODEL);
   } catch (err) {
-    console.error(err);
+    console.log(err)
   }
 
   // If there are no items to create after creating the DB, just return the client handler.
@@ -58,7 +59,7 @@ async function deleteDB(tableName = TABLE_NAME) {
         TableName: tableName
       });
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 }
 

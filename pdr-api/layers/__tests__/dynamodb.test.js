@@ -12,7 +12,7 @@ describe('DynamoDB Layer Tests', () => {
   const OLD_ENV = process.env;
   beforeEach(async () => {
     jest.resetModules();
-    const hash = getHashedText('DynamoDB Layer Tests');
+    const hash = getHashedText(expect.getState().currentTestName);
     process.env.TABLE_NAME = hash;
     dbClient = await createDB([
       data.mockCurrentParkName1,
@@ -150,7 +150,7 @@ describe('DynamoDB Layer Tests', () => {
     const remainder = recordSize % chunkSize;
 
     expect(querySpy).toHaveBeenCalledTimes(Math.floor(fullBatchesCount) + remainder);
-  });
+  },15000);
 
   test('Transact Write Item', async () => {
     const layer = require('../../.aws-sam/build/AWSUtilsLayer/dynamodb');
@@ -233,5 +233,5 @@ describe('DynamoDB Layer Tests', () => {
     expect(unmarshall(updatedItem1).legalName).toEqual(newLegalName1);
     const updatedItem2 = scanUpdate.Items.find((e) => e.pk.S === data.mockCurrentParkName2.pk && e.sk.S === data.mockCurrentParkName2.sk);
     expect(unmarshall(updatedItem2).legalName).toEqual(newLegalName2);
-  });
+  },15000);
 });

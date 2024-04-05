@@ -32,6 +32,13 @@ export class SiteDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  getDisplayedEffectiveDate() {
+    if (this.currentData?.effectiveDate) {
+      return this.currentData?.effectiveDate;
+    }
+    return this.currentData?.createDate || '';
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }

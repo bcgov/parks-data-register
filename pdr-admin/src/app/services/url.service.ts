@@ -16,7 +16,7 @@ export class UrlService implements OnDestroy {
   ) {
     this.route.queryParams.subscribe((changes) => {
       this.queryParams.next(changes);
-    }) 
+    });
   }
 
   /**
@@ -24,6 +24,24 @@ export class UrlService implements OnDestroy {
    * @returns {String} The current url route.
    */
   getRoute() {
+    return this.router.url;
+  }
+
+
+  /**
+   * Retrieves the route up to a specified segment from the current URL.
+   * If no segment is provided, returns the entire current route.
+   *
+   * @param {string|null} segment - The segment up to which the route is to be retrieved.
+   * @returns {string} The route up to the specified segment if found, otherwise returns the entire current route.
+   */
+  getRouteUpTo(segment = null) {
+    const segments = this.router.url.split('/');
+    if (segment && segments.length) {
+      const index = segments.indexOf(segment);
+      // include end segment
+      return segments.slice(0, index + 1).join('/');
+    }
     return this.router.url;
   }
 
@@ -58,7 +76,7 @@ export class UrlService implements OnDestroy {
       relativeTo: this.route,
       queryParams: params,
       replaceUrl: true
-    })
+    });
 
   }
 

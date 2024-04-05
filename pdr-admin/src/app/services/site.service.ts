@@ -66,7 +66,7 @@ export class SiteService {
     this.loadingService.addToFetchList(Constants.dataIds.SITE_PUT);
 
     if (!Object.values(Constants.editTypes).includes(updateType)) {
-      throw `'${updateType}' is not a valid update type.`;
+      throw new Error(`'${updateType}' is not a valid update type.`);
     }
 
     if (updateType === Constants.editTypes.EDIT_REPEAL_EDIT_TYPE) {
@@ -78,7 +78,7 @@ export class SiteService {
 
     try {
       putObj = this.utils.cleanPutObject(putObj, Constants.putAttributes);
-      const res = await lastValueFrom(this.apiService.put(['sites', pk], putObj, { updateType: updateType }));
+      await lastValueFrom(this.apiService.put(['sites', pk], putObj, { updateType: updateType }));
       this.toastService.addMessage(`Your changes were saved.`, ``, ToastTypes.SUCCESS);
       this.clearCurrentSite();
     } catch (error) {

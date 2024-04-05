@@ -86,7 +86,7 @@ export class SiteManageComponent implements AfterViewInit, OnDestroy {
     const id = this.siteService.getSiteIdFromPK(this.siteData.pk);
     let newPath = `${this.urlService.getRouteUpTo(id)}/${path}`;
     this.router.navigate([newPath])
-    this.state = path ? path : 'details';
+    this.state = path || 'details';
     this.cdr.detectChanges();
   }
 

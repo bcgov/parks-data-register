@@ -42,6 +42,16 @@ async function getSitesForProtectedArea(identifier) {
   return res;
 }
 
+async function getSiteDetailsForProtectedArea(identifier) {
+  const sites = await getSitesForProtectedArea(identifier);
+  let siteDetails = [];
+  for (const site of sites.items) {
+    logger.info('Get all site details for a protected area');
+    siteDetails.push(await getOne(`${site.pk}::${site.sk}`, 'Details'));
+  }
+  return siteDetails;
+}
+
 /**
  * Validates a PUT request for updating site details.
  * @async
@@ -325,5 +335,6 @@ module.exports = {
   createPASiteUpdate,
   createSitePutTransaction,
   getSitesForProtectedArea,
+  getSiteDetailsForProtectedArea,
   validatePutRequest,
 };

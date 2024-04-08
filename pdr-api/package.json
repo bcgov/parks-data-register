@@ -17,6 +17,7 @@
     "verbose": true,
     "modulePathIgnorePatterns": [
       "<rootDir>/__tests__",
+      "<rootDir>/tools",
       "<rootDir>/.aws-sam/"
     ],
     "moduleNameMapper": {

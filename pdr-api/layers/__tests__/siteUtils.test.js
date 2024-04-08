@@ -16,7 +16,7 @@ describe('Sites Layer Tests', () => {
   const OLD_ENV = process.env;
   beforeEach(async () => {
     jest.resetModules();
-    const hash = getHashedText('Sites Layer Tests');
+    const hash = getHashedText(expect.getState().currentTestName);
     process.env.TABLE_NAME = hash;
     dbClient = await createDB([
       data.mockCurrentParkName1,
@@ -44,7 +44,7 @@ describe('Validate Sites PUT Request', () => {
   let tableName = '';
   beforeEach(async () => {
     jest.resetModules();
-    tableName = getHashedText('Validate Sites PUT Request');
+    tableName = getHashedText(expect.getState().currentTestName);
     process.env.TABLE_NAME = tableName;
     dbClient = await createDB(null, tableName);
   });
@@ -205,7 +205,7 @@ describe('Build Sites PUT Objects', () => {
   let tableName = '';
   beforeEach(async () => {
     jest.resetModules();
-    tableName = getHashedText('Validate Sites PUT Request');
+    tableName = getHashedText(expect.getState().currentTestName);
     process.env.TABLE_NAME = tableName;
     dbClient = await createDB(null, tableName);
   });

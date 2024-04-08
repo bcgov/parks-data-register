@@ -43,10 +43,7 @@
       "Projection": {
         "ProjectionType": "ALL"
       },
-      "ProvisionedThroughput": {
-        "ReadCapacityUnits": 1,
-        "WriteCapacityUnits": 1
-      }
+      "BillingMode": "PAY_PER_REQUEST"
     },
     {
       "IndexName": "ByDisplayName",
@@ -59,10 +56,7 @@
       "Projection": {
         "ProjectionType": "ALL"
       },
-      "ProvisionedThroughput": {
-        "ReadCapacityUnits": 1,
-        "WriteCapacityUnits": 1
-      }
+      "BillingMode": "PAY_PER_REQUEST"
     },
     {
       "IndexName": "ByStatusOfOrcs",
@@ -79,10 +73,7 @@
       "Projection": {
         "ProjectionType": "ALL"
       },
-      "ProvisionedThroughput": {
-        "ReadCapacityUnits": 1,
-        "WriteCapacityUnits": 1
-      }
+      "BillingMode": "PAY_PER_REQUEST"
     }
   ],
   "TableName": "NameRegister",
@@ -90,8 +81,5 @@
     "StreamEnabled": true,
     "StreamViewType": "NEW_AND_OLD_IMAGES"
   },
-  "ProvisionedThroughput": {
-    "ReadCapacityUnits": 1,
-    "WriteCapacityUnits": 1
-  }
+  "BillingMode": "PAY_PER_REQUEST"
 }

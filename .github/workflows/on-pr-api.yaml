@@ -55,6 +55,11 @@ jobs:
           port: 8000
           cors: '*'
 
+      - name: Sleep so DynamoDB has time to wake up
+        uses: GuillaumeFalourd/wait-sleep-action@v1
+        with:
+          time: '15' # for 15 seconds
+
       ### Run Tests
       - name: Run Tests  
         env:
@@ -64,4 +69,4 @@ jobs:
           AWS_REGION: local-env
           AWS_ACCESS_KEY_ID: notused
           AWS_SECRET_ACCESS_KEY: notused
-        run: ./node_modules/jest/bin/jest.js --coverage
+        run: ./node_modules/jest/bin/jest.js --coverage --runInBand

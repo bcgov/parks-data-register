@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@inquirer/prompts": "^4.3.0",
+    "fs": "^0.0.1-security"
+  }
+}

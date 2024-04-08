@@ -7,11 +7,13 @@ import { ApiService } from './api.service';
 import { LoggerService } from './logger.service';
 import { ToastService, ToastTypes } from './toast.service';
 import { EventKeywords, EventObject, EventService } from './event.service';
+import { Utils } from '../utils/utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SiteService {
+  private utils = new Utils();
 
   constructor(
     private loadingService: LoadingService,
@@ -58,6 +60,38 @@ export class SiteService {
       this.eventService.setError(new EventObject(EventKeywords.ERROR, String(error), 'Specific Sites GET'));
     }
     this.loadingService.removeFromFetchList(Constants.dataIds.CURRENT_SITE);
+  }
+
+  async editSite(pk, putObj, updateType) {
+    this.loadingService.addToFetchList(Constants.dataIds.SITE_PUT);
+
+    if (!Object.values(Constants.editTypes).includes(updateType)) {
+      throw new Error(`'${updateType}' is not a valid update type.`);
+    }
+
+    if (updateType === Constants.editTypes.EDIT_REPEAL_EDIT_TYPE) {
+      updateType = Constants.editTypes.MINOR_EDIT_TYPE;
+    }
+
+    delete putObj.pk;
+    delete putObj.sk;
+
+    try {
+      putObj = this.utils.cleanPutObject(putObj, Constants.putAttributes);
+      await lastValueFrom(this.apiService.put(['sites', pk], putObj, { updateType: updateType }));
+      this.toastService.addMessage(`Your changes were saved.`, ``, ToastTypes.SUCCESS);
+      this.clearCurrentSite();
+    } catch (error) {
+      this.loggerService.error(error);
+      this.toastService.addMessage(`Something went wrong. Please try again.`, ``, ToastTypes.ERROR);
+      this.eventService.setError(new EventObject(EventKeywords.ERROR, String(error), 'Site Service - Put'));
+    }
+    this.loadingService.removeFromFetchList(Constants.dataIds.SITE_PUT);
+  }
+
+  // PK has the format <protected-area-id>::Site::<site-id>
+  getSiteIdFromPK(pk) {
+    return pk.split('::')[2];
   }
 
   watchSitesList() {

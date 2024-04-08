@@ -1,7 +1,7 @@
 <app-info-section title="Legal name">
   <app-info-section-row key="Effective date">
     <div *ngIf="currentData?.createDate">
-      {{currentData?.createDate | date: 'mediumDate'}}
+      {{getDisplayedEffectiveDate() | date: 'mediumDate'}}
     </div>
   </app-info-section-row>
   <app-info-section-row
@@ -27,5 +27,40 @@
       *ngIf="currentData?.audioClip"
       href="{{ currentData?.audioClip }}"
     >{{ currentData?.audioClip || null }}</a>
+  </app-info-section-row>
+</app-info-section>
+
+<app-info-section
+  *ngFor="let item of historicalData"
+  title="Historical name"
+>
+  <app-info-section-row key="Effective date">
+    <div *ngIf="item?.createDate">
+      {{item?.createDate | date: 'mediumDate'}}
+    </div>
+  </app-info-section-row>
+  <app-info-section-row
+    key="Legal name"
+    [data]="item?.legalName"
+  >
+  </app-info-section-row>
+  <app-info-section-row
+    key="Display name"
+    [data]="item?.displayName"
+  >
+  </app-info-section-row>
+  <app-info-section-row
+    key="Phonetic name"
+    [data]="item?.phoneticName"
+  >
+  </app-info-section-row>
+  <app-info-section-row
+    key="Audio link"
+    [data]="item?.audioClip"
+  >
+    <a
+      *ngIf="item?.audioClip"
+      href="{{ item?.audioClip }}"
+    >{{ item?.audioClip || null }}</a>
   </app-info-section-row>
 </app-info-section>

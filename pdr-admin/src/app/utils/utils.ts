@@ -4,7 +4,6 @@ import { Constants } from './constants';
 export class Utils {
   public formatDateForDisplay(date) {
     let newDate = DateTime.fromISO(date).setZone(Constants.timeZoneIANA);
-    console.log('newDate.toFormat(DDD):', newDate.toFormat('DDD'));
     if (newDate.toFormat('DDD') === 'Invalid DateTime') {
       return null;
     }

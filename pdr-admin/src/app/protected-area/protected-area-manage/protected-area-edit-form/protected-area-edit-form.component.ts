@@ -13,7 +13,8 @@ import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-protected-area-edit-form',
-  templateUrl: './protected-area-edit-form.component.html',
+  templateUrl: '../../../shared/edit-form/edit-form.html',
+  // templateUrl: './protected-area-edit-form.component.html',
   styleUrls: ['./protected-area-edit-form.component.scss'],
 })
 export class ProtectedAreaEditFormComponent {
@@ -25,14 +26,16 @@ export class ProtectedAreaEditFormComponent {
   public form = new UntypedFormGroup({
     effectiveDate: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
     legalName: new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] }),
+    displayName: new UntypedFormControl(null, { nonNullable: true }),
     phoneticName: new UntypedFormControl(null, { nonNullable: true }),
     audioClip: new UntypedFormControl(null, { nonNullable: true }),
     searchTerms: new UntypedFormControl(null, { nonNullable: true }),
     notes: new UntypedFormControl(null, { nonNullable: true }),
+    hideDisplayName: new UntypedFormControl(false)
   });
 
   public currentData;
-  public loading = true;
+  public dataType = 'protected area';
   // Used for submiting change
   public modalObj = {};
   // Used for populating modal
@@ -45,6 +48,10 @@ export class ProtectedAreaEditFormComponent {
     audioClip: 'Audio link',
     searchTerms: 'Search terms',
     notes: 'Notes',
+  };
+
+  public invalidConfig = {
+    showMessage: false
   };
 
   public tz = Constants.timeZoneIANA;
@@ -71,7 +78,7 @@ export class ProtectedAreaEditFormComponent {
         if (this.currentData) {
           if (this.updateType === 'minor') {
             // TODO: Prompt user is another change has been detected after init.
-            this.initForm(this.form, this.currentData);
+            this.initForm();
           } else if (this.currentData.status === 'repealed') {
             // no major edits on a repealed protected area
             this.toastService.addMessage(
@@ -88,7 +95,6 @@ export class ProtectedAreaEditFormComponent {
 
     this.subscriptions.add(
       this.loadingService.getLoadingStatus().subscribe((res) => {
-        this.loading = res;
         this.ref.detectChanges();
       })
     );
@@ -100,19 +106,41 @@ export class ProtectedAreaEditFormComponent {
     );
   }
 
-  initForm(form, data) {
-    if (data.displayName && data.displayName !== data.legalName) {
-      this.hideDisplayName = false;
-      this.form.addControl(
-        'displayName',
-        new UntypedFormControl(null, { nonNullable: true, validators: [Validators.required] })
-      );
+  getDateSubLabel() {
+    switch (this.updateType) {
+      case Constants.editTypes.REPEAL_EDIT_TYPE:
+        return 'The date the protected area was repealed.';
+      case Constants.editTypes.MAJOR_EDIT_TYPE:
+        return 'The date the legal name change became effective';
+      default:
+        return 'Change only if effective date was entered incorrectly.';
+    }
+  }
+
+  getEffectiveDateLabel() {
+    switch (this.updateType) {
+      case Constants.editTypes.REPEAL_EDIT_TYPE:
+      case Constants.editTypes.EDIT_REPEAL_EDIT_TYPE:
+        return 'Repealed Date';
+      default:
+        return 'Effective Date';
+    }
+  }
+
+
+  showDisplayNameField() {
+    return !this.form?.controls?.['hideDisplayName']?.value;
+  }
+
+  initForm() {
+    if (this.currentData.displayName === this.currentData.legalName) {
+      this.form.controls['hideDisplayName'].setValue(true);
     }
 
-    Object.keys(form.controls).forEach((element) => {
+    Object.keys(this.form.controls).forEach((element) => {
       // Allows us to reset to state on page load.
-      form.controls[element].defaultValue = data[element] ? data[element] : null;
-      form.reset();
+      this.form.controls[element]['defaultValue'] = this.currentData[element] ? this.currentData[element] : null;
+      this.form.reset();
     });
 
     this.form.markAsPristine();
@@ -200,6 +228,10 @@ export class ProtectedAreaEditFormComponent {
     }
 
     this.ref.detectChanges();
+  }
+
+  isLoading() {
+    return this.loadingService.isLoading();
   }
 
   hasUnsavedChanges() {

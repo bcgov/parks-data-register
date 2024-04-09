@@ -1,10 +1,11 @@
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 const {
+  batchTransactData,
   dynamodb,
   getOne,
-  setSiteStatus,
   TABLE_NAME
 } = require('/opt/dynamodb');
+const { createSitePutTransaction } = require('/opt/siteUtils');
 const {
   ESTABLISHED_STATE,
   HISTORICAL_STATE,
@@ -12,7 +13,7 @@ const {
   OPTIONAL_PUT_FIELDS,
   REPEALED_STATE,
 } = require('/opt/data-constants');
-const { getSitesForProtectedArea } = require('/opt/siteUtils');
+const { getSiteDetailsForProtectedArea } = require('/opt/siteUtils');
 const { DateTime } = require('luxon');
 const { sendResponse, logger } = require('/opt/base');
 const TIMEZONE = 'America/Vancouver';
@@ -180,18 +181,20 @@ async function majorChange(identifier, user, body, currentTimeISO, currentRecord
     return sendResponse(400, [], 'Protected area record cannot be edited.', `Cannot perform major update for records with status ${currentRecord.status}.`);
   }
   // Creates a changelog item for the legal name change.
-  const putTransaction = await createChangeLogItem(body, user, currentTimeISO, currentRecord, newStatus);
+  let putTransaction = await createChangeLogItem(body, user, currentTimeISO, currentRecord, newStatus);
 
-  // Calls the 'updateRecord' function to update the record.
-  const attributes = await updateRecord(identifier, user, body, currentTimeISO, newStatus, updateType, putTransaction);
 
   let context = 'Legal Name Change.';
   if (newStatus === REPEALED_STATE) {
     context = 'Protected area repealed.';
 
     // Handle repealing sites
-    await handleRepealSites(identifier);
+    const siteTransactions = await handleRepealSites(identifier, body?.effectiveDate || currentTimeISO, user, currentTimeISO);
+    putTransaction = putTransaction.concat(siteTransactions);
   }
+
+  // Calls the 'updateRecord' function to update the record.
+  const attributes = await updateRecord(identifier, user, body, currentTimeISO, newStatus, updateType, putTransaction);
 
   // Returns a success response with the updated attributes.
   return sendResponse(200, attributes, 'Protected area record updated', null, context);
@@ -208,12 +211,36 @@ async function majorChange(identifier, user, body, currentTimeISO, currentRecord
  * @example
  * await handleRepealSites('123');
  */
-async function handleRepealSites(identifier) {
-  // Get each site in the current Protected Area
-  const sites = await getSitesForProtectedArea(identifier);
-
-  // Repeal them all
-  await setSiteStatus(sites, REPEALED_STATE);
+async function handleRepealSites(identifier, effectiveDate, user, currentTimeISO) {
+  try {
+    const sites = await getSiteDetailsForProtectedArea(identifier);
+    let transactions = [];
+    // create transaction for each site to repeal
+    for (const site of sites) {
+      try {
+        let siteTransaction = await createSitePutTransaction(
+          site.pk,
+          {
+            effectiveDate: effectiveDate,
+            lastVersionDate: site.updateDate,
+          },
+          'repeal',
+          user,
+          currentTimeISO
+        );
+        transactions = transactions.concat(siteTransaction);
+      } catch (error) {
+        // One failed, likely because the site has already been repealed.
+        // Dont ruin all the transactions in this case.
+        console.error(error);
+        continue;
+      }
+    }
+    // run transaction
+    return transactions;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 /**
@@ -255,12 +282,15 @@ async function createChangeLogItem(body, user, currentTimeISO, currentRecord, ne
   changelogRecord['legalNameChanged'] = { BOOL: legalNameChanged };
   changelogRecord['statusChanged'] = { BOOL: statusChanged };
 
-  return {
-    Put: {
-      TableName: TABLE_NAME,
-      Item: changelogRecord
+  return [
+    {
+      action: 'Put',
+      data: {
+        TableName: TABLE_NAME,
+        Item: changelogRecord
+      }
     }
-  };
+  ];
 }
 
 /**
@@ -317,14 +347,13 @@ async function updateRecord(identifier, user, body, currentTimeISO, status, upda
     if (putTransaction) {
       // We can't have this in a transaction.
       delete updateParams.ReturnValues;
-      await dynamodb.transactWriteItems({
-        TransactItems: [
-          putTransaction,
-          {
-            Update: updateParams
-          }
-        ]
+      const transactions = putTransaction.concat({
+        action: 'Update',
+        data: updateParams
       });
+
+      // Do all the transactions at once
+      await batchTransactData(transactions);
 
       // Return the object we would have inserted.
       let returnItem = {

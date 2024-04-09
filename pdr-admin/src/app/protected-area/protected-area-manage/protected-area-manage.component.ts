@@ -97,6 +97,14 @@ export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterVie
     return this.loadingService.isLoading();
   }
 
+  navigateMinorEdit() {
+    if (this.isRepealed()) {
+      this.navigate('edit-repealed');
+      return;
+    }
+    this.navigate('minor');
+  }
+
   navigate(path) {
     let route = ['protected-areas', this.id];
     // Business rule: if record is repealed we skip directly to minor edit.

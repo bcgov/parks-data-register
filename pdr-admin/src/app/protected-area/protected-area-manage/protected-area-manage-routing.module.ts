@@ -23,7 +23,7 @@ const routes: Routes = [
         component: ProtectedAreaEditFormComponent,
         data: {
           breadcrumb: 'Edit Repealed',
-          updateType: 'minor',
+          updateType: 'edit-repeal',
         },
       },
       {

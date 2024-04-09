@@ -76,7 +76,7 @@ export class ProtectedAreaEditFormComponent {
         this.currentData = res ? res : {};
         // Populate form with data
         if (this.currentData) {
-          if (this.updateType === 'minor') {
+          if (this.updateType === 'minor' || this.updateType === 'edit-repeal') {
             // TODO: Prompt user is another change has been detected after init.
             this.initForm();
           } else if (this.currentData.status === 'repealed') {

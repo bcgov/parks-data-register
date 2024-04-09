@@ -127,6 +127,7 @@ export class SiteEditFormComponent implements OnInit, OnDestroy {
     }
   }
 
+
   getEffectiveDateLabel() {
     switch (this.updateType) {
       case Constants.editTypes.REPEAL_EDIT_TYPE:
@@ -186,6 +187,12 @@ export class SiteEditFormComponent implements OnInit, OnDestroy {
 
   // empty function to allow use of shared template
   onDatePickerInteract() {
+    // TODO: Fix this bug
+    // For some reason, if we do detectChanages outisde of a setTimeout
+    // Month picker and year picker breaks
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   // empty function to allow use of shared template

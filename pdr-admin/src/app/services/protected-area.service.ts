@@ -32,7 +32,7 @@ export class ProtectedAreaService {
     private loggerService: LoggerService,
     private toastService: ToastService,
     private eventService: EventService
-  ) {}
+  ) { }
   async fetchData(id) {
     this.loadingService.addToFetchList(Constants.dataIds.SEARCH_RESULTS);
     let queryParams = {};
@@ -70,8 +70,7 @@ export class ProtectedAreaService {
 
   async edit(pk, putObj, updateType) {
     this.loadingService.addToFetchList(Constants.dataIds.PROTECTED_AREA_PUT);
-
-    if (updateType !== 'minor' && updateType !== 'major') throw 'UpdateType must be either minor or major.';
+    if (updateType === Constants.editTypes.REPEAL_EDIT_TYPE) throw `UpdateType cannot be ${Constants.editTypes.REPEAL_EDIT_TYPE}`;
 
     delete putObj.pk;
     delete putObj.sk;

@@ -83,8 +83,8 @@ const getParks = async (params) => {
  * @returns {Promise<void>} - A promise that resolves when the CSV file is written successfully, or rejects with an error.
  */
 const writeToCSV = async (data, filePath) => {
-  const csvHeader = 'pk,displayId,legalName,status\n';
-  const csvRows = data.map(obj => `${obj.pk.S},${obj.displayId.S},${obj.legalName.S},${obj.status.S}\n`);
+  const csvHeader = 'pk,displayId,displayName,legalName,status\n';
+  const csvRows = data.map(obj => `${obj.pk.S},${obj.displayId.S},${obj.displayName.S},${obj.legalName.S},${obj.status.S}\n`);
   const csvContent = csvHeader + csvRows.join('');
 
   try {

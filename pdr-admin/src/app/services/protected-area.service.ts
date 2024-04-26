@@ -72,6 +72,10 @@ export class ProtectedAreaService {
     this.loadingService.addToFetchList(Constants.dataIds.PROTECTED_AREA_PUT);
     if (updateType === Constants.editTypes.REPEAL_EDIT_TYPE) throw `UpdateType cannot be ${Constants.editTypes.REPEAL_EDIT_TYPE}`;
 
+    if (updateType === Constants.editTypes.EDIT_REPEAL_EDIT_TYPE) {
+      updateType = Constants.editTypes.MINOR_EDIT_TYPE;
+    }
+
     delete putObj.pk;
     delete putObj.sk;
 

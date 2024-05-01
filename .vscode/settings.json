@@ -1,0 +1,23 @@
+{
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 120,
+  "editor.tabSize": 2,
+  "editor.indentSize": "tabSize",
+  "editor.renderFinalNewline": "on",
+  "files.encoding": "utf8",
+  "files.trimTrailingWhitespace": true,
+  "[typescript]": {
+    "format.semicolons": "insert",
+    "preferences.quoteStyle": "auto"
+  },
+  "[javascript]": {
+    "format.semicolons": "insert",
+    "preferences.quoteStyle": "auto"
+  },
+  "[html]": {
+    "format.wrapAttributesIndentSize": 2,
+    "format.wrapAttributes": "force-expand-multiline",
+    "html.completion.attributeDefaultValue": "doublequotes",
+    "format.wrapLineLength": 120
+  }
+}

@@ -28,3 +28,27 @@ jobs:
           cache-dependency-path: "pdr-admin/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
       - run: yarn test-ci
+  
+  sonar-cloud:
+    runs-on: ubuntu-latest
+    environment: dev
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: bcgov-nr/action-test-and-analyse@v1.2.1
+        with:
+          commands: |
+            npm ci
+            npm run test:cov
+          dir: pdr-admin
+          node_version: "20"
+          sonar_args: >
+            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.projectKey=quickstart-openshift_prd-admin
+            -Dsonar.sources=src
+            -Dsonar.tests.inclusions=**/*spec.ts
+            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
+          triggers: ('pdr-admin/')

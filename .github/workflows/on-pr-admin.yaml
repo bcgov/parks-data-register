@@ -31,7 +31,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: coverage
-          path: coverage/
+          path: /pdr-admin/coverage/
 
   sonar-cloud:
     needs: test-ci
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: coverage
-          path: coverage/
+          path: /pdr-admin/coverage/
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.2.0
         env:

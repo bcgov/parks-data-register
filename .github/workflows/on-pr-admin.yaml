@@ -45,6 +45,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
+          projectBaseDir: pdr-admin/
           args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_parks-data-register

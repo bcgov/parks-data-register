@@ -52,3 +52,4 @@ jobs:
             -Dsonar.sources=src
             -Dsonar.inclusions=**/*.ts,**/*.scss,**/*.html
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+            -Dsonar.verbose=true

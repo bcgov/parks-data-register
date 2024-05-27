@@ -48,4 +48,7 @@ jobs:
           args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_parks-data-register
-            -Dsonar.sources=./pdr-admin
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.sources=src
+            -Dsonar.inclusions=**/*.ts, **/*.scss, **/*.html
+            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts

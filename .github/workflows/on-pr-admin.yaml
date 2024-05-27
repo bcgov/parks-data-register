@@ -48,3 +48,4 @@ jobs:
           args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_parks-data-register
+            -Dsonar.sources=./pdr-admin

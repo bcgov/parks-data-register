@@ -3,7 +3,7 @@ run-name: Run test-ci on PR ${{ github.event.number }} (Admin)
 
 on:
   pull_request:
-    paths: "pdr-admin/**"
+    paths: ["pdr-admin/**"]
 
 jobs:
   test-ci:
@@ -17,7 +17,7 @@ jobs:
         working-directory: "./pdr-admin"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       ### Install if no cache exists ###
       - name: Setup node
@@ -26,19 +26,26 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
           cache-dependency-path: "pdr-admin/yarn.lock"
-      - name: Test and Analyse
-        uses: bcgov-nr/action-test-and-analyse@v1.2.1
+      - run: yarn install --silent --frozen-lockfile
+      - run: yarn test-ci
+
+  sonar-cloud:
+    runs-on: ubuntu-latest
+    environment: dev
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v4
         with:
-          commands: |
-            yarn install --silent --frozen-lockfile
-            yarn test-cov
-          dir: ./
-          node_version: "20"
-          sonar_args: >
-            -Dsonar.exclusions=**/coverage/**,**/node_modules/**,**/*spec.ts
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: pdr-admin
+          args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_parks-data-register
-            -Dsonar.sources=src
-            -Dsonar.tests.inclusions=**/*spec.ts
-            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-          sonar_token: ${{ secrets.SONAR_TOKEN }}

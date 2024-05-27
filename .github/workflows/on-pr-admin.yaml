@@ -50,5 +50,5 @@ jobs:
             -Dsonar.projectKey=bcgov_parks-data-register
             -Dsonar.sourceEncoding=UTF-8
             -Dsonar.sources=src
-            -Dsonar.inclusions=**/*.ts, **/*.scss, **/*.html
+            -Dsonar.inclusions=**/*.ts,**/*.scss,**/*.html
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts

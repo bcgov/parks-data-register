@@ -28,7 +28,7 @@ jobs:
           cache-dependency-path: "pdr-api/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
 
-      ### Setup AWS SAM 
+      ### Setup AWS SAM
       - name: Setup AWS SAM
         uses: aws-actions/setup-sam@v2
         with:
@@ -46,7 +46,7 @@ jobs:
         if: steps.cache-sam-build.outputs.cache-hit != 'true'
         run: |
           sam build --cached --parallel
-    
+
       ### Set up DynamoDB local
       - name: Setup DynamoDB Local
         uses: rrainn/dynamodb-action@v3.0.0
@@ -61,7 +61,7 @@ jobs:
           time: '15' # for 15 seconds
 
       ### Run Tests
-      - name: Run Tests  
+      - name: Run Tests
         env:
           TABLE_NAME: NameRegister-tests
           IS_OFFLINE: true

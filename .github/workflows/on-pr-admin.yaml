@@ -27,9 +27,14 @@ jobs:
           cache: "yarn"
           cache-dependency-path: "pdr-admin/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
-      - run: yarn test-ci
+      - run: yarn test-cov
+      - uses: actions/upload-artifact@master
+        with:
+          name: coverage
+          path: coverage/
 
   sonar-cloud:
+    needs: test-ci
     runs-on: ubuntu-latest
     environment: dev
     strategy:
@@ -40,6 +45,10 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
+      - uses: actions/download-artifact@master
+        with:
+          name: coverage
+          path: coverage/
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.2.0
         env:
@@ -54,3 +63,4 @@ jobs:
             -Dsonar.inclusions=**/*.ts,**/*.scss,**/*.html
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
             -Dsonar.verbose=true
+            -Dsonar.javascript.lcov.reportPaths=./coverage/pdr-admin/lcov.info

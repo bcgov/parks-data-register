@@ -63,4 +63,4 @@ jobs:
             -Dsonar.inclusions=**/*.ts,**/*.scss,**/*.html
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
             -Dsonar.verbose=true
-            -Dsonar.javascript.lcov.reportPaths=./coverage/pdr-admin/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=pdr-admin/coverage/pdr-admin/lcov.info

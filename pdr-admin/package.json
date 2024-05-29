@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test-ci": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
-    "test-cov": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage"
+    "test:cov": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage"
   },
   "private": true,
   "dependencies": {

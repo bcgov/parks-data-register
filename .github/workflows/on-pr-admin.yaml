@@ -11,7 +11,7 @@ jobs:
     environment: dev
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
     defaults:
       run:
         working-directory: "./pdr-admin"
@@ -21,13 +21,13 @@ jobs:
 
       ### Install if no cache exists ###
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
           cache-dependency-path: "pdr-admin/yarn.lock"
       - run: yarn install --silent --frozen-lockfile
-      - run: yarn test-cov
+      - run: yarn test:cov
       - uses: actions/upload-artifact@master
         with:
           name: coverage
@@ -39,7 +39,7 @@ jobs:
     environment: dev
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -62,5 +62,4 @@ jobs:
             -Dsonar.sources=src
             -Dsonar.inclusions=**/*.ts,**/*.scss,**/*.html
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
-            -Dsonar.verbose=true
             -Dsonar.javascript.lcov.reportPaths=pdr-admin/coverage/pdr-admin/lcov.info

@@ -30,6 +30,10 @@ export class AppComponent implements OnDestroy {
     );
   }
 
+  test(){
+    console.log("THIS IS A TEST FUNCTION");
+  }
+  
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }

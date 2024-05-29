@@ -52,6 +52,8 @@ jobs:
         with:
           name: coverage
           path: pdr-admin/coverage/
+      - name: running LS
+        run: ls
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.2.0
         env:

@@ -52,8 +52,6 @@ jobs:
         with:
           name: coverage
           path: pdr-admin/coverage/
-      - name: running LS
-        run: ls pdr-admin/coverage/pdr-admin
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.2.0
         env:
@@ -68,3 +66,5 @@ jobs:
             -Dsonar.inclusions=**/*.ts,**/*.scss,**/*.html
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
             -Dsonar.javascript.lcov.reportPaths=./pdr-admin/coverage/pdr-admin/lcov.info
+            -Dsonar.log.level=DEBUG
+            -Dsonar.verbose=true

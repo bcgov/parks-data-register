@@ -1,0 +1,34 @@
+name: Sonar Cloud Analysis
+on:
+  push:
+      branches:
+      - main
+  workflow_dispatch:
+jobs:
+  sonarcloudScanAdmin:
+    name: sonarcloudScanAdmin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: pdr-admin/
+
+  sonarcloudScanApi:
+    name: sonarcloudScanApi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: pdr-api/

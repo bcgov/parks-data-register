@@ -69,6 +69,4 @@ jobs:
             -Dsonar.test.inclusions=**/*.spec.ts
             -Dsonar.typescript.tsconfigPath=pdr-admin/tsconfig.jsom
             -Dsonar.javascript.lcov.reportPaths=pdr-admin/coverage/pdr-admin/lcov.info
-            -Dsonar.log.level=DEBUG
-            -Dsonar.verbose=true
             -Dsonar.qualitygate.wait=true

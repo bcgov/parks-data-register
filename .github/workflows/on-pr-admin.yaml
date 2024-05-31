@@ -35,6 +35,10 @@ jobs:
         with:
           name: coverage
           path: pdr-admin/coverage/
+      - uses: actions/upload-artifact@master
+        with:
+          name: reports
+          path: pdr-admin/reports/
 
   sonar-cloud:
     needs: test-ci
@@ -52,6 +56,10 @@ jobs:
         with:
           name: coverage
           path: pdr-admin/coverage/
+      - uses: actions/download-artifact@master
+        with:
+          name: reports
+          path: pdr-admin/reports/
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.2.0
         env:
@@ -69,4 +77,5 @@ jobs:
             -Dsonar.test.inclusions=**/*.spec.ts
             -Dsonar.typescript.tsconfigPath=pdr-admin/tsconfig.jsom
             -Dsonar.javascript.lcov.reportPaths=pdr-admin/coverage/pdr-admin/lcov.info
+            -Dsonar.testExecutionReportPaths=pdr-admin/reports/junit/TESTS.xml
             -Dsonar.qualitygate.wait=true

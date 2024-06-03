@@ -2,12 +2,8 @@ name: PR Checks
 run-name: Run test-ci on PR ${{ github.event.number }} (Admin)
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     paths: ["pdr-admin/**"]
-  workflow_dispatch:
 
 jobs:
   test-ci:

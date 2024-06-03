@@ -1,12 +1,41 @@
-name: PR Checks (API)
-run-name: Run test on PR ${{ github.event.number }} (API)
+name: SonarCloud Scan
+run-name: SonarCloud Scan
 
 on:
-  pull_request:
-    paths: ["pdr-api/**"]
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  test-ci:
+  test-admin:
+    runs-on: ubuntu-latest
+    environment: dev
+    strategy:
+      matrix:
+        node-version: [20.x]
+    defaults:
+      run:
+        working-directory: "./pdr-admin"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      ### Install if no cache exists ###
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+          cache-dependency-path: "pdr-admin/yarn.lock"
+      - run: yarn install --silent --frozen-lockfile
+      - run: yarn test:cov
+      - uses: actions/upload-artifact@master
+        with:
+          name: coverage
+          path: pdr-admin/coverage/
+
+  test-api:
     runs-on: ubuntu-latest
     environment: dev
     strategy:
@@ -75,8 +104,43 @@ jobs:
           name: coverage
           path: pdr-api/coverage/
 
-  sonar-cloud:
-    needs: test-ci
+  sonar-cloud-admin:
+    needs: test-admin
+    runs-on: ubuntu-latest
+    environment: dev
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - uses: actions/download-artifact@master
+        with:
+          name: coverage
+          path: pdr-admin/coverage/
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: pdr-admin/
+          args: >
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.projectKey=bcgov_parks-data-register
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.sources=src
+            -Dsonar.inclusions=**/*.ts
+            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.spec.ts
+            -Dsonar.typescript.tsconfigPath=pdr-admin/tsconfig.jsom
+            -Dsonar.javascript.lcov.reportPaths=coverage/pdr-admin/lcov.info
+            -Dsonar.qualitygate.wait=true
+
+  sonar-cloud-api:
+    needs: test-api
     runs-on: ubuntu-latest
     environment: dev
     strategy:

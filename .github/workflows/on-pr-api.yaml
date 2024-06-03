@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  test-ci:
     runs-on: ubuntu-latest
     environment: dev
     strategy:
@@ -80,6 +80,7 @@ jobs:
           path: pdr-api/coverage/
 
   sonar-cloud:
+    needs: test-ci
     runs-on: ubuntu-latest
     environment: dev
     strategy:

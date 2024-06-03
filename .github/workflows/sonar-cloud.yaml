@@ -32,7 +32,7 @@ jobs:
       - run: yarn test:cov
       - uses: actions/upload-artifact@master
         with:
-          name: coverage
+          name: coverage-admin
           path: pdr-admin/coverage/
 
   test-api:
@@ -101,7 +101,7 @@ jobs:
         run: ./node_modules/jest/bin/jest.js --coverage --runInBand
       - uses: actions/upload-artifact@master
         with:
-          name: coverage
+          name: coverage-api
           path: pdr-api/coverage/
 
   sonar-cloud-admin:
@@ -118,7 +118,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/download-artifact@master
         with:
-          name: coverage
+          name: coverage-admin
           path: pdr-admin/coverage/
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.2.0
@@ -153,7 +153,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/download-artifact@master
         with:
-          name: coverage
+          name: coverage-api
           path: pdr-api/coverage/
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.2.0

@@ -48,7 +48,6 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^16.2.0",
-    "typescript": "~5.1.3",
-    "karma-sonarqube-generic-reporter": "https://github.com/tobiashofmann/karma-sonarqube-generic-reporter/#master",
+    "typescript": "~5.1.3"
   }
 }

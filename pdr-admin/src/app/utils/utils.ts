@@ -23,7 +23,7 @@ export class Utils {
   }
 
   public cleanPutObject(putObj, validAttributes) {
-    for (var key in putObj) {
+    for (let key in putObj) {
       if (putObj.hasOwnProperty(key) && validAttributes.includes(key)) {
         // Ensure things we want to delete is set to null.
         if (putObj[key] === null || this.isObjEmpty(putObj[key])) putObj[key] = null;

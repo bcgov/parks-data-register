@@ -1,11 +1,10 @@
-import { ChangeDetectorRef, Component, HostListener, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, ViewChild } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 import { Utils } from 'src/app/utils/utils';
-import { ViewChild } from '@angular/core';
 import { Constants } from 'src/app/utils/constants';
 import { DateTime } from 'luxon';
 import { ReloadConfirmationDialogueService } from 'src/app/services/reload-confirmation-dialogue.service';
@@ -73,7 +72,7 @@ export class ProtectedAreaEditFormComponent {
   ngOnInit(): void {
     this.subscriptions.add(
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
-        this.currentData = res ? res : {};
+        this.currentData = res || {};
         // Populate form with data
         if (this.currentData) {
           if (this.updateType === 'minor' || this.updateType === 'edit-repeal') {

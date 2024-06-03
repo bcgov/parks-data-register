@@ -197,6 +197,7 @@ export class SiteEditFormComponent implements OnInit, OnDestroy {
 
   // empty function to allow use of shared template
   toggleDisplayNameForm() {
+    return;
   }
 
   isLoading() {

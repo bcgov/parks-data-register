@@ -56,7 +56,7 @@ export class ProtectedAreaEditRepealComponent {
   ngOnInit(): void {
     this.subscriptions.add(
       this.protectedAreaService.watchCurrentProtectedArea().subscribe((res) => {
-        this.currentData = res ? res : {};
+        this.currentData = res || {};
         this.ref.detectChanges();
       })
     );

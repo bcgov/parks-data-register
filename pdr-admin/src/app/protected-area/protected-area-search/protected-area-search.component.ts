@@ -9,7 +9,7 @@ import { SearchService } from 'src/app/services/search.service';
 import { UrlService } from 'src/app/services/url.service';
 import { Utils } from 'src/app/utils/utils';
 
-declare let bootstrap: any
+declare let bootstrap: any;
 
 @Component({
   selector: 'app-protected-area-search',
@@ -48,19 +48,19 @@ export class ProtectedAreaSearchComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private urlService: UrlService,
     private logger: LoggerService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(
       this.searchService.watchSearchResults().subscribe((res) => {
-        this.data = res && res.data ? res.data : [];
+        this.data = res?.data ? res.data : [];
         this.searchParams =
-          res && res.searchParams
+          res?.searchParams
             ? res.searchParams
             : {
-                lastResultIndex: null,
-                lastPage: true,
-              };
+              lastResultIndex: null,
+              lastPage: true,
+            };
         this.initializeToolTips();
         this.ref.detectChanges();
       })
@@ -74,7 +74,7 @@ export class ProtectedAreaSearchComponent implements OnInit {
     );
     this.subscriptions.add(
       this.form.valueChanges.subscribe((changes) => {
-      this.initializeToolTips();
+        this.initializeToolTips();
         this.ref.detectChanges();
       })
     );
@@ -84,11 +84,11 @@ export class ProtectedAreaSearchComponent implements OnInit {
 
   initializeToolTips() {
     setTimeout(() => {
-      let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
       tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
+        return new bootstrap.Tooltip(tooltipTriggerEl);
       });
-    }, 250)
+    }, 250);
   }
 
   checkForQueryParams() {
@@ -187,11 +187,11 @@ export class ProtectedAreaSearchComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach((tt) => {
       const el = bootstrap.Tooltip.getInstance(tt);
       el.hide();
-    })
+    });
     this.subscriptions.unsubscribe();
     this.searchService.clearSearchResults();
   }

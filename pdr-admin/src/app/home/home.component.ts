@@ -23,14 +23,5 @@ export class HomeComponent {
       navigation: ['change-log'],
     },
   ];
-  constructor(protected keyCloakService: KeycloakService, protected configService: ConfigService) {
-    // if (keyCloakService.isAllowed('metrics')) {
-    //   this.cardConfig.push({
-    //     cardHeader: 'Card 3',
-    //     cardTitle: 'Card 3',
-    //     cardText: 'Description goes here.',
-    //     navigation: '/',
-    //   });
-    // }
-  }
+  constructor(protected keyCloakService: KeycloakService, protected configService: ConfigService) { }
 }

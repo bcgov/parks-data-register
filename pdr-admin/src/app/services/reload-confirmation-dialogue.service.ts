@@ -21,7 +21,6 @@ export class ReloadConfirmationDialogueService {
     if (self[functionName]()) {
       // Display confirmation dialog
       event.preventDefault();
-      event.returnValue = ''; // Chrome requires this to be set
       const confirmation = this.confirm('Changes you made may not be saved.');
 
       // Handle the user's response

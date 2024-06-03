@@ -17,7 +17,7 @@ export class SideBarService implements OnDestroy {
 
   constructor(protected router: Router, protected keyCloakService: KeycloakService) {
     let routesArray = router.config.filter((obj) => {
-      if (!obj?.data || !obj?.data['label']) {
+      if (!obj?.data?.['label']) {
         return false;
       } else if (obj.path === 'login') {
         return keyCloakService.isAuthenticated() ? false : true;

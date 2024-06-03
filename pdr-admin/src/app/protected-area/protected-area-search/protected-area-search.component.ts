@@ -145,7 +145,8 @@ export class ProtectedAreaSearchComponent implements OnInit {
       delete obj[`${toggle}Toggle`];
     });
 
-    obj.status = filters.length > 0 ? filters.toString() : persistToggles ? this.toggleList.toString() : '';
+    const persistantToggles = persistToggles ? this.toggleList.toString() : '';
+    obj.status = filters.length > 0 ? filters.toString() : persistantToggles;
     return obj;
   }
 

@@ -21,11 +21,10 @@
     "@angular/platform-browser": "^16.2.12",
     "@angular/platform-browser-dynamic": "^16.2.12",
     "@angular/router": "^16.2.12",
-    "@digitalspace/bcparks-bootstrap-theme": "^1.3.5",
+    "@digitalspace/bcparks-bootstrap-theme": "^1.4.4",
     "@digitalspace/ngds-forms": "^0.0.110",
     "@popperjs/core": "^2.11.8",
     "@types/bootstrap": "^5.2.10",
-    "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.10.5",
     "guid-typescript": "^1.0.9",
     "keycloak-js": "^22.0.1",
@@ -37,6 +36,7 @@
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
+    "bootstrap": "^5.3.3",
     "@angular-devkit/build-angular": "^16.2.9",
     "@angular/cli": "~16.2.9",
     "@angular/compiler-cli": "^16.2.12",

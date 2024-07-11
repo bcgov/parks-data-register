@@ -4,14 +4,13 @@
       <span>Parks Data Register Admin System</span>
     </h1>
   </div>
-  <div class="row">
-    <div class="col-xxl-4 col-md-6 col-12 mb-4" *ngFor="let card of cardConfig">
+  <div class="row px-1 px-md-5">
+    <div class="col-12 col-md-6 mb-4 mb-md-0" *ngFor="let card of cardConfig">
       <app-nav-card
         [cardHeader]="card.cardHeader"
         [cardTitle]="card.cardTitle"
         [cardText]="card.cardText"
-        [navigation]="card.navigation"
-      ></app-nav-card>
+        [navigation]="card.navigation"></app-nav-card>
     </div>
   </div>
 </div>

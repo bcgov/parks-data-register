@@ -1,11 +1,11 @@
 <nav aria-label="breadcrumb" class="toggle-button-offset">
   <ol class="breadcrumb">
-    <li class="breadcrumb-items" *ngFor="let breadcrumb of breadcrumbs">
+    <li class="breadcrumb-item" *ngFor="let breadcrumb of breadcrumbs">
       <a class="btn-link" (click)="onNavigate(breadcrumb.url)">{{
         breadcrumb.label
-      }}</a>
+        }}</a>
     </li>
-    <li class="breadcrumb-items">
+    <li class="breadcrumb-item">
       <span>{{ lastBreadcrumb?.label }}</span>
     </li>
   </ol>

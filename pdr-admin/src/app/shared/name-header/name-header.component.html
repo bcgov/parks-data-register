@@ -1,6 +1,6 @@
 <div class="container-fluid ps-0">
   <section class="pb-4 mb-4 border-bottom">
-    <div class="d-flex justify-content-between row mb-1">
+    <div class="d-flex justify-content-between row mb-4">
       <div class="col-sm-12 col-lg-auto">
         <h1 class="mb-0">
           {{ headerData?.displayId || "-" }} <span class="fw-normal">{{ headerData?.legalName || "-" }}</span>
@@ -12,17 +12,16 @@
       </div>
     </div>
     <div class="d-flex justify-content-start text-muted">
-      <div class="me-4 fs-5"><strong>Type </strong>{{ headerData?.type || '-'}}</div>
-      <div class="me-4 fs-5">
+      <div class="me-4 subtext"><strong>Type </strong>{{ headerData?.type || '-'}}</div>
+      <div class="me-4 subtext">
         <strong>Status</strong> {{ this.utils.upperCaseFirstChar(headerData?.status) || "-" }}
       </div>
       <div
         *ngIf="headerData?.status === 'repealed'"
-        class="me-4 fs-5"
-      >
+        class="me-4 subtext">
         <strong>Repealed date</strong> {{ headerData?.effectiveDateDisplay || "-" }}
       </div>
-      <div class="me-4 fs-5"><strong>Last updated</strong> {{ headerData?.updateDateDisplay || "-" }}</div>
+      <div class="me-4 subtext"><strong>Last updated</strong> {{ headerData?.updateDateDisplay || "-" }}</div>
     </div>
   </section>
 </div>

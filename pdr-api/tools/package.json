@@ -1,8 +1,10 @@
 {
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.616.0",
+    "@opensearch-project/opensearch": "2.5.0",
     "aws-sdk": "^2.1457.0",
     "csvtojson": "^2.0.10",
-    "luxon": "^3.4.3",
-    "@opensearch-project/opensearch": "2.5.0"
+    "inquirer": "^10.1.2",
+    "luxon": "^3.4.3"
   }
 }

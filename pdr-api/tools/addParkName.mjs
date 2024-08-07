@@ -114,7 +114,7 @@ async function run() {
     status: data.status,
     notes: null,
     type: 'protectedArea',
-    createData: date,
+    createDate: date,
     updateDate: date
   }
   console.log(putItem);

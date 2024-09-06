@@ -57,7 +57,7 @@ export class ProtectedAreaEditFormComponent {
   public now = DateTime.now().setZone(this.tz);
   public submitting = false;
 
-  hideDisplayName = true;
+  hideDisplayName = false;
   displayNameEdited = false;
 
   constructor(
@@ -180,6 +180,7 @@ export class ProtectedAreaEditFormComponent {
   }
 
   async submit() {
+    this.hideDisplayName = this.form.controls['hideDisplayName'].value;
     this.submitting = true;
     // API Requirement:
     // We need to pass lastVersionDate (which is updateDate)

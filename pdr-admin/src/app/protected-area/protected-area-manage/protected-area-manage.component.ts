@@ -42,7 +42,7 @@ export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterVie
         if (!res) {
           this.protectedAreaService.fetchData(this.id);
         } else {
-          this.headerData['displayId'] = res?.displayId;
+          this.headerData['displayId'] = res?.pk;
           this.headerData['legalName'] = res?.legalName;
           this.headerData['status'] = res?.status;
           this.headerData['type'] = 'Protected Area';

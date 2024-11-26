@@ -54,7 +54,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of data" class="pointer" (click)="viewItem(item)">
-        <th class="py-3" scope="row" colspan="1">{{ item.displayId }}</th>
+        <th class="py-3" scope="row" colspan="1">{{ item.pk }}</th>
         <td class="py-3">
           <strong>{{ item.legalName }}</strong>
         </td>

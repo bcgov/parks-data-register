@@ -205,11 +205,11 @@
             <strong>
               {{ item.label }}
             </strong>
-            <div *ngIf="item.label !== 'Display name'">
-              {{ item.value || "*Deleted*" }}
-            </div>
             <div *ngIf="item.label === 'Display name'">
               {{ item.value || "*Set as legal name*" }}
+            </div>
+            <div *ngIf="item.label !== 'Display name' && item.label !== undefined && item.label !== null">
+              {{ item.value || "*Deleted*" }}
             </div>
           </div>
         </ng-container>

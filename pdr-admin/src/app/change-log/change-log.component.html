@@ -57,7 +57,7 @@
       <tr *ngFor="let item of data" (click)="navToDetails(item)">
         <th class="py-3" scope="row" colspan="1">{{ item?.updateDate | date}}</th>
         <td class="py-3">
-          <strong>{{ item?.displayId }}</strong>
+          <strong>{{ item?.pk }}</strong>
         </td>
         <td class="py-3">{{ getChangeTypeString(item) }}</td>
         <td class="py-3">{{ getOldFieldString(item) }}</td>

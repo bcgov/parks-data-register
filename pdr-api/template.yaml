@@ -200,6 +200,17 @@ Resources:
       BuildMethod: makefile
 
   ### LAMBDA FUNCTIONS ###
+  OpenSearchDashboardAccess:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.es'
+      VpcId: !Ref VpcId
+      VpcEndpointType: Interface
+      SubnetIds:
+      - !Ref SubnetId
+      SecurityGroupIds:
+      - !Ref SecurityGroupId
+      PrivateDnsEnabled: true
 
   SearchFunction:
     FunctionName: SearchFunction

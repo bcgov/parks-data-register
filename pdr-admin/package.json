@@ -27,7 +27,7 @@
     "@types/bootstrap": "^5.2.10",
     "bootstrap-icons": "^1.10.5",
     "guid-typescript": "^1.0.9",
-    "keycloak-js": "^22.0.1",
+    "keycloak-js": "25.0.6",
     "luxon": "^3.4.4",
     "ngx-bootstrap": "^11.0.2",
     "ngx-toastr": "^17.0.2",

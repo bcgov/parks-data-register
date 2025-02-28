@@ -59,9 +59,6 @@ Parameters:
   SSOJWKSUri:
     Type: String
     Default: https://dev.loginproxy.gov.bc.ca/auth/realms/bcparks-service-transformation/protocol/openid-connect/certs
-  VpcId:
-    Type: String
-    Default: 'vpc-018906cab60cf165b'
 
 Resources:
 
@@ -203,17 +200,6 @@ Resources:
       BuildMethod: makefile
 
   ### LAMBDA FUNCTIONS ###
-  OpenSearchDashboardAccess:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      ServiceName: !Sub 'aws.api.ca-central-1.emr-service-cell01'
-      VpcId: !Ref VpcId
-      VpcEndpointType: Interface
-      SubnetIds:
-      - !Ref SubnetId
-      SecurityGroupIds:
-      - !Ref SecurityGroupId
-      PrivateDnsEnabled: true
 
   SearchFunction:
     FunctionName: SearchFunction

@@ -1,4 +1,4 @@
-const { DynamoDB } = require('@aws-sdk/client-dynamodb');
+const { DynamoDB, DeleteItemCommand } = require('@aws-sdk/client-dynamodb');
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 const { logger } = require('/opt/base');
 
@@ -245,6 +245,17 @@ async function setSiteStatus(sites, status) {
   return Promise.resolve();
 }
 
+async function deleteItem(item, tableName) {
+  const params = {
+    TableName: tableName,
+    Key: item,
+    ConditionExpression: 'attribute_exists(pk) AND attribute_exists(sk)', // Ensures item exists before deleting
+  };
+
+  const command = new DeleteItemCommand(params);
+  return await dynamodb.send(command);
+}
+
 
 module.exports = {
   AUDIT_TABLE_NAME,
@@ -259,5 +270,6 @@ module.exports = {
   putItem,
   runQuery,
   runScan,
-  setSiteStatus
+  setSiteStatus,
+  deleteItem
 };

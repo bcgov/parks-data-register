@@ -124,6 +124,16 @@ exports.MockData = class {
     lastModifiedBy: 'TESTADMIN',
     type: 'site'
   };
+  mockFees1 = {
+    pk: '1::FEES',
+    sk: 'Fake Feature::Pretend Camping::Party',
+    Night: 10
+  };
+  mockFees2 = {
+    pk: '6::FEES',
+    sk: 'Fake Feature::Pretend Camping::Imaginary Party',
+    Night: 77
+  };
 
   allData = () => {
     return [
@@ -136,7 +146,9 @@ exports.MockData = class {
       this.mockParkSite2,
       this.mockCurrentSite1,
       this.mockOldSite1,
-      this.mockCurrentSite2
+      this.mockCurrentSite2,
+      this.mockFees1,
+      this.mockFees2
     ]
   }
 }

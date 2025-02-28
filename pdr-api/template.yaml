@@ -458,6 +458,143 @@ Resources:
             Method: PUT
             RestApiId: !Ref ApiDeployment
 
+### FeeGet
+  FeeGet:
+    FunctionName: FeeGet
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/fees/GET
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref AWSUtilsLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Park FEES GET lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        ParkFeeGet:
+          Type: Api
+          Properties:
+            Path: /fees
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
+    
+### FeePost
+  FeePost:
+    FunctionName: FeePost
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/fees/POST
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref AWSUtilsLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Park FEES POST lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        ParkFeeGet:
+          Type: Api
+          Properties:
+            Path: /fees
+            Method: POST
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              OverrideApiAuth: true
+
+### FeeDelete
+  FeeDelete:
+    FunctionName: FeeDelete
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/fees/DELETE
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref AWSUtilsLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Park FEES DELETE lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        ParkFeeGet:
+          Type: Api
+          Properties:
+            Path: /fees
+            Method: DELETE
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              OverrideApiAuth: true
+
+  ### FeePut
+  FeePut:
+    FunctionName: FeePut
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handlers/fees/PUT
+      Handler: index.handler
+      Layers:
+        - !Ref BaseLayer
+        - !Ref AWSUtilsLayer
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: Park FEES PUT lambda function
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableNameRegister
+          LOG_LEVEL: info
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableNameRegister
+      Events:
+        ParkFeePut:
+          Type: Api
+          Properties:
+            Path: /fees
+            Method: PUT
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              OverrideApiAuth: true
+
   ### API ###
   ApiDeployment:
     Type: AWS::Serverless::Api

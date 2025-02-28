@@ -206,7 +206,7 @@ Resources:
   OpenSearchDashboardAccess:
     Type: AWS::EC2::VPCEndpoint
     Properties:
-      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.es'
+      ServiceName: !Sub 'aws.api.ca-central-1.emr-service-cell01'
       VpcId: !Ref VpcId
       VpcEndpointType: Interface
       SubnetIds:

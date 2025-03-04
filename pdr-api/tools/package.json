@@ -5,6 +5,7 @@
     "aws-sdk": "^2.1457.0",
     "csvtojson": "^2.0.10",
     "inquirer": "^10.1.2",
-    "luxon": "^3.4.3"
+    "luxon": "^3.4.3",
+    "read-excel-file": "^5.8.6"
   }
 }

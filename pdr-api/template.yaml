@@ -32,6 +32,10 @@ Parameters:
     Description: User-defined OpenSearch domain name
     Type: String
     Default: 'data-register'
+  OpenSearchDomainName:
+    Description: OpenSearch domain name
+    Type: String
+    Default: 'data-register-os'
   KMSKeyId:
     Type: String
     Default: 'arn:aws:kms:ca-central-1:970582042516:alias/aws/es'
@@ -124,6 +128,47 @@ Resources:
           - !Ref SecurityGroupId
         SubnetIds:
           - !Ref SubnetId
+      ClusterConfig:
+        DedicatedMasterEnabled: false
+        InstanceCount: !Ref InstanceCount
+        InstanceType: !Ref InstanceType
+        MultiAZWithStandbyEnabled: false
+        WarmEnabled: false
+        ZoneAwarenessEnabled: false
+      NodeToNodeEncryptionOptions:
+        Enabled: true
+      EncryptionAtRestOptions:
+        Enabled: true
+        KmsKeyId: !Ref KMSKeyId
+      DomainEndpointOptions:
+        EnforceHTTPS: true
+      AdvancedSecurityOptions:
+        Enabled: true
+        InternalUserDatabaseEnabled: false
+        MasterUserOptions:
+          MasterUserARN: !GetAtt StreamRole.Arn
+      EBSOptions:
+        EBSEnabled: true
+        Iops: !Ref EBSIops
+        VolumeSize: '10'
+        Throughput: '125'
+        VolumeType: 'gp3'
+      AccessPolicies:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: 'Allow'
+            Principal:
+              AWS: '*'
+            Action: 'es:*'
+            Resource: !GetAtt StreamRole.Arn
+
+  ## Opensearch
+  OpenSearch:
+    Type: AWS::OpenSearchService::Domain
+    DependsOn: StreamRole
+    Properties:
+      DomainName: !Ref OpenSearchDomainName
       ClusterConfig:
         DedicatedMasterEnabled: false
         InstanceCount: !Ref InstanceCount

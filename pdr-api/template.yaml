@@ -32,7 +32,7 @@ Parameters:
     Description: User-defined OpenSearch domain name
     Type: String
     Default: 'data-register'
-  OpenSearchDomainName:
+  OpenSearchSecondaryDomainName:
     Description: OpenSearch domain name
     Type: String
     Default: 'data-register-opensearch'
@@ -168,7 +168,7 @@ Resources:
     Type: AWS::OpenSearchService::Domain
     DependsOn: StreamRole
     Properties:
-      DomainName: !Ref OpenSearchDomainName
+      DomainName: !Ref OpenSearchSecondaryDomainName
       ClusterConfig:
         DedicatedMasterEnabled: false
         InstanceCount: !Ref InstanceCount

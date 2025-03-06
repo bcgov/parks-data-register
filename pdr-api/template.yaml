@@ -164,7 +164,7 @@ Resources:
             Resource: !GetAtt StreamRole.Arn
 
   ## Opensearch
-  OpenSearchOS:
+  OpenSearchSecondary:
     Type: AWS::OpenSearchService::Domain
     DependsOn: StreamRole
     Properties:

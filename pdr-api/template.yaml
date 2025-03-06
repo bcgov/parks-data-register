@@ -35,7 +35,7 @@ Parameters:
   OpenSearchDomainName:
     Description: OpenSearch domain name
     Type: String
-    Default: 'data-register-os'
+    Default: 'data-register-opensearch'
   KMSKeyId:
     Type: String
     Default: 'arn:aws:kms:ca-central-1:970582042516:alias/aws/es'

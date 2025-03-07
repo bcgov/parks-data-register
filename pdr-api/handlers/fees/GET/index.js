@@ -1,6 +1,10 @@
 const { runQuery, runScan, TABLE_NAME} = require('/opt/dynamodb');
 const { sendResponse, logger } = require('/opt/base');
-
+const WITH_BILLING = 'withBilling';
+const BY_ACTIVITY = 'byActivity';
+const BY_PARK_FEATURE = 'byparkFeature';
+const BY_ORCS = 'byORCS';
+const INSUFFICIENT_PARAMS = 'insufficientParams';
 
 exports.handler = async (event, context) => {
 
@@ -10,51 +14,23 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log("THIS IS THE EVENT: ", event);
     const queryParams = event.queryStringParameters;
     const queryType = getQueryType(queryParams);
-
     let query;
     if(queryParams){
       switch (queryType) {
-        case 'withBilling':
-          if (!queryParams.billingBy || !queryParams.activity || !queryParams.parkFeature || !queryParams.ORCS) {
-            throw {
-              code: 400,
-              error: 'Insufficient parameters.',
-              msg: `Missing required parameters for 'withBilling' query`
-            };
-          }
-          query = queryFeeWithBilling(queryParams.billingBy, queryParams.activity, queryParams.parkFeature, queryParams.ORCS);
+        case WITH_BILLING:
+          query = queryFeeWithBilling(queryParams);
           break;
-        case 'byActivity':
-          if (!queryParams.activity || !queryParams.parkFeature || !queryParams.ORCS) {
-            throw {
-              code: 400,
-              error: 'Insufficient parameters.',
-              msg: `Missing required parameters for 'byActivity' query`
-            };
-          }
-          query = queryFeeByActivity(queryParams.activity, queryParams.parkFeature, queryParams.ORCS);
+        case BY_ACTIVITY:
+          query = queryFeeByActivity(queryParams);
           break;
-        case 'byparkFeature':
-          if (!queryParams.parkFeature || !queryParams.ORCS) {
-            throw {
-              code: 400,
-              error: 'Insufficient parameters.',
-              msg: `Missing required parameters for 'byparkFeature' query`
-            };
-          }
-          query = queryFeeByParkFeature(queryParams.parkFeature, queryParams.ORCS);
+        case BY_PARK_FEATURE:
+          query = queryFeeByParkFeature(queryParams);
           break;
-        case 'byORCS':
-          if (!queryParams.ORCS) {
-            throw {
-              code: 400,
-              error: 'Insufficient parameters.',
-              msg: `Missing required query parameter: 'ORCS'`
-            };
-          }
-          query = queryFeeByORCS(queryParams.ORCS);
+        case BY_ORCS:
+          query = queryFeeByORCS(queryParams);
           break;
         default:
           throw {
@@ -63,13 +39,12 @@ exports.handler = async (event, context) => {
             msg: `Missing required query parameter: 'ORCS'`
           };
       }
-
-      let res = await runQuery(query);
+      const res = await runQuery(query);
       return sendResponse(200, res, 'Success', null, context);
     }
     else {
-      let scan = await scanFees();
-      let res = await runScan(scan);
+      const scan = await scanFees();
+      const res = await runScan(scan);
       return sendResponse(200, res, 'Success', null, context);
     }
   } catch (err) {
@@ -80,59 +55,87 @@ exports.handler = async (event, context) => {
 
 function getQueryType(queryParams) {
   if (queryParams?.billingBy) {
-    return 'withBilling';
+    return WITH_BILLING;
   } else if (queryParams?.activity) {
-    return 'byActivity';
+    return BY_ACTIVITY;
   } else if (queryParams?.parkFeature) {
-    return 'byparkFeature';
+    return BY_PARK_FEATURE;
   } else if (queryParams?.ORCS) {
-    return 'byORCS';
+    return BY_ORCS;
   } else {
-    return 'insufficientParams';
+    return INSUFFICIENT_PARAMS;
   }
 }
-  function queryFeeByORCS(ORCS) {
-    let query = {
-      TableName: TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk',
-      ExpressionAttributeValues: {
-        ':pk': {S: `${ORCS}::FEES`}
-      }
-    };  
-    return query;
-  }
-
-  function queryFeeByParkFeature(parkFeature, ORCS) {
-    let query = {
-      TableName: TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
-      ExpressionAttributeValues: {
-        ':pk': { S: `${ORCS}::FEES` },
-        ':sk': { S: parkFeature }
-      }
+function queryFeeByORCS(queryParams) {
+  if (!queryParams.ORCS) {
+    throw {
+      code: 400,
+      error: 'Insufficient parameters.',
+      msg: `Missing required query parameter: 'ORCS'`
     };
-    return query;
   }
+  let query = {
+    TableName: TABLE_NAME,
+    KeyConditionExpression: 'pk = :pk',
+    ExpressionAttributeValues: {
+      ':pk': {S: `${queryParams.ORCS}::FEES`}
+    }
+  };  
+  return query;
+}
 
-function queryFeeByActivity(activity, parkFeature, ORCS) {
+function queryFeeByParkFeature(queryParams) {
+  if (!queryParams.parkFeature || !queryParams.ORCS) {
+    throw {
+      code: 400,
+      error: 'Insufficient parameters.',
+      msg: `Missing required parameters for 'byparkFeature' query`
+    };
+  }
   let query = {
     TableName: TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
     ExpressionAttributeValues: {
-      ':pk': { S: `${ORCS}::FEES` },
-      ':sk': { S: `${parkFeature}::${activity}` }
+      ':pk': { S: `${queryParams.ORCS}::FEES` },
+      ':sk': { S: queryParams.parkFeature }
     }
   };
   return query;
 }
 
-function queryFeeWithBilling(billing, activity, parkFeature, ORCS) {
+function queryFeeByActivity(queryParams) {
+  if (!queryParams.activity || !queryParams.parkFeature || !queryParams.ORCS) {
+    throw {
+      code: 400,
+      error: 'Insufficient parameters.',
+      msg: `Missing required parameters for 'byActivity' query`
+    };
+  }
   let query = {
     TableName: TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
     ExpressionAttributeValues: {
-      ':pk': { S: `${ORCS}::FEES` },
-      ':sk': { S: `${parkFeature}::${activity}::${billing}` }
+      ':pk': { S: `${queryParams.ORCS}::FEES` },
+      ':sk': { S: `${queryParams.parkFeature}::${queryParams.activity}` }
+    }
+  };
+  return query;
+}
+
+function queryFeeWithBilling(queryParams) {
+  if (!queryParams.billingBy || !queryParams.activity || !queryParams.parkFeature || !queryParams.ORCS) {
+    throw {
+      code: 400,
+      error: 'Insufficient parameters.',
+      msg: `Missing required parameters for 'withBilling' query`
+    };
+  }
+  let query = {
+    TableName: TABLE_NAME,
+    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
+    ExpressionAttributeValues: {
+      ':pk': { S: `${queryParams.ORCS}::FEES` },
+      ':sk': { S: `${queryParams.parkFeature}::${queryParams.activity}::${queryParams.billingBy}` }
     }
   };
   return query

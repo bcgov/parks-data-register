@@ -488,10 +488,6 @@ Resources:
             Path: /fees
             Method: GET
             RestApiId: !Ref ApiDeployment
-            Auth:
-              ApiKeyRequired: false
-              Authorizer: NONE
-              OverrideApiAuth: true
     
 ### FeePost
   FeePost:
@@ -523,9 +519,7 @@ Resources:
             Path: /fees
             Method: POST
             RestApiId: !Ref ApiDeployment
-            Auth:
-              ApiKeyRequired: false
-              OverrideApiAuth: true
+
 
 ### FeeDelete
   FeeDelete:
@@ -557,9 +551,7 @@ Resources:
             Path: /fees
             Method: DELETE
             RestApiId: !Ref ApiDeployment
-            Auth:
-              ApiKeyRequired: false
-              OverrideApiAuth: true
+
 
   ### FeePut
   FeePut:
@@ -569,6 +561,7 @@ Resources:
       CodeUri: handlers/fees/PUT
       Handler: index.handler
       Layers:
+        - !Ref DataUtilsLayer
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
@@ -591,9 +584,6 @@ Resources:
             Path: /fees
             Method: PUT
             RestApiId: !Ref ApiDeployment
-            Auth:
-              ApiKeyRequired: false
-              OverrideApiAuth: true
 
   ### API ###
   ApiDeployment:

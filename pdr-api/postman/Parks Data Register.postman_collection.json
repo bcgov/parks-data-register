@@ -763,46 +763,6 @@
 								{
 									"key": "billingBy",
 									"value": "Party"
-								},
-								{
-									"key": "night",
-									"value": "999",
-									"disabled": true
-								},
-								{
-									"key": "day",
-									"value": "999",
-									"disabled": true
-								},
-								{
-									"key": "use",
-									"value": "999",
-									"disabled": true
-								},
-								{
-									"key": "week",
-									"value": "999",
-									"disabled": true
-								},
-								{
-									"key": "year",
-									"value": "999",
-									"disabled": true
-								},
-								{
-									"key": "trip",
-									"value": "999",
-									"disabled": true
-								},
-								{
-									"key": "directionOfTrip",
-									"value": "999",
-									"disabled": true
-								},
-								{
-									"key": "days28",
-									"value": "999",
-									"disabled": true
 								}
 							]
 						}
@@ -815,7 +775,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&service=Winter Frontcountry camping&billingBy=Party",
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party",
 							"host": [
 								"{{vanity_url}}"
 							],
@@ -832,7 +792,7 @@
 									"value": "Buttle Lake"
 								},
 								{
-									"key": "service",
+									"key": "activity",
 									"value": "Winter Frontcountry camping"
 								},
 								{
@@ -850,7 +810,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&service=Winter Frontcountry camping&billingBy=Party&chargeBy=night",
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party&chargeBy=Day",
 							"host": [
 								"{{vanity_url}}"
 							],
@@ -867,7 +827,7 @@
 									"value": "Buttle Lake"
 								},
 								{
-									"key": "service",
+									"key": "activity",
 									"value": "Winter Frontcountry camping"
 								},
 								{
@@ -876,7 +836,7 @@
 								},
 								{
 									"key": "chargeBy",
-									"value": "night"
+									"value": "Day"
 								}
 							]
 						}
@@ -896,7 +856,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&service=Winter Frontcountry camping&billBy=Party&feeValue=999&chargeBy=Night",
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party&feeValue=999&chargeBy=Night",
 							"host": [
 								"{{vanity_url}}"
 							],
@@ -913,11 +873,11 @@
 									"value": "Buttle Lake"
 								},
 								{
-									"key": "service",
+									"key": "activity",
 									"value": "Winter Frontcountry camping"
 								},
 								{
-									"key": "billBy",
+									"key": "billingBy",
 									"value": "Party"
 								},
 								{

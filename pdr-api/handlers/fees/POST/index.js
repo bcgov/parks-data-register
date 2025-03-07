@@ -14,7 +14,7 @@ exports.handler = async function (event, context) {
     // Extract query parameters from the event
     const queryParams = event.queryStringParameters;
     logger.debug('Query Parameters:', queryParams);
-    const requiredParams = ['ORCS', 'parkFeature', 'service', 'chargeBy', 'billBy', 'feeValue'];
+    const requiredParams = ['ORCS', 'parkFeature', 'activity', 'chargeBy', 'billingBy', 'feeValue'];
 
     for (const param of requiredParams) {
       if (!queryParams?.[param]) {
@@ -30,8 +30,12 @@ exports.handler = async function (event, context) {
       // Construct the item to be POST into DynamoDB
       const item = {
         pk: `${queryParams.ORCS}::FEES`,
-        sk: `${queryParams.parkFeature}::${queryParams.service}::${queryParams.billBy}`,
-        [queryParams.chargeBy]: queryParams.feeValue
+        sk: `${queryParams.parkFeature}::${queryParams.activity}::${queryParams.billingBy}`,
+        [queryParams.chargeBy]: queryParams.feeValue,
+        parkFeature: queryParams.parkFeature,
+        activity: queryParams.activity,
+        billingBy: queryParams.billingBy,
+        ORCS: queryParams.ORCS
       };
       logger.debug('Constructed Item:', item);
 

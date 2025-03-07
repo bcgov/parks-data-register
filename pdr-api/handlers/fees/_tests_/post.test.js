@@ -24,8 +24,8 @@ describe('Create a Fee', () => {
       queryStringParameters: {
         ORCS: 3,
         parkFeature: 'test',
-        service: 'test',
-        billBy: 'test',
+        activity: 'test',
+        billingBy: 'test',
         feeValue: 777,
         chargeBy: 'night'
       },
@@ -45,8 +45,8 @@ describe('Create a Fee', () => {
       httpMethod: 'POST',
       queryStringParameters: {
         parkFeature: 'test',
-        service: 'test',
-        billBy: 'test',
+        activity: 'test',
+        billingBy: 'test',
         feeValue: 777,
         chargeBy: 'night'
       },
@@ -66,8 +66,8 @@ describe('Create a Fee', () => {
       httpMethod: 'POST',
       queryStringParameters: {
         ORCS: 3,
-        service: 'test',
-        billBy: 'test',
+        activity: 'test',
+        billingBy: 'test',
         feeValue: 777,
         chargeBy: 'night'
       },
@@ -81,14 +81,14 @@ describe('Create a Fee', () => {
     expect(res.statusCode).toBe(400);
   });
 
-  test('Fail create a Fee, Missing Service', async () => {
+  test('Fail create a Fee, Missing activity', async () => {
     const lambda = require('../POST/index');
     const event = {
       httpMethod: 'POST',
       queryStringParameters: {
         ORCS: 3,
         parkFeature: 'test',
-        billBy: 'test',
+        billingBy: 'test',
         feeValue: 777,
         chargeBy: 'night'
       },
@@ -109,7 +109,7 @@ describe('Create a Fee', () => {
       queryStringParameters: {
         ORCS: 3,
         parkFeature: 'test',
-        service: 'test',
+        activity: 'test',
         feeValue: 777,
         chargeBy: 'night'
       },
@@ -130,8 +130,8 @@ describe('Create a Fee', () => {
       queryStringParameters: {
         ORCS: 3,
         parkFeature: 'test',
-        service: 'test',
-        billBy: 'test',
+        activity: 'test',
+        billingBy: 'test',
         chargeBy: 'night'
       },
       requestContext: {
@@ -151,8 +151,8 @@ describe('Create a Fee', () => {
       queryStringParameters: {
         ORCS: 3,
         parkFeature: 'test',
-        service: 'test',
-        billBy: 'test',
+        activity: 'test',
+        billingBy: 'test',
         feeValue: 777
       },
       requestContext: {
@@ -172,8 +172,8 @@ describe('Create a Fee', () => {
       queryStringParameters: {
         ORCS: 3,
         parkFeature: 'test',
-        service: 'test',
-        billBy: 'test',
+        activity: 'test',
+        billingBy: 'test',
         feeValue: 777,
         chargeBy: 'night'
       },

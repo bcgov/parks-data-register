@@ -1,6 +1,7 @@
 const { dynamodb, getOne, TABLE_NAME } = require('/opt/dynamodb');
 const { unmarshall } = require('@aws-sdk/util-dynamodb');
 const { sendResponse, logger } = require('/opt/base');
+const { FEES_OPTIONAL_PUT_FIELDS } = require('/opt/data-constants');
 
 exports.handler = async (event, context) => {
   logger.info('Update a fee record:', event);
@@ -41,8 +42,8 @@ exports.handler = async (event, context) => {
       return sendResponse(400, {}, 'Bad Request', 'Invalid JSON in request body', context);
     }
 
-    // Check if the body contains at least one of the OPTIONAL_PUT_FIELDS
-    const hasOptionalField = OPTIONAL_PUT_FIELDS.some(field => body.hasOwnProperty(field));
+    // Check if the body contains at least one of the FEES_OPTIONAL_PUT_FIELDS
+    const hasOptionalField = FEES_OPTIONAL_PUT_FIELDS.some(field => body.hasOwnProperty(field));
     if (!hasOptionalField) {
       logger.error('Bad Request - Missing required fields in body');
       return sendResponse(400, {}, 'Bad Request', 'Missing required fields in body', context);
@@ -79,7 +80,7 @@ async function updateRecord(pk, sk, body) {
   let updatedAttributeValues = {};
   let updateExpression = [];
 
-  for (const field of OPTIONAL_PUT_FIELDS) {
+  for (const field of FEES_OPTIONAL_PUT_FIELDS) {
     if (body.hasOwnProperty(field)) {
       attributeName = `#${field}`;
       expressionAttributeNames[attributeName] = field;
@@ -133,15 +134,3 @@ async function updateRecord(pk, sk, body) {
     throw error;
   }
 }
-
-// Acceptible fields
-const OPTIONAL_PUT_FIELDS = [
-  'Night',
-  'Day',
-  'Use',
-  'Week',
-  'Year',
-  'Trip',
-  'DirectionOfTrip',
-  'Days28'
-];

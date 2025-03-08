@@ -82,7 +82,6 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole'
-        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
       Policies:
         - PolicyName: 'ProcessDynamoDBStreamRolePolicyOne'
           PolicyDocument:
@@ -250,11 +249,6 @@ Resources:
     FunctionName: SearchFunction
     Type: AWS::Serverless::Function
     Properties:
-      VpcConfig:
-        SecurityGroupIds:
-          - !Ref SecurityGroupId
-        SubnetIds:
-          - !Ref SubnetId
       CodeUri: handlers/search
       Handler: index.handler
       Layers:
@@ -269,14 +263,14 @@ Resources:
       Description: Search Handler
       Policies:
         - ElasticsearchHttpPostPolicy:
-            DomainName: !Ref DomainName
+            DomainName: !Ref OpenSearchSecondaryDomainName
       Environment:
         Variables:
           LOG_LEVEL: info
           OPENSEARCH_MAIN_INDEX: !Ref OpenSearchMainIndex
           OPENSEARCH_DOMAIN_ENDPOINT: !Sub
             - 'https://${Domain}/'
-            - Domain: !GetAtt OpenSearch.DomainEndpoint
+            - Domain: !GetAtt OpenSearchSecondary.DomainEndpoint
       Events:
         SearchGet:
           Type: Api
@@ -299,11 +293,6 @@ Resources:
     FunctionName: ChangelogSearchFunction
     Type: AWS::Serverless::Function
     Properties:
-      VpcConfig:
-        SecurityGroupIds:
-          - !Ref SecurityGroupId
-        SubnetIds:
-          - !Ref SubnetId
       CodeUri: handlers/changelog/search
       Handler: index.handler
       Layers:
@@ -318,14 +307,14 @@ Resources:
       Description: Changelog Search Handler
       Policies:
         - ElasticsearchHttpPostPolicy:
-            DomainName: !Ref DomainName
+            DomainName: !Ref OpenSearchSecondaryDomainName
       Environment:
         Variables:
           LOG_LEVEL: info
           OPENSEARCH_MAIN_INDEX: !Ref OpenSearchMainIndex
           OPENSEARCH_DOMAIN_ENDPOINT: !Sub
             - 'https://${Domain}/'
-            - Domain: !GetAtt OpenSearch.DomainEndpoint
+            - Domain: !GetAtt OpenSearchSecondary.DomainEndpoint
       Events:
         ChangelogSearchGet:
           Type: Api
@@ -547,17 +536,12 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
-      VpcConfig:
-        SecurityGroupIds:
-          - !Ref SecurityGroupId
-        SubnetIds:
-          - !Ref SubnetId
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TableNameRegister
             TableName: !Ref TableNameAudit
         - ElasticsearchHttpPostPolicy:
-            DomainName: !Ref DomainName
+            DomainName: !Ref OpenSearchSecondaryDomainName
       Events:
         Stream:
           Type: DynamoDB
@@ -571,7 +555,7 @@ Resources:
           OPENSEARCH_MAIN_INDEX: !Ref OpenSearchMainIndex
           OPENSEARCH_DOMAIN_ENDPOINT: !Sub
             - 'https://${Domain}/'
-            - Domain: !GetAtt OpenSearch.DomainEndpoint
+            - Domain: !GetAtt OpenSearchSecondary.DomainEndpoint
 
   ### AUTHORIZER ###
   Authorizer:
@@ -790,4 +774,4 @@ Outputs:
     Description: 'OpenSearch Domain Endpoint'
     Value: !Sub
       - 'https://${Domain}/'
-      - Domain: !GetAtt OpenSearch.DomainEndpoint
+      - Domain: !GetAtt OpenSearchSecondary.DomainEndpoint

@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "0b78509c-c8e0-4992-8951-43ccd576dd20",
+		"_postman_id": "2496852c-e953-4a9d-be40-097628838e8e",
 		"name": "Parks Data Register",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14509064"
+		"_exporter_id": "21904562"
 	},
 	"item": [
 		{
@@ -44,8 +44,7 @@
 								"header": [
 									{
 										"key": "x-api-key",
-										"value": "{{x-api-key}}",
-										"type": "text"
+										"value": "{{x-api-key}}"
 									}
 								],
 								"url": {
@@ -103,8 +102,7 @@
 								"header": [
 									{
 										"key": "x-api-key",
-										"value": "{{x-api-key}}",
-										"type": "text"
+										"value": "{{x-api-key}}"
 									}
 								],
 								"url": {
@@ -145,8 +143,7 @@
 										"header": [
 											{
 												"key": "x-api-key",
-												"value": "{{x-api-key}}",
-												"type": "text"
+												"value": "{{x-api-key}}"
 											}
 										],
 										"url": {
@@ -182,8 +179,7 @@
 										"header": [
 											{
 												"key": "x-api-key",
-												"value": "{{x-api-key}}",
-												"type": "text"
+												"value": "{{x-api-key}}"
 											}
 										],
 										"body": {
@@ -228,8 +224,7 @@
 										"header": [
 											{
 												"key": "x-api-key",
-												"value": "{{x-api-key}}",
-												"type": "text"
+												"value": "{{x-api-key}}"
 											}
 										],
 										"body": {
@@ -274,8 +269,7 @@
 										"header": [
 											{
 												"key": "x-api-key",
-												"value": "{{x-api-key}}",
-												"type": "text"
+												"value": "{{x-api-key}}"
 											}
 										],
 										"body": {
@@ -362,8 +356,7 @@
 								"header": [
 									{
 										"key": "x-api-key",
-										"value": "{{x-api-key}}",
-										"type": "text"
+										"value": "{{x-api-key}}"
 									}
 								],
 								"url": {
@@ -424,7 +417,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/sites/:identifier?status=repealed",
+									"raw": "{{base_url}}/sites/:identifier?status=established",
 									"host": [
 										"{{base_url}}"
 									],
@@ -460,8 +453,7 @@
 								"header": [
 									{
 										"key": "x-api-key",
-										"value": "{{x-api-key}}",
-										"type": "text"
+										"value": "{{x-api-key}}"
 									}
 								],
 								"body": {
@@ -505,8 +497,7 @@
 								"header": [
 									{
 										"key": "x-api-key",
-										"value": "{{x-api-key}}",
-										"type": "text"
+										"value": "{{x-api-key}}"
 									}
 								],
 								"body": {
@@ -550,8 +541,7 @@
 								"header": [
 									{
 										"key": "x-api-key",
-										"value": "{{x-api-key}}",
-										"type": "text"
+										"value": "{{x-api-key}}"
 									}
 								],
 								"body": {
@@ -589,6 +579,319 @@
 							"response": []
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "Fees",
+			"item": [
+				{
+					"name": "Get All Fees",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vanity_url}}/fees",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fee by ORCS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fee by parkFeature",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fee by spefic Activity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by billingBy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Party"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Fee Record",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Day\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Party"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Entire Fee Record",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Party"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Fee Parameter",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party&chargeBy=Day",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Party"
+								},
+								{
+									"key": "chargeBy",
+									"value": "Day"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Fee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Party&feeValue=999&chargeBy=Night",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Party"
+								},
+								{
+									"key": "feeValue",
+									"value": "999"
+								},
+								{
+									"key": "chargeBy",
+									"value": "Night"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

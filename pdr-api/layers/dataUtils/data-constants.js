@@ -27,6 +27,19 @@ const OPTIONAL_PUT_FIELDS = [
   'searchTerms'
 ];
 
+
+// Acceptible PUT fields for fees
+const FEES_OPTIONAL_PUT_FIELDS = [
+  'Night',
+  'Day',
+  'Use',
+  'Week',
+  'Year',
+  'Trip',
+  'DirectionOfTrip',
+  'Days28'
+];
+
 module.exports = {
   ESTABLISHED_STATE,
   HISTORICAL_STATE,
@@ -37,5 +50,6 @@ module.exports = {
   REPEAL_UPDATE_TYPE,
   REPEALED_STATE,
   SITE_MAIN_SK,
-  UPDATE_TYPES
+  UPDATE_TYPES,
+  FEES_OPTIONAL_PUT_FIELDS
 }

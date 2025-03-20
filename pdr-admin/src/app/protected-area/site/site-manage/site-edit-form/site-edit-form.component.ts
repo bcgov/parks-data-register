@@ -11,9 +11,10 @@ import { Utils } from 'src/app/utils/utils';
 import { UrlService } from 'src/app/services/url.service';
 
 @Component({
-  selector: 'app-site-edit-form',
-  templateUrl: '../../../../shared/edit-form/edit-form.html',
-  styleUrls: ['./site-edit-form.component.scss']
+    selector: 'app-site-edit-form',
+    templateUrl: '../../../../shared/edit-form/edit-form.html',
+    styleUrls: ['./site-edit-form.component.scss'],
+    standalone: false
 })
 export class SiteEditFormComponent implements OnInit, OnDestroy {
   @Input() updateType = 'minor';

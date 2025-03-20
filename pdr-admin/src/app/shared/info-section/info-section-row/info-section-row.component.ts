@@ -2,9 +2,10 @@ import { AfterViewInit, ChangeDetectorRef, Component, Input } from '@angular/cor
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'app-info-section-row',
-  templateUrl: './info-section-row.component.html',
-  styleUrls: ['./info-section-row.component.scss']
+    selector: 'app-info-section-row',
+    templateUrl: './info-section-row.component.html',
+    styleUrls: ['./info-section-row.component.scss'],
+    standalone: false
 })
 export class InfoSectionRowComponent implements AfterViewInit{
   @Input() key: string = '-';

@@ -3,9 +3,10 @@ import { Subscription } from 'rxjs';
 import { ProtectedAreaService } from 'src/app/services/protected-area.service';
 
 @Component({
-  selector: 'app-protected-area-details',
-  templateUrl: './protected-area-details.component.html',
-  styleUrls: ['./protected-area-details.component.scss'],
+    selector: 'app-protected-area-details',
+    templateUrl: './protected-area-details.component.html',
+    styleUrls: ['./protected-area-details.component.scss'],
+    standalone: false
 })
 export class ProtectedAreaDetailsComponent implements OnInit {
   private subscriptions = new Subscription();

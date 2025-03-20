@@ -2,9 +2,10 @@ import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-site',
-  templateUrl: './site.component.html',
-  styleUrls: ['./site.component.scss']
+    selector: 'app-site',
+    templateUrl: './site.component.html',
+    styleUrls: ['./site.component.scss'],
+    standalone: false
 })
 export class SiteComponent implements OnDestroy {
 

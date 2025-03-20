@@ -4,9 +4,10 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { SiteService } from 'src/app/services/site.service';
 
 @Component({
-  selector: 'app-site-list',
-  templateUrl: './site-list.component.html',
-  styleUrls: ['./site-list.component.scss']
+    selector: 'app-site-list',
+    templateUrl: './site-list.component.html',
+    styleUrls: ['./site-list.component.scss'],
+    standalone: false
 })
 export class SiteListComponent implements OnDestroy {
 

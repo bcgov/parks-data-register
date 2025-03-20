@@ -3,9 +3,10 @@ import { BreadcrumbService } from '../services/breadcrumb.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-protected-area',
-  templateUrl: './protected-area.component.html',
-  styleUrls: ['./protected-area.component.scss'],
+    selector: 'app-protected-area',
+    templateUrl: './protected-area.component.html',
+    styleUrls: ['./protected-area.component.scss'],
+    standalone: false
 })
 export class ProtectedAreaComponent implements OnInit {
   private subscriptions = new Subscription();

@@ -9,9 +9,10 @@ import { Constants } from 'src/app/utils/constants';
 import { Utils } from 'src/app/utils/utils';
 
 @Component({
-  selector: 'app-site-manage',
-  templateUrl: './site-manage.component.html',
-  styleUrls: ['./site-manage.component.scss']
+    selector: 'app-site-manage',
+    templateUrl: './site-manage.component.html',
+    styleUrls: ['./site-manage.component.scss'],
+    standalone: false
 })
 export class SiteManageComponent implements AfterViewInit, OnDestroy {
 

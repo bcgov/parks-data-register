@@ -3,9 +3,10 @@ import { Subscription } from 'rxjs';
 import { SiteService } from 'src/app/services/site.service';
 
 @Component({
-  selector: 'app-site-details',
-  templateUrl: './site-details.component.html',
-  styleUrls: ['./site-details.component.scss']
+    selector: 'app-site-details',
+    templateUrl: './site-details.component.html',
+    styleUrls: ['./site-details.component.scss'],
+    standalone: false
 })
 export class SiteDetailsComponent implements OnInit, OnDestroy {
   public currentData = null;

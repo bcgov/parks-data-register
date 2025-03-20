@@ -80,7 +80,7 @@ export class TokenInterceptor implements HttpInterceptor {
     if (this.refreshTokenInProgress) {
       return new Observable(observer => {
         this.tokenRefreshed$.subscribe(() => {
-          observer.next();
+          observer.next(null);
           observer.complete();
         });
       });

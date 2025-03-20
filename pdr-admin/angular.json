@@ -42,7 +42,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
+                  "maximumWarning": "2mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -68,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "pdr-admin:build:production"
+              "buildTarget": "pdr-admin:build:production"
             },
             "development": {
-              "browserTarget": "pdr-admin:build:development"
+              "buildTarget": "pdr-admin:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pdr-admin:build"
+            "buildTarget": "pdr-admin:build"
           }
         },
         "test": {

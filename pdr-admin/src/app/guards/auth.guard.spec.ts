@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, inject } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -6,6 +6,7 @@ import { ConfigService } from '../services/config.service';
 import { KeycloakService } from '../services/keycloak.service';
 
 import { AuthGuard } from './auth.guard';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AuthGuard', () => {
   const mockKeycloakService = jasmine.createSpyObj('KeycloakService', [
@@ -19,14 +20,16 @@ describe('AuthGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
+    imports: [RouterTestingModule],
+    providers: [
         AuthGuard,
         ConfigService,
         { provide: KeycloakService, useValue: mockKeycloakService },
         { provide: Router, useValue: mockRouter },
-      ],
-      imports: [RouterTestingModule, HttpClientTestingModule],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
   });
 
   afterEach(() => {

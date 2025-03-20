@@ -1,12 +1,10 @@
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { ApiService } from './api.service';
 import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -27,12 +25,14 @@ describe('ApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         { provide: ConfigService, useValue: mockConfigService },
         LoggerService,
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
     service = TestBed.inject(ApiService);
     httpTestingController = TestBed.inject(HttpTestingController);
     service.init();

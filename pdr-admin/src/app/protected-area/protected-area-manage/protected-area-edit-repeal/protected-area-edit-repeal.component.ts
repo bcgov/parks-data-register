@@ -11,9 +11,10 @@ import { ReloadConfirmationDialogueService } from 'src/app/services/reload-confi
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
-  selector: 'app-protected-area-edit-repeal',
-  templateUrl: './protected-area-edit-repeal.component.html',
-  styleUrls: ['./protected-area-edit-repeal.component.scss'],
+    selector: 'app-protected-area-edit-repeal',
+    templateUrl: './protected-area-edit-repeal.component.html',
+    styleUrls: ['./protected-area-edit-repeal.component.scss'],
+    standalone: false
 })
 export class ProtectedAreaEditRepealComponent {
   @Input() id;

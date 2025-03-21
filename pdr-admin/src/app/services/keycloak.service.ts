@@ -195,7 +195,7 @@ export class KeycloakService {
         .updateToken(30)
         .then((refreshed) => {
           this.loggerService.log(`KC refreshed token?: ${refreshed}`);
-          observer.next();
+          observer.next(refreshed);
           observer.complete();
         })
         .catch((err) => {

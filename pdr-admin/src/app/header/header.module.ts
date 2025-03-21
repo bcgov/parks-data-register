@@ -5,12 +5,8 @@ import { KeycloakService } from '../services/keycloak.service';
 import { RouterModule } from '@angular/router';
 import { ConfigService } from '../services/config.service';
 import { SideBarService } from '../services/sidebar.service';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@NgModule({
-  declarations: [HeaderComponent],
-  imports: [CommonModule, RouterModule, HttpClientModule],
-  exports: [HeaderComponent],
-  providers: [ConfigService, KeycloakService, SideBarService],
-})
+@NgModule({ declarations: [HeaderComponent],
+    exports: [HeaderComponent], imports: [CommonModule, RouterModule], providers: [ConfigService, KeycloakService, SideBarService, provideHttpClient(withInterceptorsFromDi())] })
 export class HeaderModule {}

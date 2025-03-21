@@ -12,9 +12,10 @@ export interface HeaderData {
 }
 
 @Component({
-  selector: 'app-name-header',
-  templateUrl: './name-header.component.html',
-  styleUrls: ['./name-header.component.scss']
+    selector: 'app-name-header',
+    templateUrl: './name-header.component.html',
+    styleUrls: ['./name-header.component.scss'],
+    standalone: false
 })
 export class NameHeaderComponent {
   @Input() headerData: HeaderData;

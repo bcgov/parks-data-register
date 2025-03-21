@@ -12,9 +12,10 @@ import { Utils } from 'src/app/utils/utils';
 declare let bootstrap: any;
 
 @Component({
-  selector: 'app-protected-area-search',
-  templateUrl: './protected-area-search.component.html',
-  styleUrls: ['./protected-area-search.component.scss'],
+    selector: 'app-protected-area-search',
+    templateUrl: './protected-area-search.component.html',
+    styleUrls: ['./protected-area-search.component.scss'],
+    standalone: false
 })
 export class ProtectedAreaSearchComponent implements OnInit {
   private subscriptions = new Subscription();

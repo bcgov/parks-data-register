@@ -15,12 +15,14 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "baseHref": "/admin/",
-            "outputPath": "dist/pdr-admin",
+            "outputPath": {
+              "base": "dist/pdr-admin",
+              "browser": ""
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -35,14 +37,17 @@
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/keycloak-js/dist/keycloak.min.js"
             ],
-            "allowedCommonJsDependencies": ["guid-typescript"]
+            "allowedCommonJsDependencies": [
+              "guid-typescript"
+            ],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
+                  "maximumWarning": "2mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -54,9 +59,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -68,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "pdr-admin:build:production"
+              "buildTarget": "pdr-admin:build:production"
             },
             "development": {
-              "browserTarget": "pdr-admin:build:development"
+              "buildTarget": "pdr-admin:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +82,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pdr-admin:build"
+            "buildTarget": "pdr-admin:build"
           }
         },
         "test": {

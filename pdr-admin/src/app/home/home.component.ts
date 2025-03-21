@@ -3,9 +3,10 @@ import { KeycloakService } from 'src/app/services/keycloak.service';
 import { ConfigService } from '../services/config.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: false
 })
 export class HomeComponent {
   // This can be pulled in via the config.

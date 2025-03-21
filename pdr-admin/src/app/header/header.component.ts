@@ -5,9 +5,10 @@ import { KeycloakService } from '../services/keycloak.service';
 import { SideBarService } from '../services/sidebar.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: false
 })
 export class HeaderComponent implements OnDestroy {
   @Input() showSideBar = true;

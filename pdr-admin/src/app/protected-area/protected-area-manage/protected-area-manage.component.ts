@@ -10,9 +10,10 @@ import { HeaderData } from 'src/app/shared/name-header/name-header.component';
 import { Utils } from 'src/app/utils/utils';
 
 @Component({
-  selector: 'app-protected-area-manage',
-  templateUrl: './protected-area-manage.component.html',
-  styleUrls: ['./protected-area-manage.component.scss'],
+    selector: 'app-protected-area-manage',
+    templateUrl: './protected-area-manage.component.html',
+    styleUrls: ['./protected-area-manage.component.scss'],
+    standalone: false
 })
 export class ProtectedAreaManageComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() id;

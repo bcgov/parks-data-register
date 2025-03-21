@@ -11,10 +11,11 @@ import { ReloadConfirmationDialogueService } from 'src/app/services/reload-confi
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
-  selector: 'app-protected-area-edit-form',
-  templateUrl: '../../../shared/edit-form/edit-form.html',
-  // templateUrl: './protected-area-edit-form.component.html',
-  styleUrls: ['./protected-area-edit-form.component.scss'],
+    selector: 'app-protected-area-edit-form',
+    templateUrl: '../../../shared/edit-form/edit-form.html',
+    // templateUrl: './protected-area-edit-form.component.html',
+    styleUrls: ['./protected-area-edit-form.component.scss'],
+    standalone: false
 })
 export class ProtectedAreaEditFormComponent {
   @Input() updateType;

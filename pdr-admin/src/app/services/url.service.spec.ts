@@ -6,20 +6,23 @@ import { Router, Routes } from '@angular/router';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-mock-1',
-  template: '',
+    selector: 'app-mock-1',
+    template: '',
+    standalone: false
 })
 class Mock1Component {}
 
 @Component({
-  selector: 'app-mock-2',
-  template: '',
+    selector: 'app-mock-2',
+    template: '',
+    standalone: false
 })
 class Mock2Component {}
 
 @Component({
-  selector: 'app-mock-3',
-  template: '',
+    selector: 'app-mock-3',
+    template: '',
+    standalone: false
 })
 class Mock3Component {}
 

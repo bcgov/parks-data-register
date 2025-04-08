@@ -53,7 +53,7 @@ exports.handler = async (event, context) => {
     const currentRecord = await getOne(pk, sk);
     if (!currentRecord?.pk) {
       logger.error(`Protected area with identifier '${queryParams.ORCS}' not found.`);
-      return sendResponse(400, {}, 'Bad Request', `Protected area with identifier '${queryParams.ORCS}' not found.`, context);
+      return sendResponse(400, {}, 'Bad Request', `Could not find park feature "${queryParams.parkFeature}", within protected area with identifier '${queryParams.ORCS}'.`, context);
     }
 
     // Call the 'updateRecord' function to update the fee

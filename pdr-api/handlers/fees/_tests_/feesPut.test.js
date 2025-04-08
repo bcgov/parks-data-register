@@ -210,6 +210,6 @@ describe('Update Fees Tests', () => {
     const res = await lambda.handler(event, null);
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(400);
-    expect(body.error).toBe("Protected area with identifier '99' not found.");
+    expect(body.error).toBe(`Could not find park feature "Fake Feature", within protected area with identifier '99'.`);
   });
 });

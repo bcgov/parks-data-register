@@ -24,7 +24,7 @@ exports.handler = async function (event, context) {
   try {
     const queryParams = event.queryStringParameters;
     logger.debug('Query Parameters:', queryParams);
-    const requiredParams = ['ORCS', 'parkFeature', 'service', 'billingBy'];
+    const requiredParams = ['ORCS', 'parkFeature', 'activity', 'billingBy'];
 
     //Ensure all required parameters
     for (const param of requiredParams) {
@@ -59,7 +59,7 @@ exports.handler = async function (event, context) {
 const deleteParameter = async (queryParams, context) => {
   const item = {
     pk: `${queryParams.ORCS}::FEES`,
-    sk: `${queryParams.parkFeature}::${queryParams.service}::${queryParams.billingBy}`
+    sk: `${queryParams.parkFeature}::${queryParams.activity}::${queryParams.billingBy}`
   };
   logger.debug('Constructed Item:', item);
   const updateParams = {
@@ -84,7 +84,7 @@ const deleteParameter = async (queryParams, context) => {
 const deleteWholeRecord = async (queryParams, context) => {
   const item = {
     pk: `${queryParams.ORCS}::FEES`,
-    sk: `${queryParams.parkFeature}::${queryParams.service}::${queryParams.billingBy}`
+    sk: `${queryParams.parkFeature}::${queryParams.activity}::${queryParams.billingBy}`
   };
   logger.debug('Constructed Item:', item);
   try {

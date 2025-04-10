@@ -52,9 +52,14 @@ exports.handler = async (event, context) => {
     // If no currentRecord exists, we shouldn't perform any actions
     const currentRecord = await getOne(pk, sk);
     if (!currentRecord?.pk) {
-      logger.error(`Protected area with identifier '${queryParams.ORCS}' not found.`);
-      return sendResponse(400, {}, 'Bad Request', `Could not find park feature "${queryParams.parkFeature}", within protected area with identifier '${queryParams.ORCS}'.`, context);
-    }
+      logger.error(`PK: '${pk}', SK:'${sk}' not found.`);
+      return sendResponse(
+        400, 
+        {}, 
+        'Not Found', 
+        `The requested park feature "${queryParams.parkFeature}" with activity "${queryParams.activity}" and billing type "${queryParams.billingBy}" could not be found in the protected area identified by '${queryParams.ORCS}'. Please verify the provided parameters and try again.`, 
+        context
+      );}
 
     // Call the 'updateRecord' function to update the fee
     let attributes = await updateRecord(pk, sk, body);

@@ -40,9 +40,26 @@ exports.handler = async function (event, context) {
       logger.debug('Constructed Item:', item);
 
       // POST item
-      let res = await putItem(marshall(item), TABLE_NAME);
-      logger.debug('DynamoDB Response:', res);
-      return sendResponse(200, res, 'Success', null, context);
+      try{
+        let res = await putItem(marshall(item), TABLE_NAME);
+        logger.debug('DynamoDB Response:', res);
+        return sendResponse(200, res, 'Success', null, context);
+      }catch (err) {
+        //Duplicate entry
+        if (err.name === 'ConditionalCheckFailedException') {
+          logger.error('Duplicate entry detected:', err);
+          return sendResponse(
+            409,
+            {},
+            'Conflict',
+            'This fee is already in the database. Please use unique values.',
+            context
+          );
+        }
+        //Other error with dynamo
+        logger.error('Error inserting item into DynamoDB:', err);
+        return sendResponse(500, {}, 'Error', 'Error inserting item into DynamoDB', context);
+      }
     } else {
       return sendResponse(400, {}, 'Bad Request', 'must be admin to create a fee', context);
     }

@@ -43,7 +43,7 @@ describe('Delete a Fee', () => {
           queryStringParameters: {
               ORCS: 1,
               parkFeature: 'Fake Feature',
-              service: 'Pretend Camping',
+              activity: 'Pretend Camping',
               billingBy: 'Party'
           },
           requestContext: {
@@ -84,7 +84,7 @@ describe('Delete a Fee', () => {
         httpMethod: 'DELETE',
         queryStringParameters: {
           parkFeature: 'Fake Feature',
-          service: 'Pretend Camping',
+          activity: 'Pretend Camping',
           billingBy: 'Party'
         },
         requestContext: {
@@ -108,7 +108,7 @@ describe('Delete a Fee', () => {
           queryStringParameters: {
           ORCS: 1,
           parkFeature: 'Fake Feature',
-          service: 'Pretend Camping',
+          activity: 'Pretend Camping',
           billingBy: 'Party'
           },
           requestContext: {
@@ -157,7 +157,7 @@ describe('Delete a Fee', () => {
       queryStringParameters: {
         ORCS: 1,
         parkFeature: 'Fake Feature',
-        service: 'Pretend Camping',
+        activity: 'Pretend Camping',
         billingBy: 'Party'
       },
       requestContext: {
@@ -184,7 +184,7 @@ describe('Delete a Fee', () => {
       queryStringParameters: {
         ORCS: 1,
         parkFeature: 'Fake Feature',
-        service: 'Pretend Camping',
+        activity: 'Pretend Camping',
         billingBy: 'Party'
       },
       requestContext: {}

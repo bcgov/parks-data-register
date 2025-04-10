@@ -210,6 +210,6 @@ describe('Update Fees Tests', () => {
     const res = await lambda.handler(event, null);
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(400);
-    expect(body.error).toBe(`Could not find park feature "Fake Feature", within protected area with identifier '99'.`);
+    expect(body.error).toBe(`The requested park feature \"Fake Feature\" with activity \"Pretend Camping\" and billing type \"Party\" could not be found in the protected area identified by '99'. Please verify the provided parameters and try again.`);
   });
 });

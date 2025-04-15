@@ -1,7 +1,8 @@
 // Import necessary libraries and modules
 const { sendResponse, logger } = require('/opt/base');
-const { TABLE_NAME, deleteItem, dynamodb } = require('/opt/dynamodb');
+const { TABLE_NAME, deleteItem, dynamodb, getOne } = require('/opt/dynamodb');
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
+const { FEES_OPTIONAL_PUT_FIELDS } = require('/opt/data-constants');
 
 exports.handler = async function (event, context) {
   logger.debug('Search:', event); 
@@ -62,6 +63,32 @@ const deleteParameter = async (queryParams, context) => {
     sk: `${queryParams.parkFeature}::${queryParams.activity}::${queryParams.billingBy}`
   };
   logger.debug('Constructed Item:', item);
+  try {
+    const currentItem = await getOne(item.pk, item.sk);
+    const chargeByAttributes = Object.keys(currentItem).filter(attr => FEES_OPTIONAL_PUT_FIELDS.includes(attr));
+    switch (true) {
+      case Object.keys(currentItem).length === 0:
+        logger.error('Item not found in DynamoDB');
+        return sendResponse(404, {}, 'Not Found', 'Item does not exist in DynamoDB', context);
+
+      case chargeByAttributes.length === 1:
+        logger.error('Cannot delete the last chargeBy attribute');
+        return sendResponse(400, {}, 'Bad Request', 'Cannot delete the last chargeBy attribute', context);
+
+      case !chargeByAttributes.includes(queryParams.chargeBy) || !FEES_OPTIONAL_PUT_FIELDS.includes(queryParams.chargeBy):
+        logger.error('ChargeBy attribute not found in current item');
+        return sendResponse(400, {}, 'Bad Request', 'The supplied chargeBy attribute is not valid in this request', context);
+
+      default:
+        // No issues 
+        break;
+    }
+  }catch (error) {
+    logger.error('DynamoDB Error:', JSON.stringify(error));
+    return sendResponse(500, {}, 'Internal Server Error', 'Failed to fetch item from DynamoDB', context);
+  }
+  
+  logger.debug('Constructed Item:', item);
   const updateParams = {
     TableName: TABLE_NAME,
     Key: marshall(item),
@@ -86,6 +113,12 @@ const deleteWholeRecord = async (queryParams, context) => {
     pk: `${queryParams.ORCS}::FEES`,
     sk: `${queryParams.parkFeature}::${queryParams.activity}::${queryParams.billingBy}`
   };
+  const currentItem = await getOne(item.pk, item.sk);
+  //If getOne is empty there is no match in db to delete.
+  if (Object.keys(currentItem).length === 0) {
+    logger.error('Item not found in DynamoDB');
+    return sendResponse(404, {}, 'Not Found', 'Item does not exist in DynamoDB', context);
+  }
   logger.debug('Constructed Item:', item);
   try {
     const res = await deleteItem(marshall(item), TABLE_NAME);

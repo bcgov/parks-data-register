@@ -531,6 +531,7 @@ Resources:
       CodeUri: handlers/fees/POST
       Handler: index.handler
       Layers:
+        - !Ref DataUtilsLayer
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Runtime: nodejs18.x
@@ -563,6 +564,7 @@ Resources:
       CodeUri: handlers/fees/DELETE
       Handler: index.handler
       Layers:
+        - !Ref DataUtilsLayer
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Runtime: nodejs18.x

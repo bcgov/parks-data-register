@@ -1,7 +1,7 @@
 ---
 data_management_roles:
-  data_custodian: Glenna Erlandson
-  product_owner: Jessica Wade
+  data_custodian: Rumon Carter
+  product_owner: Lindsay Macfarlane
 product_external_dependencies:
   identity_authorization:
     - Azure-AD-IDIR
@@ -10,7 +10,7 @@ product_external_dependencies:
 product_information:
   api_specifications: []
   ministry:
-    - Environment and Climate Change Strategy
+    - Ministry of Environment and Parks ENV
   product_acronym: BCPDR
   product_description: >-
     The Parks Data Register provides consistent and accurate name data of BC
@@ -18,7 +18,7 @@ product_information:
   product_name: BC Parks Data Register
   product_status: maturing
   product_urls: []
-  program_area: Conservation and Recreation Division
+  program_area: Parks and Recreation Program
 product_technology_information:
   backend_frameworks:
     - name: Node.js

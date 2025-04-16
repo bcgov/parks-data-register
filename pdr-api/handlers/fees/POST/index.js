@@ -2,6 +2,7 @@
 const { sendResponse, logger } = require('/opt/base');
 const { TABLE_NAME, putItem } = require('/opt/dynamodb');
 const { marshall } = require('@aws-sdk/util-dynamodb');
+const { FEES_OPTIONAL_PUT_FIELDS } = require('/opt/data-constants');
 
 exports.handler = async function (event, context) {
   logger.debug('Post:', event); 
@@ -21,6 +22,12 @@ exports.handler = async function (event, context) {
         logger.error(`Bad Request - Missing Param: ${param}`);
         return sendResponse(400, {}, 'Bad Request', `Missing Param: ${param}`, context);
       }
+    }
+
+    //Only allow the valid charge by parameters
+    if(!FEES_OPTIONAL_PUT_FIELDS.includes(queryParams.chargeBy)){
+      logger.error(`Bad Request - Invalid Param: ${queryParams.chargeBy}`);
+      return sendResponse(400, {}, 'Bad Request', `Invalid chargeBy Param: ${queryParams.chargeBy}`, context);
     }
 
     // Check if the user is an admin

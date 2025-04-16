@@ -150,7 +150,7 @@ describe('Delete a Fee', () => {
     expect(body.msg).toBe('Success');
   });
   
-  test('Fail to Delete a Fee - DynamoDB Error', async () => {
+  test('Fail to Delete a Fee Parameter - Last Fee', async () => {
     const lambda = require('../DELETE/index');
     const eventDelete = {
       httpMethod: 'DELETE',
@@ -158,7 +158,8 @@ describe('Delete a Fee', () => {
         ORCS: 1,
         parkFeature: 'Fake Feature',
         activity: 'Pretend Camping',
-        billingBy: 'Party'
+        billingBy: 'Party',
+        chargeBy: 'Night'
       },
       requestContext: {
         authorizer: {
@@ -166,15 +167,55 @@ describe('Delete a Fee', () => {
         }
       }
     };
-    jest.mock('/opt/dynamodb', () => ({
-      deleteItem: jest.fn().mockImplementation(() => {
-        throw new Error('DynamoDB Error');
-      })
-    }));
     const res = await lambda.handler(eventDelete, null);
     const body = JSON.parse(res.body);
-    expect(res.statusCode).toBe(500);
-    expect(body.error).toBe('Failed to delete item from DynamoDB');
+    expect(res.statusCode).toBe(400);
+    expect(body.error).toBe('Cannot delete the last chargeBy attribute');
+  });
+
+  test('Fail to Delete a Fee Parameter - Invalid Parameter', async () => {
+    const lambda = require('../DELETE/index');
+    const eventDelete = {
+      httpMethod: 'DELETE',
+      queryStringParameters: {
+        ORCS: 66,
+        parkFeature: 'Fake Feature',
+        activity: 'Pretend Camping',
+        billingBy: 'Party',
+        chargeBy: 'Eternity'
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true
+        }
+      }
+    };
+    const res = await lambda.handler(eventDelete, null);
+    const body = JSON.parse(res.body);
+    expect(res.statusCode).toBe(400);
+    expect(body.error).toBe('The supplied chargeBy attribute is not valid in this request');
+  });
+
+  test('Fail to Delete - Missing Fee', async () => {
+    const lambda = require('../DELETE/index');
+    const eventDelete = {
+      httpMethod: 'DELETE',
+      queryStringParameters: {
+        ORCS: 66,
+        parkFeature: 'Fake Fake Feature',
+        activity: 'Fake Pretend Camping',
+        billingBy: 'Fake Party'
+      },
+      requestContext: {
+        authorizer: {
+          isAdmin: true
+        }
+      }
+    };
+    const res = await lambda.handler(eventDelete, null);
+    const body = JSON.parse(res.body);
+    expect(res.statusCode).toBe(404);
+    expect(body.error).toBe('Item does not exist in DynamoDB');
   });
 
   test('Empty Request Context', async () => {

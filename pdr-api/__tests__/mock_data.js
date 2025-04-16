@@ -135,6 +135,13 @@ exports.MockData = class {
     Night: 77
   };
 
+  mockFees2 = {
+    pk: '66::FEES',
+    sk: 'Fake Feature::Pretend Camping::Party',
+    Night: 77,
+    Day: 66
+  };
+
   allData = () => {
     return [
       this.mockConfig,

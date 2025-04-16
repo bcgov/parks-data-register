@@ -27,7 +27,7 @@ describe('Create a Fee', () => {
         activity: 'test',
         billingBy: 'test',
         feeValue: 777,
-        chargeBy: 'night'
+        chargeBy: 'Night'
       },
       requestContext: {
         authorizer: {

@@ -41,10 +41,12 @@ exports.handler = async function (event, context) {
     if (isAdmin) {
       // If chargeBy is included, delete just a parameter
       if (queryParams.chargeBy) {
-        return await deleteParameter(queryParams, context);
+        const attributes = await deleteParameter(queryParams, context);
+        return sendResponse(200, attributes, 'Success', null, context);
       } else {
         // Charge by is not included, so delete the whole record
-        return await deleteWholeRecord(queryParams, context);
+        const attributes = await deleteWholeRecord(queryParams, context);
+        return sendResponse(200, attributes, 'Success', null, context);
       }
     } else {
       // Not an admin
@@ -63,29 +65,36 @@ const deleteParameter = async (queryParams, context) => {
     sk: `${queryParams.parkFeature}::${queryParams.activity}::${queryParams.billingBy}`
   };
   logger.debug('Constructed Item:', item);
-  try {
-    const currentItem = await getOne(item.pk, item.sk);
-    const chargeByAttributes = Object.keys(currentItem).filter(attr => FEES_OPTIONAL_PUT_FIELDS.includes(attr));
-    switch (true) {
-      case Object.keys(currentItem).length === 0:
-        logger.error('Item not found in DynamoDB');
-        return sendResponse(404, {}, 'Not Found', 'Item does not exist in DynamoDB', context);
+  const currentItem = await getOne(item.pk, item.sk);
+  const chargeByAttributes = Object.keys(currentItem).filter(attr => FEES_OPTIONAL_PUT_FIELDS.includes(attr));
+  switch (true) {
+    case Object.keys(currentItem).length === 0:
+      logger.error('Item not found in DynamoDB');
+      throw {
+        code: 404,
+        error: 'Not Found.',
+        msg: `Item does not exist in DynamoDB.`
+      };
+      
+    case chargeByAttributes.length === 1:
+      logger.error('Cannot delete the last chargeBy attribute');
+      throw {
+        code: 400,
+        error: 'Bad Request.',
+        msg: `Cannot delete the last chargeBy attribute.`
+      };
 
-      case chargeByAttributes.length === 1:
-        logger.error('Cannot delete the last chargeBy attribute');
-        return sendResponse(400, {}, 'Bad Request', 'Cannot delete the last chargeBy attribute', context);
+    case !chargeByAttributes.includes(queryParams.chargeBy) || !FEES_OPTIONAL_PUT_FIELDS.includes(queryParams.chargeBy):
+      logger.error('ChargeBy attribute not found in current item');
+      throw {
+        code: 400,
+        error: 'Bad Request.',
+        msg: `The supplied chargeBy attribute is not valid in this request.`
+      };
 
-      case !chargeByAttributes.includes(queryParams.chargeBy) || !FEES_OPTIONAL_PUT_FIELDS.includes(queryParams.chargeBy):
-        logger.error('ChargeBy attribute not found in current item');
-        return sendResponse(400, {}, 'Bad Request', 'The supplied chargeBy attribute is not valid in this request', context);
-
-      default:
-        // No issues 
-        break;
-    }
-  }catch (error) {
-    logger.error('DynamoDB Error:', JSON.stringify(error));
-    return sendResponse(500, {}, 'Internal Server Error', 'Failed to fetch item from DynamoDB', context);
+    default:
+      // No issues 
+      break;
   }
   
   logger.debug('Constructed Item:', item);
@@ -101,10 +110,14 @@ const deleteParameter = async (queryParams, context) => {
   try {
     const res = await dynamodb.updateItem(updateParams);
     logger.debug('DynamoDB Response:', unmarshall(res.Attributes));
-    return sendResponse(200, unmarshall(res.Attributes), 'Success', null, context);
+    return unmarshall(res.Attributes);
   } catch (error) {
     logger.error('DynamoDB Error:', JSON.stringify(error));
-    return sendResponse(500, {}, 'Internal Server Error', 'Failed to delete parameter from item in DynamoDB', context);
+    throw {
+      code: 500,
+      error: 'Internal Server Error.',
+      msg: `Failed to delete parameter from item in DynamoDB.`
+    };
   }
 };
 
@@ -117,15 +130,23 @@ const deleteWholeRecord = async (queryParams, context) => {
   //If getOne is empty there is no match in db to delete.
   if (Object.keys(currentItem).length === 0) {
     logger.error('Item not found in DynamoDB');
-    return sendResponse(404, {}, 'Not Found', 'Item does not exist in DynamoDB', context);
+    throw {
+      code: 404,
+      error: 'Not Found.',
+      msg: `Item does not exist in DynamoDB.`
+    };
   }
   logger.debug('Constructed Item:', item);
   try {
     const res = await deleteItem(marshall(item), TABLE_NAME);
     logger.debug('DynamoDB Response:', res);
-    return sendResponse(200, res, 'Success', null, context);
+    return res;
   } catch (error) {
     logger.error('DynamoDB Error:', JSON.stringify(error));
-    return sendResponse(500, {}, 'Internal Server Error', 'Failed to delete item from DynamoDB', context);
+    throw {
+      code: 500,
+      error: 'Internal Server Error',
+      msg: `Failed to delete item from DynamoDB.`
+    };
   }
 };

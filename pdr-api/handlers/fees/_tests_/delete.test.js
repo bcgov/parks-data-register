@@ -170,7 +170,7 @@ describe('Delete a Fee', () => {
     const res = await lambda.handler(eventDelete, null);
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(400);
-    expect(body.error).toBe('Cannot delete the last chargeBy attribute');
+    expect(body.msg).toBe('Cannot delete the last chargeBy attribute.');
   });
 
   test('Fail to Delete a Fee Parameter - Invalid Parameter', async () => {
@@ -193,7 +193,7 @@ describe('Delete a Fee', () => {
     const res = await lambda.handler(eventDelete, null);
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(400);
-    expect(body.error).toBe('The supplied chargeBy attribute is not valid in this request');
+    expect(body.msg).toBe('The supplied chargeBy attribute is not valid in this request.');
   });
 
   test('Fail to Delete - Missing Fee', async () => {
@@ -215,7 +215,7 @@ describe('Delete a Fee', () => {
     const res = await lambda.handler(eventDelete, null);
     const body = JSON.parse(res.body);
     expect(res.statusCode).toBe(404);
-    expect(body.error).toBe('Item does not exist in DynamoDB');
+    expect(body.msg).toBe('Item does not exist in DynamoDB.');
   });
 
   test('Empty Request Context', async () => {

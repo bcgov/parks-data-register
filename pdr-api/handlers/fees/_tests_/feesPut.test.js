@@ -106,7 +106,7 @@ describe('Update Fees Tests', () => {
     };
     const res = await lambda.handler(event, null);
     const body = JSON.parse(res.body);
-    expect(res.statusCode).toBe(403);
+    expect(res.statusCode).toBe(400);
     expect(body.error).toBe('Unauthorized');
   });
 

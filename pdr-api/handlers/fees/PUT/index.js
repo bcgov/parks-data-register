@@ -14,7 +14,7 @@ exports.handler = async (event, context) => {
   const isAdmin = event.requestContext?.authorizer?.isAdmin || false;
 
   if (!isAdmin) {
-    return sendResponse(403, [], 'Unauthorized', 'Unauthorized');
+    return sendResponse(400, [], 'Unauthorized', 'Unauthorized');
   }
 
   try {

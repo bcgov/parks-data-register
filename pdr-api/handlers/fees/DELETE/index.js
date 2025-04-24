@@ -71,7 +71,7 @@ const deleteParameter = async (queryParams, context) => {
     case Object.keys(currentItem).length === 0:
       logger.error('Item not found in DynamoDB');
       throw {
-        code: 404,
+        code: 400,
         error: 'Not Found.',
         msg: `Item does not exist in DynamoDB.`
       };
@@ -131,7 +131,7 @@ const deleteWholeRecord = async (queryParams, context) => {
   if (Object.keys(currentItem).length === 0) {
     logger.error('Item not found in DynamoDB');
     throw {
-      code: 404,
+      code: 400,
       error: 'Not Found.',
       msg: `Item does not exist in DynamoDB.`
     };

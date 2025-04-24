@@ -214,7 +214,7 @@ describe('Delete a Fee', () => {
     };
     const res = await lambda.handler(eventDelete, null);
     const body = JSON.parse(res.body);
-    expect(res.statusCode).toBe(404);
+    expect(res.statusCode).toBe(400);
     expect(body.msg).toBe('Item does not exist in DynamoDB.');
   });
 

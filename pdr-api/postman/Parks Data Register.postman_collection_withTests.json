@@ -1462,7 +1462,7 @@
 						"header": [
 							{
 								"key": "x-api-key",
-								"value": "gzOhAO57TEfcde3Jin6WaNYkIiFCS1b4j4Dtf2dc",
+								"value": "{{x-api-key}}",
 								"type": "text"
 							}
 						],

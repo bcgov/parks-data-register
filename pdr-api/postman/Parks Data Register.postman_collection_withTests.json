@@ -1,0 +1,1899 @@
+{
+	"info": {
+		"_postman_id": "300b225c-0189-4b05-a49c-62e167dd65a0",
+		"name": "Parks Data Register",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25649071"
+	},
+	"item": [
+		{
+			"name": "Config",
+			"item": [
+				{
+					"name": "Get Config",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vanity_url}}/config",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Parks",
+			"item": [
+				{
+					"name": "Search",
+					"item": [
+						{
+							"name": "Search",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"name": "cache-control",
+										"type": "text"
+									},
+									{
+										"key": "Postman-Token",
+										"value": "<calculated when request is sent>",
+										"name": "postman-token",
+										"type": "text"
+									},
+									{
+										"key": "Host",
+										"value": "<calculated when request is sent>",
+										"name": "host",
+										"type": "text"
+									},
+									{
+										"key": "User-Agent",
+										"value": "PostmanRuntime/7.39.1",
+										"name": "user-agent",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*",
+										"name": "accept",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Encoding",
+										"value": "gzip, deflate, br",
+										"name": "accept-encoding",
+										"type": "text"
+									},
+									{
+										"key": "Connection",
+										"value": "keep-alive",
+										"name": "connection",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{vanity_url}}/search?type=protectedArea&startFrom=4&limit=4&status=historical&sortField=effectiveDate",
+									"host": [
+										"{{vanity_url}}"
+									],
+									"path": [
+										"search"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "protectedArea"
+										},
+										{
+											"key": "startFrom",
+											"value": "4"
+										},
+										{
+											"key": "limit",
+											"value": "4"
+										},
+										{
+											"key": "status",
+											"value": "historical"
+										},
+										{
+											"key": "sortField",
+											"value": "effectiveDate"
+										},
+										{
+											"key": "text",
+											"value": "Alice"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Names",
+					"item": [
+						{
+							"name": "Get All Parks Names",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/parks/names?status=established&legalName=Strathcona Park",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"parks",
+										"names"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "established"
+										},
+										{
+											"key": "legalName",
+											"value": "Strathcona Park"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Specific Park",
+					"item": [
+						{
+							"name": "Name",
+							"item": [
+								{
+									"name": "Get Specific Park Name",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "x-api-key",
+												"value": "{{x-api-key}}"
+											}
+										],
+										"url": {
+											"raw": "{{vanity_url}}/parks/:identifier/name?status=established",
+											"host": [
+												"{{vanity_url}}"
+											],
+											"path": [
+												"parks",
+												":identifier",
+												"name"
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "established"
+												}
+											],
+											"variable": [
+												{
+													"key": "identifier",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Put Specific Park (Minor)",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-api-key",
+												"value": "{{x-api-key}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"effectiveDate\": \"2023-12-01\",\r\n    \"lastVersionDate\": \"2023-12-22T19:09:19.551Z\",\r\n    \"legalName\": \"Strathcona new name\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/parks/:identifier/name?updateType=minor",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"parks",
+												":identifier",
+												"name"
+											],
+											"query": [
+												{
+													"key": "updateType",
+													"value": "minor"
+												}
+											],
+											"variable": [
+												{
+													"key": "identifier",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Put Specific Park (Major)",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-api-key",
+												"value": "{{x-api-key}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"lastVersionDate\": \"2023-12-22T19:12:44.725Z\",\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"legalName\": \"Strathcona Park 2\",\r\n    \"displayName\": \"Strathcona \",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Strathcona legal name change\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/parks/:identifier/name?updateType=major",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"parks",
+												":identifier",
+												"name"
+											],
+											"query": [
+												{
+													"key": "updateType",
+													"value": "major"
+												}
+											],
+											"variable": [
+												{
+													"key": "identifier",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Put Specific Park (Repeal)",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-api-key",
+												"value": "{{x-api-key}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"lastVersionDate\": \"2023-12-22T19:13:33.966Z\",\r\n    \"legalName\": \"Strathcona Park repealed!\",\r\n    \"phoneticName\": \"STRA\",\r\n    \"displayName\": \"Strathcona Park\",\r\n    \"searchTerms\": \"mount asdf\",\r\n    \"notes\": \"Some Notes\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/parks/:identifier/name?updateType=repeal",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"parks",
+												":identifier",
+												"name"
+											],
+											"query": [
+												{
+													"key": "updateType",
+													"value": "repeal"
+												}
+											],
+											"variable": [
+												{
+													"key": "identifier",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Sites",
+							"item": [
+								{
+									"name": "Get Sites By Park Id",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/parks/:identifier/sites",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"parks",
+												":identifier",
+												"sites"
+											],
+											"variable": [
+												{
+													"key": "identifier",
+													"value": "300"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Changelog",
+			"item": [
+				{
+					"name": "Search",
+					"item": [
+						{
+							"name": "Changelog Search",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}"
+									}
+								],
+								"url": {
+									"raw": "{{vanity_url}}/changelog/search?changeType=legalNameChanged,statusChanged&sortField=updateDate&sortOrder=desc",
+									"host": [
+										"{{vanity_url}}"
+									],
+									"path": [
+										"changelog",
+										"search"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "protectedArea",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "established",
+											"disabled": true
+										},
+										{
+											"key": "text",
+											"value": "park",
+											"disabled": true
+										},
+										{
+											"key": "changeType",
+											"value": "legalNameChanged,statusChanged"
+										},
+										{
+											"key": "sortField",
+											"value": "updateDate"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Site",
+			"item": [
+				{
+					"name": "Specific Site",
+					"item": [
+						{
+							"name": "Get Specific Site",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier?status=established",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "sk",
+											"value": "Details",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "established"
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Specific Site (Minor)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"effectiveDate\": \"1911-03-03\",\r\n    \"lastVersionDate\": \"2024-03-25T09:55:24.664-07:00\",\r\n    \"legalName\": \"new legal name\",\r\n    \"displayName\": \"new display name\",\r\n    \"notes\": \"new notes\",\r\n    \"phoneticName\": \"phoneticName\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier?updateType=minor",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "updateType",
+											"value": "minor"
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Specific Site (Major)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"lastVersionDate\": \"2024-03-25T09:20:14.141-07:00\",\r\n    \"legalName\": \"New Albas Site 3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier?updateType=major",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "updateType",
+											"value": "major"
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put Specific Site (Repeal)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{x-api-key}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"effectiveDate\": \"1911-03-01\",\r\n    \"lastVersionDate\": \"2024-03-25T09:16:52.544-07:00\",\r\n    \"notes\": \"Some Notes 6\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sites/:identifier?updateType=repeal",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sites",
+										":identifier"
+									],
+									"query": [
+										{
+											"key": "updateType",
+											"value": "repeal"
+										}
+									],
+									"variable": [
+										{
+											"key": "identifier",
+											"value": "300::Site::1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Fees",
+			"item": [
+				{
+					"name": "Get All Fees",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//tests for status 200",
+									"if(pm.response.code === 200){",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"    //Verify the response body fields",
+									"    pm.test(\"Response body has all fields\", function () {",
+									"        pm.expect(pm.response.text()).to.include(\"activity\");",
+									"        pm.expect(pm.response.text()).to.include(\"night\");",
+									"        pm.expect(pm.response.text()).to.include(\"ORCS\");",
+									"        pm.expect(pm.response.text()).to.include(\"sk\");",
+									"        pm.expect(pm.response.text()).to.include(\"pk\");",
+									"        pm.expect(pm.response.text()).to.include(\"parkFeature\");",
+									"        pm.expect(pm.response.text()).to.include(\"billingBy\");",
+									"    });",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{vanity_url}}/fees",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fee by ORCS",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Tests for status code 200",
+									"if(pm.response.code === 200){",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    if (",
+									"        jsonData &&",
+									"        jsonData.data &&",
+									"        Array.isArray(jsonData.data.items) &&",
+									"        jsonData.data.items.length === 0",
+									"    ) {",
+									"        pm.test(\"Empty response body returned for invalid ORCS\", function(){",
+									"            const jsonData = pm.response.json();",
+									"            pm.expect(jsonData.data.items.length).to.eql(0);",
+									"        });",
+									"    } else{",
+									"        //Verify the response body fields",
+									"        pm.test(\"Response body has all fields for valid ORCS\", function () {",
+									"            pm.expect(pm.response.text()).to.include(\"activity\");",
+									"            pm.expect(pm.response.text()).to.include(\"ORCS\");",
+									"            pm.expect(pm.response.text()).to.include(\"sk\");",
+									"            pm.expect(pm.response.text()).to.include(\"pk\");",
+									"            pm.expect(pm.response.text()).to.include(\"parkFeature\");",
+									"            pm.expect(pm.response.text()).to.include(\"billingBy\");",
+									"        });",
+									"",
+									"    }",
+									"",
+									"//Tests for status code 400",
+									"}else if (pm.response.code === 400){",
+									"    ",
+									"    pm.test(\"Return status code 400 for missing ORCS\", function (){",
+									"        pm.response.to.have.status(400);",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper user message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"msg\", \"Missing required query parameter: 'ORCS'\");",
+									"",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper error message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"error\", \"Insufficient parameters.\");",
+									"",
+									"    });",
+									"    ",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1008",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1008"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fee by parkFeature",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Tests for status code 200",
+									"if(pm.response.code === 200){",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    if (",
+									"        jsonData &&",
+									"        jsonData.data &&",
+									"        Array.isArray(jsonData.data.items) &&",
+									"        jsonData.data.items.length === 0",
+									"    ) {",
+									"        pm.test(\"Empty response body returned for invalid ORCS\", function(){",
+									"            const jsonData = pm.response.json();",
+									"            pm.expect(jsonData.data.items.length).to.eql(0);",
+									"        });",
+									"    } else{",
+									"        //Verify the response body fields",
+									"        pm.test(\"Response body has all fields for valid ORCS\", function () {",
+									"            pm.expect(pm.response.text()).to.include(\"activity\");",
+									"            pm.expect(pm.response.text()).to.include(\"ORCS\");",
+									"            pm.expect(pm.response.text()).to.include(\"sk\");",
+									"            pm.expect(pm.response.text()).to.include(\"pk\");",
+									"            pm.expect(pm.response.text()).to.include(\"parkFeature\");",
+									"            pm.expect(pm.response.text()).to.include(\"billingBy\");",
+									"        });",
+									"",
+									"    }",
+									"",
+									"//Tests for status code 400",
+									"}else if (pm.response.code === 400){",
+									"    ",
+									"    pm.test(\"Return status code 400 for missing ORCS\", function (){",
+									"        pm.response.to.have.status(400);",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper user message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"msg\", \"Missing required parameters for 'byparkFeature' query\");",
+									"",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper error message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"error\", \"Insufficient parameters.\");",
+									"",
+									"    });",
+									"    ",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1000&parkFeature=Buttle Lake",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1000"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fee by spefic Activity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Tests for status code 200",
+									"if(pm.response.code === 200){",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    if (",
+									"        jsonData &&",
+									"        jsonData.data &&",
+									"        Array.isArray(jsonData.data.items) &&",
+									"        jsonData.data.items.length === 0",
+									"    ) {",
+									"        pm.test(\"Empty response body returned for invalid ORCS\", function(){",
+									"            const jsonData = pm.response.json();",
+									"            pm.expect(jsonData.data.items.length).to.eql(0);",
+									"        });",
+									"    } else{",
+									"        //Verify the response body fields",
+									"        pm.test(\"Response body has all fields for valid ORCS\", function () {",
+									"            pm.expect(pm.response.text()).to.include(\"activity\");",
+									"            pm.expect(pm.response.text()).to.include(\"ORCS\");",
+									"            pm.expect(pm.response.text()).to.include(\"sk\");",
+									"            pm.expect(pm.response.text()).to.include(\"pk\");",
+									"            pm.expect(pm.response.text()).to.include(\"parkFeature\");",
+									"            pm.expect(pm.response.text()).to.include(\"billingBy\");",
+									"        });",
+									"",
+									"    }",
+									"",
+									"//Tests for status code 400",
+									"}else if (pm.response.code === 400){",
+									"    ",
+									"    pm.test(\"Return status code 400 for missing ORCS\", function (){",
+									"        pm.response.to.have.status(400);",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper user message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"msg\", \"Missing required parameters for 'byActivity' query\");",
+									"",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper error message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"error\", \"Insufficient parameters.\");",
+									"",
+									"    });",
+									"    ",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1000",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1000"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by billingBy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Tests for status code 200",
+									"if(pm.response.code === 200){",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    if (",
+									"        jsonData &&",
+									"        jsonData.data &&",
+									"        Array.isArray(jsonData.data.items) &&",
+									"        jsonData.data.items.length === 0",
+									"    ) {",
+									"        pm.test(\"Empty response body returned for invalid ORCS\", function(){",
+									"            const jsonData = pm.response.json();",
+									"            pm.expect(jsonData.data.items.length).to.eql(0);",
+									"        });",
+									"    } else{",
+									"        //Verify the response body fields",
+									"        pm.test(\"Response body has all fields for valid ORCS\", function () {",
+									"            pm.expect(pm.response.text()).to.include(\"activity\");",
+									"            pm.expect(pm.response.text()).to.include(\"ORCS\");",
+									"            pm.expect(pm.response.text()).to.include(\"sk\");",
+									"            pm.expect(pm.response.text()).to.include(\"pk\");",
+									"            pm.expect(pm.response.text()).to.include(\"parkFeature\");",
+									"            pm.expect(pm.response.text()).to.include(\"billingBy\");",
+									"        });",
+									"",
+									"    }",
+									"",
+									"//Tests for status code 400",
+									"}else if (pm.response.code === 400){",
+									"    ",
+									"    pm.test(\"Return status code 400 for missing ORCS\", function (){",
+									"        pm.response.to.have.status(400);",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper user message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"msg\", \"Missing required parameters for 'withBilling' query\");",
+									"",
+									"    });",
+									"",
+									"    pm.test(\"Response has a proper error message when ORCS missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"error\", \"Insufficient parameters.\");",
+									"",
+									"    });",
+									"    ",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1010",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1010"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Night"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Fee Record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200){",
+									"",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"    //Check that the response contains the updated fields",
+									"    pm.test(\"Fee record is updated\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        //pm.expect(jsonData).to.have.property(\"code\", 200);",
+									"        pm.expect(jsonData).to.have.property(\"msg\", \"Record updated\");",
+									"    });",
+									"",
+									"}else if (pm.response.code === 400){",
+									"",
+									"    //test the response message",
+									"    pm.test(\"Response has a proper message when a parameters are missing\", function(){",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"msg\", \"Bad Request\");",
+									"",
+									"    });",
+									"",
+									"    /// List all required parameters",
+									"    const requiredParams = [\"ORCS\", \"parkFeature\", \"activity\", \"billingBy\", \"chargedBy\"];",
+									"",
+									"    // Get query parameters from the request",
+									"    const queryParams = pm.request.url.query;",
+									"",
+									"    // Collect all missing or empty parameters",
+									"    let missingParams = [];",
+									"    requiredParams.forEach(function(param) {",
+									"    const found = queryParams.find(q => q.key === param);",
+									"    if (!found || !found.value || found.value.trim() === \"\") {",
+									"        missingParams.push(param);",
+									"    }",
+									"    });",
+									"",
+									"    // Parse response",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    if (missingParams.length > 0) {",
+									"    pm.test(`Status code is 400 when required params are missing`, function () {",
+									"        pm.response.to.have.status(400);",
+									"    });",
+									"",
+									"    pm.test(`Error message mentions all missing parameters`, function () {",
+									"        pm.expect(jsonData).to.have.property(\"error\");",
+									"        missingParams.forEach(function(param) {",
+									"            pm.expect(jsonData.error).to.include(param);",
+									"        });",
+									"        pm.expect(jsonData.error).to.match(/^Missing Param:/);",
+									"    });",
+									"    } else {",
+									"    pm.test(\"All required parameters are present in the request\", function () {",
+									"        pm.expect(missingParams.length).to.eql(0);",
+									"    });",
+									"    }",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"Year\":\"99\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1000&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Night&chargedBy=Year",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1000"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Night"
+								},
+								{
+									"key": "chargedBy",
+									"value": "Year"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Entire Fee Record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200){",
+									"",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"}else if (pm.response.code === 400){",
+									"    pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response is JSON\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response body has correct fields and values\", function () {",
+									"    ",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"code\", 400);",
+									"    pm.expect(jsonData).to.have.property(\"data\").that.is.an(\"array\").that.is.empty;",
+									"    pm.expect(jsonData).to.have.property(\"msg\");",
+									"    pm.expect(jsonData).to.have.property(\"error\");",
+									"    pm.expect(jsonData).to.have.property(\"context\");",
+									"});",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{vanity_url}}/fees",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1008"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Night"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Fee Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200){",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response is good for further testing",
+									"    pm.test(\"response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"}else if (pm.response.code === 400){",
+									"    pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response is JSON\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response body has correct fields and values\", function () {",
+									"    ",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"code\", 400);",
+									"    pm.expect(jsonData).to.have.property(\"data\").that.is.an(\"array\").that.is.empty;",
+									"    pm.expect(jsonData).to.have.property(\"msg\");",
+									"    pm.expect(jsonData).to.have.property(\"error\");",
+									"    pm.expect(jsonData).to.have.property(\"context\");",
+									"});",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else {",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{vanity_url}}/fees",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1010"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Night"
+								},
+								{
+									"key": "chargeBy",
+									"value": "Year"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Fee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//tests when response is 200",
+									"if(pm.response.code === 200){",
+									"",
+									"    //Verify that response status is 200",
+									"    pm.test(\"Verify that Status code is 200\", function(){",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    //Verify the response has the basics",
+									"    pm.test(\"Verify response must be valid and have a body\", function () {",
+									"        pm.response.to.be.ok;",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    });",
+									"",
+									"    //Verify the response body fields",
+									"    pm.test(\"Verify response body has all fields\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"msg\", \"Success\");",
+									"    });",
+									"",
+									"//test when response 409",
+									"}else if(pm.response.code === 409){",
+									"",
+									"    //check the status code",
+									"    pm.test(\"Verify that Status code is 409\", function(){",
+									"        pm.response.to.have.status(409);",
+									"    });",
+									"",
+									"    // Check for error on invalid input",
+									"    pm.test(\"Verify for duplicate records, it return 409 error\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"error\");",
+									"    });",
+									"",
+									"//test with response 400",
+									"}else if(pm.response.code === 400) {",
+									"    ",
+									"    //check the status code",
+									"    pm.test(\"Verify if request missing parameters, response code is 400\", function(){",
+									"        pm.response.to.have.status(400);",
+									"    });",
+									"",
+									"    //test the response body",
+									"    pm.test(\"Verify if request missing parameters, response has an error message\", function (){",
+									"",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"error\");",
+									"        pm.expect(jsonData).to.have.property(\"msg\",\"Bad Request\");",
+									"    });",
+									"",
+									"    // Check for 400 error and verify error message",
+									"    pm.test(\"Verify missing/null parameter is reported in error\", function () {",
+									"",
+									"        // List required parameters",
+									"        const requiredParams = [\"ORCS\", \"parkFeature\", \"activity\", \"billingBy\", \"feeValue\", \"chargeBy\"];",
+									"",
+									"        // Get query parameters from the request (Params tab)",
+									"        const queryParams = pm.request.url.query;",
+									"",
+									"        // Find missing or null parameters",
+									"        const missingParams = requiredParams.filter(param => {",
+									"        const found = queryParams.find(q => q.key === param);",
+									"        return !found || !found.value || found.value.trim() === \"\";",
+									"        });",
+									"",
+									"        // Parse response",
+									"        const jsonData = pm.response.json();",
+									"",
+									"        if (missingParams.length > 0) {",
+									"            missingParams.forEach(param => {",
+									"                pm.expect(jsonData.error).to.include(param);",
+									"            });",
+									"        }",
+									"",
+									"",
+									"    });",
+									"",
+									"",
+									"}else if(pm.response.code === 401){",
+									"",
+									"    //Verify that response status is 401 when unauthorized",
+									"    pm.test(\"Return status code is 401 when unauthorized\", function () {",
+									"        pm.response.to.have.status(401);",
+									"    });",
+									"",
+									"    //Verify that response has proper message with 401 when unauthorized",
+									"    pm.test(\"A proper user message is provided for 401 when unauthorized\", function () {",
+									"        var jsonBody = pm.response.json();",
+									"        pm.expect(jsonBody).to.have.property(\"message\", \"Unauthorized\");",
+									"    });",
+									"",
+									"}else{",
+									"    // Print the error and fail the test",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {",
+									"        console.log(\"Unexpected response:\", pm.response.text());",
+									"        pm.expect.fail(\"Test failed due to unexpected status code: \" + pm.response.code);",
+									"    });",
+									"}",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "content-type",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "<calculated when request is sent>",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{vanity_url}}/fees?ORCS=1010&parkFeature=Buttle Lake&activity=Winter Frontcountry camping&billingBy=Night&feeValue=51&chargeBy=Month",
+							"host": [
+								"{{vanity_url}}"
+							],
+							"path": [
+								"fees"
+							],
+							"query": [
+								{
+									"key": "ORCS",
+									"value": "1010"
+								},
+								{
+									"key": "parkFeature",
+									"value": "Buttle Lake"
+								},
+								{
+									"key": "activity",
+									"value": "Winter Frontcountry camping"
+								},
+								{
+									"key": "billingBy",
+									"value": "Night"
+								},
+								{
+									"key": "feeValue",
+									"value": "51"
+								},
+								{
+									"key": "chargeBy",
+									"value": "Month"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "clientId",
+				"value": "{{client_id}}",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "{{access_token_url}}",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "{{auth_url}}",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "{{callback_url}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "{{token_name}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "refreshTokenUrl",
+				"value": "{{access_token_url}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"const requiredEnvVars = [\"base_url\", \"environment_name\", \"auth_url\", \"access_token_url\", \"callback_url\", \"client_id\", \"token_name\", \"vanity_url\", \"x-api-key\"]; ",
+					"",
+					"requiredEnvVars.forEach(function(varName) {",
+					"    if (!pm.environment.get(varName)) {",
+					"        throw new Error(`${varName} is not set in environment variables`);",
+					"    }",
+					"});"
+				],
+				"type": "text/javascript",
+				"packages": {}
+			}
+		}
+	]
+}

@@ -3,10 +3,8 @@ name: Deploy PDR-API LZA Test
 run-name: Deploying ${{ github.ref_name }} (API) to lza-test
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "pdr-api/**"
+  release:
+    types: [prereleased]
   workflow_dispatch:
 
 permissions:

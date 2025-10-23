@@ -3,10 +3,8 @@ name: Deploy PDR-Admin LZA Test
 run-name: Deploying ${{ github.ref_name }} (Admin) to lza-test
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "pdr-admin/**"
+  release:
+    types: [prereleased]
   workflow_dispatch:
 
 permissions:

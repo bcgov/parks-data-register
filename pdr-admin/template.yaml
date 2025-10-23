@@ -188,17 +188,6 @@ Resources:
           # Simple CORS
           ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
         CacheBehaviors:
-          - PathPattern: /search*
-            AllowedMethods:
-              - GET
-              - HEAD
-              - OPTIONS
-            # CachingDisabled
-            CachePolicyId: !Ref CloudFrontAPICachePolicy
-            TargetOriginId: !Sub ${ApiGatewayId}
-            ViewerProtocolPolicy: redirect-to-https
-            # Simple CORS
-            ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
           - PathPattern: /api/*
             AllowedMethods:
               - GET

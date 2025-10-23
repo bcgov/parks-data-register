@@ -16,6 +16,10 @@ Globals:
         DYNAMODB_ENDPOINT_URL: dynamodb.ca-central-1.amazonaws.com
 
 Parameters:
+  Env:
+    Description: Environment name (e.g., lza-dev, lza-test)
+    Type: String
+    Default: 'lza-dev'
   TableNameRegister:
     Type: String
     Default: 'NameRegister'
@@ -115,7 +119,7 @@ Resources:
   OpenSearch:
     Type: AWS::OpenSearchService::Domain
     Properties:
-      DomainName: !Ref DomainName
+      DomainName: !Sub '${DomainName}-${Env}'
       ClusterConfig:
         DedicatedMasterEnabled: false
         InstanceCount: !Ref InstanceCount
@@ -156,7 +160,7 @@ Resources:
     Type: AWS::OpenSearchService::Domain
     DependsOn: StreamRole
     Properties:
-      DomainName: !Ref OpenSearchSecondaryDomainName
+      DomainName: !Sub '${OpenSearchSecondaryDomainName}-${Env}'
       ClusterConfig:
         DedicatedMasterEnabled: false
         InstanceCount: !Ref InstanceCount
@@ -733,7 +737,7 @@ Resources:
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
-      TableName: !Ref TableNameRegister
+      TableName: !Sub '${TableNameRegister}-${Env}'
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
       StreamSpecification:
@@ -763,7 +767,7 @@ Resources:
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
-      TableName: !Ref TableNameAudit
+      TableName: !Sub '${TableNameAudit}-${Env}'
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
     DependsOn: NameRegister

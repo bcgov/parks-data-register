@@ -1,6 +1,6 @@
-name: Deploy PDR-API LZA Dev
+name: Deploy PDR-API LZA Test
 
-run-name: Deploying ${{ github.ref_name }} (API) to lza-dev
+run-name: Deploying ${{ github.ref_name }} (API) to lza-test
 
 on:
   push:
@@ -16,7 +16,7 @@ permissions:
 jobs:
   deploy-api:
     runs-on: ubuntu-latest
-    environment: lza-dev
+    environment: lza-test
     strategy:
       max-parallel: 1
       matrix:
@@ -69,3 +69,4 @@ jobs:
           EBS_IOPS: ${{ vars.EBS_IOPS }}
         run: |
           sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "Env=$ENV" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "AccountId=$ACCT_ID" "EBSIops=$EBS_IOPS"
+

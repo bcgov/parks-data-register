@@ -5,7 +5,8 @@ run-name: Deploying ${{ github.ref_name }} (Admin) to dev
 on:
   push:
     branches: [main]
-    paths: "pdr-admin/**"
+    paths:
+      - "pdr-admin/**"
   workflow_dispatch:
 
 permissions:

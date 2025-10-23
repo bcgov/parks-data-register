@@ -5,7 +5,8 @@ run-name: Deploying ${{ github.ref_name }} (API) to dev
 on:
   push:
     branches: [main]
-    paths: "pdr-api/**"
+    paths:
+      - "pdr-api/**"
   workflow_dispatch:
 
 permissions:

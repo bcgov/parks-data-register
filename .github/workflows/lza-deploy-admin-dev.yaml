@@ -122,6 +122,7 @@ jobs:
           aws s3 sync dist/$WORKING_DIRECTORY s3://$S3_BUCKET/latest/admin
 
       - name: Invalidate CloudFront
+        if: secrets.DISTRIBUTION != '' && secrets.DISTRIBUTION != 'PLACEHOLDER-UPDATE-AFTER-FIRST-DEPLOYMENT'
         uses: chetan/invalidate-cloudfront-action@v2
         env:
           DISTRIBUTION: ${{ secrets.DISTRIBUTION }}

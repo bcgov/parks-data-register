@@ -150,6 +150,7 @@ Resources:
             OriginPath: !Sub /${DistOriginPath}
           - Id: !Sub ${ApiGatewayId}
             DomainName: !Sub "${ApiGatewayId}.execute-api.${AWSRegion}.amazonaws.com"
+            OriginPath: !Sub /${ApiStage}
             CustomOriginConfig:
               HTTPSPort: 443
               OriginProtocolPolicy: https-only
@@ -170,6 +171,21 @@ Resources:
           # Simple CORS
           ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
         CacheBehaviors:
+          - PathPattern: /api/*
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - POST
+              - PATCH
+              - DELETE
+            # CachingDisabled
+            CachePolicyId: !Ref CloudFrontAPICachePolicy
+            TargetOriginId: !Sub ${ApiGatewayId}
+            ViewerProtocolPolicy: redirect-to-https
+            # Simple CORS
+            ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
           - PathPattern: !Sub /${ApiStage}/*
             AllowedMethods:
               - GET

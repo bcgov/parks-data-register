@@ -106,8 +106,9 @@ Resources:
                   - es:ESHttpPost
                   - es:ESHttpPut
                 Resource: !Sub
-                  - 'arn:aws:es:ca-central-1:${AccountId}:domain/data-register/*'
+                  - 'arn:aws:es:ca-central-1:${AccountId}:domain/${DomainName}/*'
                   - AccountId: !Ref AccountId
+                    DomainName: !Ref OpenSearchSecondaryDomainName
                 Effect: Allow
 
   ## Opensearch

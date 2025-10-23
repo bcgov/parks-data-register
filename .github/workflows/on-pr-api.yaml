@@ -11,7 +11,7 @@ jobs:
     environment: dev
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
     defaults:
       run:
         working-directory: "./pdr-api"

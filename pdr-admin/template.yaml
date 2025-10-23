@@ -39,12 +39,45 @@ Parameters:
     Description: API stage.
   EnvDomainName:
     Type: String
-    Default: dev-data.bcparks.ca
-  DomainCertificateArn:
+    Default: ''
+    Description: (Optional) Custom domain name for this environment (e.g., dev-data.bcparks.ca, data.bcparks.ca). Leave empty to use CloudFront default domain.
+  CreateCertificate:
     Type: String
-    Default: arn:aws:acm:us-east-1:970582042516:certificate/ef1d2666-8278-4d20-bdff-e27b55b3246f
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Whether to create a new ACM certificate or use an existing one. Set to 'false' if certificate already exists or not using custom domain.
+  ExistingCertificateArn:
+    Type: String
+    Default: ''
+    Description: (Optional) ARN of existing ACM certificate in us-east-1. Only used if CreateCertificate is 'false' and EnvDomainName is set.
+  HostedZoneId:
+    Type: String
+    Default: ''
+    Description: Route53 Hosted Zone ID for DNS validation of the certificate. Required if CreateCertificate is 'true'.
+
+Conditions:
+  ShouldCreateCertificate: !Equals [!Ref CreateCertificate, 'true']
+  UseCustomDomain: !Not [!Equals [!Ref EnvDomainName, '']]
 
 Resources:
+  # ACM Certificate must be in us-east-1 for CloudFront
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Condition: ShouldCreateCertificate
+    Properties:
+      DomainName: !Ref EnvDomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref EnvDomainName
+          HostedZoneId: !Ref HostedZoneId
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-certificate
+        - Key: Environment
+          Value: !Ref Env
+
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
@@ -90,12 +123,19 @@ Resources:
           - ErrorCode: 403
             ResponseCode: 200
             ResponsePagePath: !Sub /${BaseHref}index.html
-        Aliases:
-          - !Ref EnvDomainName
-        ViewerCertificate:
-          AcmCertificateArn: !Ref DomainCertificateArn
-          SslSupportMethod: sni-only
-          MinimumProtocolVersion: TLSv1
+        Aliases: !If
+          - UseCustomDomain
+          - [!Ref EnvDomainName]
+          - !Ref AWS::NoValue
+        ViewerCertificate: !If
+          - UseCustomDomain
+          - AcmCertificateArn: !If
+              - ShouldCreateCertificate
+              - !Ref Certificate
+              - !Ref ExistingCertificateArn
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1
+          - CloudFrontDefaultCertificate: true
         Comment: !Sub "CloudFront distribution for ${AWS::StackName}"
         DefaultRootObject: !Sub ${BaseHref}index.html
         Enabled: true

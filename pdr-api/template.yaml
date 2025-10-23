@@ -51,12 +51,6 @@ Parameters:
   EBSIops:
     Type: String
     Default: 1000
-  SecurityGroupId:
-    Type: String
-    Default: 'sg-0fc22027b778c9405'
-  SubnetId:
-    Type: String
-    Default: 'subnet-0896ff158c3ecdc53'
   SSOIssuerUrl:
     Type: String
     Default: https://dev.loginproxy.gov.bc.ca/auth/realms/bcparks-service-transformation
@@ -119,14 +113,8 @@ Resources:
   ## Opensearch
   OpenSearch:
     Type: AWS::OpenSearchService::Domain
-    DependsOn: StreamRole
     Properties:
       DomainName: !Ref DomainName
-      VPCOptions:
-        SecurityGroupIds:
-          - !Ref SecurityGroupId
-        SubnetIds:
-          - !Ref SubnetId
       ClusterConfig:
         DedicatedMasterEnabled: false
         InstanceCount: !Ref InstanceCount
@@ -211,7 +199,7 @@ Resources:
       Description: Common Base Tooling Layer
       ContentUri: layers/base/
       CompatibleRuntimes:
-        - nodejs18.x
+        - nodejs20.x
       LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
@@ -224,7 +212,7 @@ Resources:
       Description: Common AWS Tooling Layer
       ContentUri: layers/awsUtils/
       CompatibleRuntimes:
-        - nodejs18.x
+        - nodejs20.x
       LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
@@ -237,7 +225,7 @@ Resources:
       Description: Utilities, tools and helper functions specific to PDR data
       ContentUri: layers/dataUtils/
       CompatibleRuntimes:
-        - nodejs18.x
+        - nodejs20.x
       LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
@@ -255,7 +243,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Role: !GetAtt StreamRole.Arn
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -299,7 +287,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Role: !GetAtt StreamRole.Arn
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -343,7 +331,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -388,7 +376,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -429,7 +417,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -471,7 +459,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
         - !Ref DataUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -522,7 +510,7 @@ Resources:
             Path: /fees
             Method: GET
             RestApiId: !Ref ApiDeployment
-    
+
 ### FeePost
   FeePost:
     FunctionName: FeePost
@@ -664,10 +652,11 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TableNameRegister
+        - DynamoDBCrudPolicy:
             TableName: !Ref TableNameAudit
         - ElasticsearchHttpPostPolicy:
             DomainName: !Ref OpenSearchSecondaryDomainName
@@ -695,7 +684,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Environment:
         Variables:
           LOG_LEVEL: info
@@ -789,7 +778,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
         - !Ref DataUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -830,7 +819,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -871,7 +860,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
         - !Ref DataUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       MemorySize: 128

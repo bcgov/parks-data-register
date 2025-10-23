@@ -106,6 +106,23 @@ Resources:
           QueryStringsConfig:
             QueryStringBehavior: all
 
+  # CloudFront Function to rewrite /api/* to /* for API Gateway
+  ApiUrlRewriteFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub ${AWS::StackName}-api-rewrite
+      AutoPublish: true
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          // Rewrite /api/* to /* for API Gateway
+          request.uri = request.uri.replace(/^\/api/, '');
+          return request;
+        }
+      FunctionConfig:
+        Comment: Rewrites /api/* paths to /* for API Gateway origin
+        Runtime: cloudfront-js-1.0
+
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -186,6 +203,9 @@ Resources:
             ViewerProtocolPolicy: redirect-to-https
             # Simple CORS
             ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt ApiUrlRewriteFunction.FunctionMetadata.FunctionARN
           - PathPattern: !Sub /${ApiStage}/*
             AllowedMethods:
               - GET

@@ -205,7 +205,7 @@ Resources:
   DistS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-${Env}
+      BucketName: !Sub ${ProjectName}-${Env}
 
   DistS3BucketPolicy:
     Type: AWS::S3::BucketPolicy

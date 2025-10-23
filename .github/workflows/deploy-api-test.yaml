@@ -1,12 +1,6 @@
 name: Deploy PDR-API Test
 
-ru    steps:
-      ### Checkout GitHub Repo
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      ### Tag not found
-      - name: Tag not foundng ${{ github.ref_name }} (API) to test
+run-name: Deploying ${{ github.ref_name }} (API) to test
 
 on:
   push:

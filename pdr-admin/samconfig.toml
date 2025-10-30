@@ -194,7 +194,7 @@ parameter_overrides=[
   "ApiGatewayId=e8qk6n9teg",
   "Env=lza-test",
   "AWSRegion=ca-central-1",
-  "ApiStage=api"
+  "ApiStage=lza-test"
 ]
 
 [lza-dev]
@@ -233,5 +233,5 @@ parameter_overrides=[
   "ApiGatewayId=gw4ohkljkk",
   "Env=lza-dev",
   "AWSRegion=ca-central-1",
-  "ApiStage=api"
+  "ApiStage=lza-dev"
 ]

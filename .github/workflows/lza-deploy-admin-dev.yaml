@@ -87,6 +87,7 @@ jobs:
           PROJECT_NAME: ${{ vars.PDR_ADMIN_PROJECT_NAME || 'pdr-admin-lza-dev' }}
           API_GATEWAY_ID: ${{ vars.PDR_API_ID }}
           ENV: ${{ vars.ENVIRONMENT_STAGE || 'lza-dev' }}
+          API_STAGE: ${{ vars.PDR_API_STAGE || 'lza-dev' }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           CREATE_CERTIFICATE: ${{ vars.CREATE_CERTIFICATE || 'false' }}
           EXISTING_CERTIFICATE_ARN: ${{ vars.EXISTING_CERTIFICATE_ARN || vars.AWS_CERTIFICATE_ARN || '' }}
@@ -99,7 +100,7 @@ jobs:
           ApiGatewayId=$API_GATEWAY_ID \
           Env=$ENV \
           AWSRegion=ca-central-1 \
-          ApiStage=api \
+          ApiStage=$API_STAGE \
           EnvDomainName=$DOMAIN_NAME \
           CreateCertificate=$CREATE_CERTIFICATE \
           ExistingCertificateArn=$EXISTING_CERTIFICATE_ARN \

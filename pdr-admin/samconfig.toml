@@ -158,3 +158,80 @@ parameter_overrides=[
   "ApiStage=api"
 ]
 
+[lza-test]
+[lza-test.global.parameters]
+stack_name = "pdr-admin-lza-test"
+
+[lza-test.build.parameters]
+cached = true
+parallel = true
+
+[lza-test.validate.parameters]
+lint = true
+
+[lza-test.package.parameters]
+resolve_s3 = true
+
+[lza-test.sync.parameters]
+watch = true
+
+[lza-test.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[lza-test.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[lza-test.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-admin-lza-test"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides=[
+  "ProjectName=pdr-admin-lza-test",
+  "DistOriginPath=latest",
+  "ApiGatewayId=e8qk6n9teg",
+  "Env=lza-test",
+  "AWSRegion=ca-central-1",
+  "ApiStage=api"
+]
+
+[lza-dev]
+[lza-dev.global.parameters]
+stack_name = "pdr-admin-lza-dev"
+
+[lza-dev.build.parameters]
+cached = true
+parallel = true
+
+[lza-dev.validate.parameters]
+lint = true
+
+[lza-dev.package.parameters]
+resolve_s3 = true
+
+[lza-dev.sync.parameters]
+watch = true
+
+[lza-dev.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[lza-dev.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[lza-dev.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-admin-lza-dev"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides=[
+  "ProjectName=pdr-admin-lza-dev",
+  "DistOriginPath=latest",
+  "ApiGatewayId=gw4ohkljkk",
+  "Env=lza-dev",
+  "AWSRegion=ca-central-1",
+  "ApiStage=api"
+]

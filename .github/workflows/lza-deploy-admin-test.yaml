@@ -82,27 +82,14 @@ jobs:
       ### Prevent prompts and failure when the stack is unchanged
       - name: SAM deploy
         env:
-          STACK_NAME: ${{ vars.PDR_ADMIN_STACK_NAME }}
-          PROJECT_NAME: ${{ vars.PDR_ADMIN_PROJECT_NAME }}
-          DIST_ORIGIN_PATH: "latest"
-          API_GATEWAY_ID: ${{ vars.PDR_API_ID }}
-          ENV: ${{ vars.ENVIRONMENT_STAGE }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          API_STAGE: ${{ vars.PDR_API_STAGE }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           CREATE_CERTIFICATE: ${{ vars.CREATE_CERTIFICATE || 'false' }}
           EXISTING_CERTIFICATE_ARN: ${{ vars.EXISTING_CERTIFICATE_ARN || vars.AWS_CERTIFICATE_ARN || '' }}
           HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID || '' }}
           BASE_HREF: "admin/"
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides \
-          "ProjectName=$PROJECT_NAME \
-          DistOriginPath=$DIST_ORIGIN_PATH \
-          ApiGatewayId=$API_GATEWAY_ID \
-          Env=$ENV \
-          AWSRegion=$AWS_REGION \
-          ApiStage=$API_STAGE \
-          EnvDomainName=$DOMAIN_NAME \
+          sam deploy --config-env lza-test --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides \
+          "EnvDomainName=$DOMAIN_NAME \
           CreateCertificate=$CREATE_CERTIFICATE \
           ExistingCertificateArn=$EXISTING_CERTIFICATE_ARN \
           HostedZoneId=$HOSTED_ZONE_ID \

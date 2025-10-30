@@ -46,7 +46,9 @@ region = "ca-central-1"
 image_repositories = []
 parameter_overrides = [
   "Env=lza-test",
-  "OpenSearchSecondaryDomainName=pdr-opensearch"
+  "OpenSearchSecondaryDomainName=pdr-opensearch",
+  "TableNameRegister=NameRegister-lza-test",
+  "TableNameAudit=Audit-lza-test"
 ]
 
 [lza-dev]
@@ -62,5 +64,7 @@ region = "ca-central-1"
 image_repositories = []
 parameter_overrides = [
   "Env=lza-dev",
-  "OpenSearchSecondaryDomainName=pdr-opensearch"
+  "OpenSearchSecondaryDomainName=pdr-opensearch",
+  "TableNameRegister=NameRegister-lza-dev",
+  "TableNameAudit=Audit-lza-dev"
 ]

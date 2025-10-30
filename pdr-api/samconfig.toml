@@ -48,3 +48,19 @@ parameter_overrides = [
   "Env=lza-test",
   "OpenSearchSecondaryDomainName=pdr-opensearch"
 ]
+
+[lza-dev]
+[lza-dev.global.parameters]
+stack_name = "pdr-api-lza-dev"
+
+[lza-dev.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-api"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides = [
+  "Env=lza-dev",
+  "OpenSearchSecondaryDomainName=pdr-opensearch"
+]

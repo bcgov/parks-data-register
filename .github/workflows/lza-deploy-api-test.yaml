@@ -66,5 +66,5 @@ jobs:
           ACCT_ID: ${{ vars.ACCT_ID }}
           EBS_IOPS: ${{ vars.EBS_IOPS }}
         run: |
-          sam deploy --stack-name $STACK_NAME --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "Env=$ENV" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "AccountId=$ACCT_ID" "EBSIops=$EBS_IOPS"
+          sam deploy --config-env lza-test --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "Env=$ENV" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "AccountId=$ACCT_ID" "EBSIops=$EBS_IOPS"
 

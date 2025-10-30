@@ -65,6 +65,7 @@ jobs:
           KMS_KEY_ARN: ${{ vars.KMS_KEY_ARN }}
           ACCT_ID: ${{ vars.ACCT_ID }}
           EBS_IOPS: ${{ vars.EBS_IOPS }}
+          OPENSEARCH_DOMAIN: ${{ vars.OPENSEARCH_DOMAIN_NAME }}
         run: |
-          sam deploy --config-env lza-test --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "Env=$ENV" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "AccountId=$ACCT_ID" "EBSIops=$EBS_IOPS"
+          sam deploy --config-env lza-test --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "Env=$ENV" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "AccountId=$ACCT_ID" "EBSIops=$EBS_IOPS" "OpenSearchSecondaryDomainName=$OPENSEARCH_DOMAIN"
 

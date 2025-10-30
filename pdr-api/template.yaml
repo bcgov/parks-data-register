@@ -37,7 +37,7 @@ Parameters:
     Type: String
     Default: 'data-register'
   OpenSearchSecondaryDomainName:
-    Description: OpenSearch domain name
+    Description: OpenSearch domain name (max 28 chars when combined with -Env suffix)
     Type: String
     Default: 'data-register-opensearch'
   KMSKeyId:

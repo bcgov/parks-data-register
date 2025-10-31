@@ -40,6 +40,16 @@ export class KeycloakService {
       // Bootup KC
       const keycloak_client_id = this.configService.config['KEYCLOAK_CLIENT_ID'];
 
+      // Validate required Keycloak configuration
+      if (!this.keycloakUrl || !this.keycloakRealm) {
+        const errorMsg = `Missing required Keycloak configuration. URL: ${this.keycloakUrl}, Realm: ${this.keycloakRealm}, ClientId: ${keycloak_client_id}`;
+        this.loggerService.error(errorMsg);
+        console.error(errorMsg);
+        console.error('Current config:', this.configService.config);
+        this.toastService.addMessage('Missing Keycloak configuration. Please check environment settings.', 'Keycloak Service', ToastTypes.ERROR);
+        return Promise.reject(new Error(errorMsg));
+      }
+
       return new Promise<void>((resolve, reject) => {
         const config = {
           url: this.keycloakUrl,
@@ -48,6 +58,7 @@ export class KeycloakService {
         };
 
         this.loggerService.debug('KC Auth init.');
+        this.loggerService.debug('KC Config:', config);
 
         this.keycloakAuth = new Keycloak(config);
 
@@ -97,9 +108,12 @@ export class KeycloakService {
             resolve();
           })
           .catch((err) => {
+            const errorMsg = `Failed to initialize Keycloak: ${err}`;
             this.toastService.addMessage('Failed to initialize Keycloak.', 'Keycloak Service', ToastTypes.ERROR);
-            this.loggerService.log(`KC error: ${err}`);
-            reject();
+            this.loggerService.error(errorMsg);
+            console.error(errorMsg);
+            console.error('Keycloak config used:', { url: this.keycloakUrl, realm: this.keycloakRealm });
+            reject(err);
           });
       });
     }

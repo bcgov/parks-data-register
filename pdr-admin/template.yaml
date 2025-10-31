@@ -133,15 +133,15 @@ Resources:
             # Belarus, Central African Republic, China, Democratic Republic of the Congo, Iran, Iraq, Democratic People's Republic of Korea, Lebanon, Libya, Mali, Myanmar, Nicaragua, Russia, Somalia, South Sudan, Sudan, Syria, Ukraine, Venezuela, Yemen, Zimbabwe
             Locations: [BY, CF, CN, CD, IR, IQ, KP, LB, LY, ML, MM, NI, RU, SO, SS, SD, SY, UA, VE, YE, ZW]
         PriceClass: PriceClass_100
-        # CustomErrorResponses removed - they were interfering with API Gateway responses
-        # The Angular app handles 404 routing client-side via its router
-        # CustomErrorResponses:
-        #   - ErrorCode: 404
-        #     ResponseCode: 200
-        #     ResponsePagePath: !Sub /${BaseHref}index.html
-        #   - ErrorCode: 403
-        #     ResponseCode: 200
-        #     ResponsePagePath: !Sub /${BaseHref}index.html
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: !Sub /${BaseHref}index.html
+            ErrorCachingMinTTL: 0
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: !Sub /${BaseHref}index.html
+            ErrorCachingMinTTL: 0
         Aliases: !If
           - UseCustomDomain
           - [!Ref EnvDomainName]

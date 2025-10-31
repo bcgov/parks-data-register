@@ -737,7 +737,7 @@ Resources:
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
-      TableName: !Sub '${TableNameRegister}-${Env}'
+      TableName: !Ref TableNameRegister
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
       StreamSpecification:
@@ -767,7 +767,7 @@ Resources:
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
-      TableName: !Sub '${TableNameAudit}-${Env}'
+      TableName: !Ref TableNameAudit
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
     DependsOn: NameRegister

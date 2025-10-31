@@ -58,7 +58,7 @@ export class KeycloakService {
         };
 
         this.loggerService.debug('KC Auth init.');
-        this.loggerService.debug('KC Config:', config);
+        console.log('KC Config:', config);
 
         this.keycloakAuth = new Keycloak(config);
 

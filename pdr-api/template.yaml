@@ -675,6 +675,7 @@ Resources:
       Environment:
         Variables:
           LOG_LEVEL: info
+          TABLE_NAME: !Ref TableNameAudit
           OPENSEARCH_MAIN_INDEX: !Ref OpenSearchMainIndex
           OPENSEARCH_DOMAIN_ENDPOINT: !Sub
             - 'https://${Domain}/'

@@ -123,54 +123,13 @@ Resources:
         Comment: Rewrites /api/* paths to /* for API Gateway origin
         Runtime: cloudfront-js-1.0
 
-  # Lambda@Edge to prevent custom error responses for API paths
-  ApiErrorBypassLambdaRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-                - edgelambda.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-      Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-api-error-bypass-role
+  # NOTE: Lambda@Edge solution removed due to SAM cross-region deployment limitations
+  # Lambda@Edge functions must be in us-east-1, but SAM deploys to ca-central-1
+  # ISSUE: CloudFront custom error responses catch API Gateway 403/404 errors
+  # and return HTML instead of JSON. This affects API authentication failures.
+  # WORKAROUND: Frontend should handle HTML responses gracefully or retry.
 
-  ApiErrorBypassLambda:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-api-error-bypass
-      Runtime: nodejs20.x
-      Handler: index.handler
-      Role: !GetAtt ApiErrorBypassLambdaRole.Arn
-      Timeout: 5
-      InlineCode: |
-        exports.handler = async (event) => {
-          const response = event.Records[0].cf.response;
-          const request = event.Records[0].cf.request;
-          
-          // Check if this is an API request
-          if (request.uri && request.uri.startsWith('/api/')) {
-            // If status is 403 or 404, change to 401 to bypass custom error responses
-            if (response.status === '403') {
-              response.status = '401';
-              response.statusDescription = 'Unauthorized';
-            }
-          }
-          
-          return response;
-        };
-      AutoPublishAlias: live
-      Tags:
-        Name: !Sub ${AWS::StackName}-api-error-bypass
-
-  CloudFrontDistribution:
+  CloudFrontDistribution:  CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
@@ -255,9 +214,6 @@ Resources:
             FunctionAssociations:
               - EventType: viewer-request
                 FunctionARN: !GetAtt ApiUrlRewriteFunction.FunctionMetadata.FunctionARN
-            LambdaFunctionAssociations:
-              - EventType: origin-response
-                LambdaFunctionARN: !Ref ApiErrorBypassLambda.Version
           - PathPattern: !Sub ${BaseHref}*
             Compress: true
             AllowedMethods:

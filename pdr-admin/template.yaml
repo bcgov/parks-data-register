@@ -129,7 +129,7 @@ Resources:
   # and return HTML instead of JSON. This affects API authentication failures.
   # WORKAROUND: Frontend should handle HTML responses gracefully or retry.
 
-  CloudFrontDistribution:  CloudFrontDistribution:
+  CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:

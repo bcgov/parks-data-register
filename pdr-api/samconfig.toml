@@ -47,8 +47,8 @@ image_repositories = []
 parameter_overrides = [
   "Env=lza-test",
   "OpenSearchSecondaryDomainName=pdr-opensearch",
-  "TableNameRegister=NameRegister-lza-test",
-  "TableNameAudit=Audit-lza-test"
+  "TableNameRegister=NameRegister",
+  "TableNameAudit=Audit"
 ]
 
 [lza-dev]
@@ -65,6 +65,6 @@ image_repositories = []
 parameter_overrides = [
   "Env=lza-dev",
   "OpenSearchSecondaryDomainName=pdr-opensearch",
-  "TableNameRegister=NameRegister-lza-dev",
-  "TableNameAudit=Audit-lza-dev"
+  "TableNameRegister=NameRegister",
+  "TableNameAudit=Audit"
 ]

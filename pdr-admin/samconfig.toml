@@ -235,3 +235,42 @@ parameter_overrides=[
   "AWSRegion=ca-central-1",
   "ApiStage=lza-dev"
 ]
+
+[lza-prod]
+[lza-prod.global.parameters]
+stack_name = "pdr-admin-lza-prod"
+
+[lza-prod.build.parameters]
+cached = true
+parallel = true
+
+[lza-prod.validate.parameters]
+lint = true
+
+[lza-prod.package.parameters]
+resolve_s3 = true
+
+[lza-prod.sync.parameters]
+watch = true
+
+[lza-prod.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[lza-prod.local_start_lambda.parameters]
+warm_containers = "EAGER"
+
+[lza-prod.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-admin-lza-prod"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides=[
+  "ProjectName=pdr-admin-lza-prod",
+  "DistOriginPath=latest",
+  "ApiGatewayId=PLACEHOLDER",
+  "Env=lza-prod",
+  "AWSRegion=ca-central-1",
+  "ApiStage=lza-prod"
+]

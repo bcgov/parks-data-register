@@ -68,3 +68,21 @@ parameter_overrides = [
   "TableNameRegister=NameRegister-lza-dev",
   "TableNameAudit=Audit-lza-dev"
 ]
+
+[lza-prod]
+[lza-prod.global.parameters]
+stack_name = "pdr-api-lza-prod"
+
+[lza-prod.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "pdr-api"
+region = "ca-central-1"
+image_repositories = []
+parameter_overrides = [
+  "Env=lza-prod",
+  "OpenSearchSecondaryDomainName=pdr-opensearch",
+  "TableNameRegister=NameRegister-lza-prod",
+  "TableNameAudit=Audit-lza-prod"
+]

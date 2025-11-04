@@ -1,0 +1,73 @@
+name: Deploy PDR-API LZA Prod
+
+run-name: Deploying ${{ github.ref_name }} (API) to lza-prod
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    environment: lza-prod
+    strategy:
+      max-parallel: 1
+      matrix:
+        node-version: [20.x]
+    defaults:
+      run:
+        working-directory: "./${{ vars.PDR_API_DIRECTORY }}"
+    steps:
+      ### Checkout GitHub Repo
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      ### Setup AWS SAM
+      - name: Setup AWS SAM
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      ### Assume AWS IAM Role
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+
+      ### SAM Build
+      - name: Cache SAM Build
+        id: cache-sam-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            **${{ vars.PDR_API_DIRECTORY }}/.aws-sam
+          key: ${{ github.sha }}-${{ vars.PDR_API_DIRECTORY }}-sam-cache
+      - name: Run sam build
+        if: steps.cache-sam-build.outputs.cache-hit != 'true'
+        run: |
+          sam build --cached
+
+      ### Prevent prompts and failure when the stack is unchanged
+      - name: SAM deploy
+        env:
+          STACK_NAME: ${{ vars.PDR_API_STACK_NAME }}
+          STAGE: ${{ vars.PDR_API_STAGE }}
+          ENV: ${{ vars.ENVIRONMENT_STAGE }}
+          SSO_ISSUER: ${{ vars.SSO_ISSUER }}
+          SSO_JWKSURI: ${{ vars.SSO_JWKSURI }}
+          KMS_KEY_ARN: ${{ vars.KMS_KEY_ARN }}
+          ACCT_ID: ${{ vars.ACCT_ID }}
+          EBS_IOPS: ${{ vars.EBS_IOPS }}
+          OPENSEARCH_DOMAIN: ${{ vars.OPENSEARCH_DOMAIN_NAME }}
+          TABLE_REGISTER: ${{ vars.TABLE_NAME_REGISTER }}
+          TABLE_AUDIT: ${{ vars.TABLE_NAME_AUDIT }}
+        run: |
+          sam deploy --config-env lza-prod --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides "Stage=$STAGE" "Env=$ENV" "SSOIssuerUrl=$SSO_ISSUER" "SSOJWKSUri=$SSO_JWKSURI" "KMSKeyId=$KMS_KEY_ARN" "AccountId=$ACCT_ID" "EBSIops=$EBS_IOPS" "OpenSearchSecondaryDomainName=$OPENSEARCH_DOMAIN" "TableNameRegister=$TABLE_REGISTER" "TableNameAudit=$TABLE_AUDIT"

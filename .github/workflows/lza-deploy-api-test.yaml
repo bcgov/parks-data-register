@@ -6,6 +6,8 @@ on:
   release:
     types: [prereleased]
   workflow_dispatch:
+  # Note: This workflow only triggers on pre-releases, not on regular releases
+  # Create a pre-release in GitHub to deploy to lza-test
 
 permissions:
   id-token: write

@@ -98,8 +98,9 @@ Resources:
                   - dynamodb:DescribeTable
                   - dynamodb:ConditionCheckItem
                 Resource: !Sub
-                  - 'arn:aws:dynamodb:ca-central-1:${AccountId}:table/Audit'
+                  - 'arn:aws:dynamodb:ca-central-1:${AccountId}:table/${TableName}'
                   - AccountId: !Ref AccountId
+                    TableName: !Ref TableNameAudit
                 Effect: Allow
         - PolicyName: 'ProcessDynamoDBStreamRolePolicyTwo'
           PolicyDocument:

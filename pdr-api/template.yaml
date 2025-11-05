@@ -110,9 +110,10 @@ Resources:
                   - es:ESHttpPost
                   - es:ESHttpPut
                 Resource: !Sub
-                  - 'arn:aws:es:ca-central-1:${AccountId}:domain/${DomainName}/*'
+                  - 'arn:aws:es:ca-central-1:${AccountId}:domain/${DomainName}-${Env}/*'
                   - AccountId: !Ref AccountId
                     DomainName: !Ref OpenSearchSecondaryDomainName
+                    Env: !Ref Env
                 Effect: Allow
 
   ## Opensearch
@@ -675,7 +676,8 @@ Resources:
       Environment:
         Variables:
           LOG_LEVEL: info
-          TABLE_NAME: !Ref TableNameAudit
+          TABLE_NAME: !Ref TableNameRegister
+          AUDIT_TABLE_NAME: !Ref TableNameAudit
           OPENSEARCH_MAIN_INDEX: !Ref OpenSearchMainIndex
           OPENSEARCH_DOMAIN_ENDPOINT: !Sub
             - 'https://${Domain}/'

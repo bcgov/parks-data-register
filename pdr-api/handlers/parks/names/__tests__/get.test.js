@@ -117,6 +117,27 @@ describe('All Park Names GET', () => {
     expect(body2.data.items.length).toBe(1);
   });
 
+  test('CSV route returns established names without auth, ignoring query params', async () => {
+    await createDB({ pk: '9', sk: 'Details', legalName: 'Park, "The" 9', status: 'established' }, process.env.TABLE_NAME);
+    const lambda = require('../GET/index');
+    const event = {
+      httpMethod: 'GET',
+      resource: '/parks/names/csv',
+      queryStringParameters: {
+        status: 'pending'
+      }
+    }
+    const res = await lambda.handler(event, null);
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['Content-Type']).toBe('text/csv; charset=utf-8');
+    const lines = res.body.trim().split('\r\n');
+    expect(lines[0]).toBe('pk,displayId,legalName,displayName,phoneticName,type,status,effectiveDate');
+    expect(lines.length).toBe(6);
+    expect(lines).toContain('9,,"Park, ""The"" 9",,,,established,');
+    expect(res.body).not.toContain('pending');
+    expect(res.body).not.toContain('some notes');
+  });
+
   test('Public user', async () => {
     const lambda = require('../GET/index');
     const event = {

@@ -1,6 +1,9 @@
 const { runQuery, TABLE_NAME, STATUS_INDEX_NAME, LEGALNAME_INDEX_NAME } = require('/opt/dynamodb');
 const { sendResponse, logger } = require('/opt/base');
 
+const CSV_PATH = '/parks/names/csv';
+const CSV_COLUMNS = ['pk', 'displayId', 'legalName', 'displayName', 'phoneticName', 'type', 'status', 'effectiveDate'];
+
 exports.handler = async (event, context) => {
   logger.debug('Get all park names details', event);
   // Allow CORS
@@ -9,8 +12,10 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const queryParams = event.queryStringParameters;
-    const isAdmin = JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
+    const isCsv = event.resource === CSV_PATH;
+    // The CSV route has no API key or authorizer, so it only ever serves established names.
+    const queryParams = isCsv ? { status: 'established' } : event.queryStringParameters;
+    const isAdmin = !isCsv && JSON.parse(event.requestContext?.authorizer?.isAdmin || false);
 
     // Check if query is valid
     validateRequest(queryParams, isAdmin);
@@ -47,12 +52,35 @@ exports.handler = async (event, context) => {
 
     logger.debug('Get all park names result', res);
 
+    if (isCsv) {
+      return sendCsv(res.items);
+    }
+
     return sendResponse(200, res, 'Success', null, context);
   } catch (err) {
     logger.error(err);
     return sendResponse(err?.code || 400, [], err?.msg || 'Error', err?.error || err, context);
   }
 };
+
+function csvCell(value) {
+  const text = value === undefined || value === null ? '' : String(value);
+  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function sendCsv(items) {
+  const rows = [CSV_COLUMNS, ...items.map(item => CSV_COLUMNS.map(column => item[column]))];
+  return {
+    statusCode: 200,
+    headers: {
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': 'attachment; filename="bc-parks-names.csv"',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'public, max-age=3600'
+    },
+    body: rows.map(row => row.map(csvCell).join(',')).join('\r\n') + '\r\n'
+  };
+}
 
 function queryByLegalName(legalName, status = null) {
   let query = {

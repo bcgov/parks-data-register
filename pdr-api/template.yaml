@@ -206,7 +206,7 @@ Resources:
       Description: Common Base Tooling Layer
       ContentUri: layers/base/
       CompatibleRuntimes:
-        - nodejs20.x
+        - nodejs22.x
       LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
@@ -219,7 +219,7 @@ Resources:
       Description: Common AWS Tooling Layer
       ContentUri: layers/awsUtils/
       CompatibleRuntimes:
-        - nodejs20.x
+        - nodejs22.x
       LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
@@ -232,7 +232,7 @@ Resources:
       Description: Utilities, tools and helper functions specific to PDR data
       ContentUri: layers/dataUtils/
       CompatibleRuntimes:
-        - nodejs20.x
+        - nodejs22.x
       LicenseInfo: 'Apache-2.0'
       RetentionPolicy: Retain
     Metadata:
@@ -250,7 +250,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Role: !GetAtt StreamRole.Arn
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -294,7 +294,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
       Role: !GetAtt StreamRole.Arn
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -338,7 +338,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -383,7 +383,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -403,6 +403,16 @@ Resources:
             Path: /parks/names
             Method: GET
             RestApiId: !Ref ApiDeployment
+        ParksAllNamesCsvGet:
+          Type: Api
+          Properties:
+            Path: /parks/names/csv
+            Method: GET
+            RestApiId: !Ref ApiDeployment
+            Auth:
+              ApiKeyRequired: false
+              Authorizer: NONE
+              OverrideApiAuth: true
         ParksAllNamesOptions:
           Type: Api
           Properties:
@@ -424,7 +434,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -466,7 +476,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
         - !Ref DataUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -497,7 +507,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -529,7 +539,7 @@ Resources:
         - !Ref DataUtilsLayer
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -562,7 +572,7 @@ Resources:
         - !Ref DataUtilsLayer
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -595,7 +605,7 @@ Resources:
         - !Ref DataUtilsLayer
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs18.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -626,6 +636,12 @@ Resources:
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
         MaxAge: "'600'"
+      # The keyless CSV route is outside the usage plan, so it gets its own throttle.
+      MethodSettings:
+        - ResourcePath: '/~1parks~1names~1csv'
+          HttpMethod: GET
+          ThrottlingRateLimit: 5
+          ThrottlingBurstLimit: 10
       Auth:
         ApiKeyRequired: true
         UsagePlan:
@@ -659,7 +675,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TableNameRegister
@@ -693,7 +709,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Environment:
         Variables:
           LOG_LEVEL: info
@@ -787,7 +803,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
         - !Ref DataUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -828,7 +844,7 @@ Resources:
       Layers:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128
@@ -869,7 +885,7 @@ Resources:
         - !Ref BaseLayer
         - !Ref AWSUtilsLayer
         - !Ref DataUtilsLayer
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Architectures:
         - x86_64
       MemorySize: 128

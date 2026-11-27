@@ -20,7 +20,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
     defaults:
       run:
         working-directory: "./${{ vars.PDR_API_DIRECTORY }}"
